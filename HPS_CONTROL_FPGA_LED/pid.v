@@ -38,3 +38,49 @@ input [7:0] k3);
 		end
 	end
 endmodule 
+
+
+
+module PID_testbench;
+	reg clk, reset;
+	reg [31:0] e_in;
+	//reg [7:0] k1;
+	//reg [7:0] k2;
+	//reg [7:0] k3;
+	wire [31:0] u_out;
+	
+	parameter k1 = 1;
+	parameter k2 = 0;
+	parameter k3 = 0;
+	
+	parameter stimDelay = 10;
+	
+	PID myPID(	u_out,
+	e_in,
+	clk,
+	reset,
+	k1,
+	k2,
+	k3);
+
+	always #1 clk = ~clk;
+
+	initial
+	begin
+		clk = 0; e_in = 0; reset = 0;
+		
+		
+		#(stimDelay)
+		reset = 1;
+		#(stimDelay);
+		reset = 0;
+		
+		repeat(10)
+		begin
+			#(stimDelay) e_in = e_in + 1;
+		end
+		
+		
+		#100; //Let simulation finish
+	end
+endmodule

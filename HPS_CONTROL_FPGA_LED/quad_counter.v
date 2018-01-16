@@ -25,3 +25,57 @@ module quad_counter(clk, quadA, quadB, count, reset);
 	end
 
 endmodule 
+
+
+module quad_counter_testbench;
+	reg clk, quadA, quadB, reset;
+	wire [31:0] count;
+	//signal clk : std_logic := '0';
+	
+	parameter stimDelay = 50;
+	
+	quad_counter myCounter(clk, quadA, quadB, count, reset);
+
+	always #1 clk = ~clk;
+
+	initial
+	begin
+		clk = 0; quadA = 0; quadB = 0; reset = 0;
+		
+		
+		#(stimDelay)
+		reset = 1;
+		#(stimDelay);
+		reset = 0;
+		
+		repeat(100000000)
+		begin
+			#(stimDelay) quadB = 1;
+			#(stimDelay) quadA = 1;
+			#(stimDelay) quadB = 0;
+			#(stimDelay) quadA = 0;
+		end
+		
+		#(stimDelay)
+		reset = 1;
+		#(stimDelay);
+		reset = 0;
+		
+		#(stimDelay) quadB = 0;
+		#(stimDelay) quadA = 0;
+		#(stimDelay) quadB = 1;
+		#(stimDelay) quadA = 1;
+		#(stimDelay) quadB = 0;
+		#(stimDelay) quadA = 0;	
+	
+		#(stimDelay) quadA = 1;
+		#(stimDelay) quadB = 1;
+		#(stimDelay) quadA = 0;
+		#(stimDelay) quadB = 0;
+		#(stimDelay) quadA = 1;
+		#(stimDelay) quadB = 1;
+	
+		
+		#100; //Let simulation finish
+	end
+endmodule
