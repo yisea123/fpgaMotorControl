@@ -52,7 +52,7 @@ volatile unsigned long *h2p_lw_pwm_values_addr[8];//=NULL;
 
 volatile int32_t position_setpoints[8];
 
-FILE *fp;
+//FILE *fp;
 
 int exit_flag = 0;
 
@@ -67,7 +67,7 @@ void my_handler(int s){
 
 }
 
-uint8_t P=1;
+uint8_t P=2;
 uint8_t I=0;
 uint8_t D=0;
 
@@ -113,7 +113,7 @@ int main(int argc, char **argv)
 	pthread_t pth;	// this is our thread identifier
 	pthread_create(&pth,NULL,threadFunc,NULL);
 	
-	fp = fopen("recorded_file.csv", "wb");
+	//fp = fopen("recorded_file.csv", "wb");
 
 	
 	struct sigaction sigIntHandler;
@@ -126,7 +126,7 @@ int main(int argc, char **argv)
 	------------------------------------------
 	Setup FPGA communication
 	------------------------------------------
-	*/
+	*///sig
 	void *virtual_base;
 	int fd;
 	int i;
@@ -296,9 +296,9 @@ int main(int argc, char **argv)
 			char string_write[255];
 			sprintf(string_write, "Axis %d, Position Setpoint %d, Current count %d, Error %d, Current PID output unsigned %d\n", j, position_setpoints[j], output, error, pid_output);
 			if(j==2)
-				fprintf(fp, string_write);
+				//fprintf(fp, string_write);
 			if(myCounter%300 == 0){
-				//printf("Axis: %d;Position Setpoint: %d; Current count: %d; Error: %d; Current PID output, unsigned: %d; Current PID output, signed: %d; Current Sign: %d; Cutoff output: %d\n", j, position_setpoints[j], nativeInt, error, pid_output, pid_output*sign_pid_output, sign_pid_output, pid_output_cutoff);
+				printf("Axis: %d;Position Setpoint: %d; Error: %d; Current PID output, unsigned: %d; Cutoff output: %d\n", j, position_setpoints[j], error, pid_output, pid_output_cutoff);
 				printf("Heartbeat: %d; Error: %d; Error read: %d; PID out: %d\n", myCounter, error, check_error, pid_output);
 				//printf("%d,%d,%d,%d\n", switch_states[0],switch_states[1],switch_states[2],switch_states[3]);
 				if(j==7)
@@ -342,7 +342,7 @@ uint32_t createNativeInt(uint32_t input, int size)
 	
 	if (negative)
 		  nativeInt = input | ~((1 << size) - 1);
-	else
+	else 
 		  nativeInt = input;
 		
 	return nativeInt;
@@ -350,7 +350,116 @@ uint32_t createNativeInt(uint32_t input, int size)
 
 void *threadFunc(void *arg)
 {
+	/*char * pch;
+    int sockfd, portno, clilen, newsockfd,n;
+    int system_state = 1, reads = 1;
+    struct sockaddr_in serv_addr, cli_addr; 
+    char buffer[256];
+    char write_buffer[256];
+
+    
+    //create socket
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sockfd < 0)
+    {
+        printf("Could not create socket");
+        return
+    }
+
+    bzero((char *) &serv_addr, sizeof(serv_addr));
+
+
+    portno = portnumber_global;
+
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_addr.s_addr = INADDR_ANY;
+    serv_addr.sin_port = htons(portno); 
+
+     if (bind(sockfd, (struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0) 
+              error("ERROR on binding");
+
+    listen(sockfd, 5);
+
+    clilen = sizeof(cli_addr);
+    newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
+     if (newsockfd < 0) 
+          error("ERROR on accept");
+
+
+     bzero(buffer,256);
+     bzero(write_buffer,256);
+
+
+
+     while(system_state == 1 && socket_error == 0) {
+
+        printf("Socket Here %d\n",reads);
+        reads=reads+1;
+
+        n = read(newsockfd,buffer,255);
+
+        if (n < 0){
+            error("ERROR reading from socket");
+            break;
+        }
+
+        printf("Here is the message: %s\n",buffer);
+
+        sprintf(write_buffer,"Message is: %s", buffer);
+
+        n = write(newsockfd,write_buffer,strlen(write_buffer));
+
+        if (n < 0) {
+            error("ERROR writing to socket");
+        }
+
+        for(k = 0; k<8; k++){
+    		if(k==0){
+				pch = strtok (buffer,"bd ");
+				position_setpoints[k] = atoi(pch);
+			}
+			else{
+				pch = strtok (NULL,"bd ");
+				position_setpoints[k] = atoi(pch);
+			}
+		}
+     }
+
+    close(newsockfd);
+    close(sockfd);
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	char * pch;
+
 	int sockfd, newsockfd, portno;
     socklen_t clilen;
     char buffer[256];
@@ -358,6 +467,7 @@ void *threadFunc(void *arg)
     struct sockaddr_in serv_addr, cli_addr;
     int n, j, k;
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
+
 
     if (sockfd < 0){ 
         error("ERROR opening socket");
@@ -391,9 +501,13 @@ void *threadFunc(void *arg)
 
 	str=(char*)arg;
 
+	int blahblah = 0;
 	while(system_state == 1 && socket_error == 0)
 	{
-		nanosleep((const struct timespec[]){{0, 5000000L}}, NULL);
+		nanosleep((const struct timespec[]){{0, 500000L}}, NULL);
+		if (blahblah % 500 == 0)
+			printf("Socket Here %d\n",blahblah);
+		blahblah=blahblah+1;
 
 		//reads information from socket
 		n = read(newsockfd,buffer,255);
@@ -405,7 +519,7 @@ void *threadFunc(void *arg)
    		}
 //    		printf("Here is the message: %s\n",buffer);
    		sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d qq", switch_states[0], switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7]);
-    	n = write(newsockfd,write_buffer,256);
+    	//n = write(newsockfd,write_buffer,256);
 
     	if (n < 0){
     		error("ERROR writing to socket");
@@ -426,6 +540,7 @@ void *threadFunc(void *arg)
 
 
 	}
+
 
     close(newsockfd);
     close(sockfd);
