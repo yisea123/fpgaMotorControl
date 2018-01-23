@@ -350,113 +350,11 @@ uint32_t createNativeInt(uint32_t input, int size)
 
 void *threadFunc(void *arg)
 {
-	/*char * pch;
-    int sockfd, portno, clilen, newsockfd,n;
-    int system_state = 1, reads = 1;
-    struct sockaddr_in serv_addr, cli_addr; 
-    char buffer[256];
-    char write_buffer[256];
-
-    
-    //create socket
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd < 0)
-    {
-        printf("Could not create socket");
-        return
-    }
-
-    bzero((char *) &serv_addr, sizeof(serv_addr));
 
 
-    portno = portnumber_global;
-
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_addr.s_addr = INADDR_ANY;
-    serv_addr.sin_port = htons(portno); 
-
-     if (bind(sockfd, (struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0) 
-              error("ERROR on binding");
-
-    listen(sockfd, 5);
-
-    clilen = sizeof(cli_addr);
-    newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
-     if (newsockfd < 0) 
-          error("ERROR on accept");
-
-
-     bzero(buffer,256);
-     bzero(write_buffer,256);
-
-
-
-     while(system_state == 1 && socket_error == 0) {
-
-        printf("Socket Here %d\n",reads);
-        reads=reads+1;
-
-        n = read(newsockfd,buffer,255);
-
-        if (n < 0){
-            error("ERROR reading from socket");
-            break;
-        }
-
-        printf("Here is the message: %s\n",buffer);
-
-        sprintf(write_buffer,"Message is: %s", buffer);
-
-        n = write(newsockfd,write_buffer,strlen(write_buffer));
-
-        if (n < 0) {
-            error("ERROR writing to socket");
-        }
-
-        for(k = 0; k<8; k++){
-    		if(k==0){
-				pch = strtok (buffer,"bd ");
-				position_setpoints[k] = atoi(pch);
-			}
-			else{
-				pch = strtok (NULL,"bd ");
-				position_setpoints[k] = atoi(pch);
-			}
-		}
-     }
-
-    close(newsockfd);
-    close(sockfd);
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/*--------------------------------
+setup socket communication
+--------------------------------*/
 
 	char * pch;
 
@@ -501,15 +399,13 @@ void *threadFunc(void *arg)
 
 	str=(char*)arg;
 
-	int blahblah = 0;
 	while(system_state == 1 && socket_error == 0)
 	{
 		nanosleep((const struct timespec[]){{0, 500000L}}, NULL);
-		if (blahblah % 500 == 0)
-			printf("Socket Here %d\n",blahblah);
-		blahblah=blahblah+1;
 
-		//reads information from socket
+		/*--------------------------------
+		read from socket
+		--------------------------------*/
 		n = read(newsockfd,buffer,255);
 		//printf("Buffer received: %s\n\n", buffer);
 
@@ -517,7 +413,10 @@ void *threadFunc(void *arg)
    			error("ERROR reading from socket");
    			break;
    		}
-//    		printf("Here is the message: %s\n",buffer);
+
+   		/*--------------------------------
+		write switch state to socket
+		--------------------------------*/
    		sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d qq", switch_states[0], switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7]);
     	//n = write(newsockfd,write_buffer,256);
 
@@ -526,13 +425,25 @@ void *threadFunc(void *arg)
     		break;
     	}
 
+    	/*--------------------------------
+		parse received message from socket
+		--------------------------------*/
+
     	for(k = 0; k<8; k++){
     		if(k==0){
 				pch = strtok (buffer,"bd ");
+				if(pch == NULL){ //found end of string early
+					error("ERROR parsing message");
+					break;
+				}
 				position_setpoints[k] = atoi(pch);
 				}
 			else{
 				pch = strtok (NULL,"bd ");
+				if(pch == NULL){ //found end of string early
+					error("ERROR parsing message");
+					break;
+				}
 				position_setpoints[k] = atoi(pch);
 			}
 			
@@ -541,7 +452,7 @@ void *threadFunc(void *arg)
 
 	}
 
-
+	printf("Exited thread loop\n");
     close(newsockfd);
     close(sockfd);
 }

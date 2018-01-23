@@ -6,7 +6,7 @@ import socket
 import re
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect(('192.168.1.10', 1111))
+client_socket.connect(('192.168.1.10', 1115))
 client_socket.setblocking(0)
 client_socket.settimeout(0.1)
 
@@ -14,7 +14,7 @@ cpr = 500
 current_pos_1 = 0
 current_pos_2 = 0
 base_vel = 1500
-dt = 1/100
+dt = 1/500
 
 def setpriority(pid=None,priority=5):
     """ Set The Priority of a Windows Process.  Priority is a value between 0-5 where
@@ -46,21 +46,21 @@ def incr_pos(position_increment, current_pos):
 current_pos = np.zeros((8,1))	
 command_motors(client_socket, current_pos)
 
-setpriority()
+#setpriority()
 
 start_time = time.time()
 
 j = 0
 while (1): #time.time()-start_time<25):
-	current_pos_1 = (np.sin((time.time()-start_time)/2)*1000)*(1)
+	current_pos_1 = (np.sin((time.time()-start_time)*2)*1000)*(1)
 			
 	for i in range(len(current_pos)):
 		current_pos[i] = np.power(-1,(i+1))*current_pos_1
 	command_motors(client_socket, current_pos)
 	time.sleep(dt)
 	
-	if np.abs(current_pos_1) < 5:
-		time.sleep(0.2)
+	#if np.abs(current_pos_1) < 5:
+	#	time.sleep(0)
 	
 	if j%50 == 0:
 		print('zeros: ' + str(current_pos))
