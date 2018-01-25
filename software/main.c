@@ -250,10 +250,14 @@ int main(int argc, char **argv)
 		
 		//uint32_t mask = createMask(0,30);
 		uint32_t switches = alt_read_word(h2p_lw_limit_switch_addr);
-		switch_states[0] = (switches&1<<4)>0;
-		switch_states[1] = (switches&1<<6)>0;
-		switch_states[2] = (switches&1<<7)>0;
-		switch_states[3] = (switches&1<<5)>0;
+		switch_states[0] = (switches&1<<0)==0;
+		switch_states[1] = (switches&1<<3)==0;
+		switch_states[2] = (switches&1<<2)==0;
+		switch_states[3] = (switches&1<<1)==0;
+		switch_states[4] = (switches&1<<7)==0;
+		switch_states[5] = (switches&1<<6)==0;
+		switch_states[6] = (switches&1<<5)==0;
+		switch_states[7] = (switches&1<<4)==0;
 		//j = 0;
 		for(j = 0; j<8; j++){
 			int32_t output = alt_read_word(h2p_lw_quad_addr[j]); //& mask;
@@ -300,7 +304,7 @@ int main(int argc, char **argv)
 			if(myCounter%300 == 0){
 				printf("Axis: %d;Position Setpoint: %d; Error: %d; Current PID output, unsigned: %d; Cutoff output: %d\n", j, position_setpoints[j], error, pid_output, pid_output_cutoff);
 				printf("Heartbeat: %d; Error: %d; Error read: %d; PID out: %d\n", myCounter, error, check_error, pid_output);
-				//printf("%d,%d,%d,%d\n", switch_states[0],switch_states[1],switch_states[2],switch_states[3]);
+				printf("%d,%d,%d,%d,%d,%d,%d,%d\n", switch_states[0],switch_states[1],switch_states[2],switch_states[3],switch_states[4],switch_states[5],switch_states[6],switch_states[7]);
 				if(j==7)
 					printf("\n\n");
 			}

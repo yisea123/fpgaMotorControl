@@ -6,7 +6,7 @@ import socket
 import re
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect(('192.168.1.10', 1115))
+client_socket.connect(('192.168.1.10', 1111))
 client_socket.setblocking(0)
 client_socket.settimeout(0.1)
 
@@ -36,7 +36,6 @@ def setpriority(pid=None,priority=5):
 
 def command_motors(client_socket, pos):
 	data = 'b'+str(int(pos[0])) + ' ' + str(int(pos[1])) + ' ' + str(int(pos[2])) + ' ' + str (int(pos[3])) + ' ' + str (int(pos[4]))  + ' ' + str (int(pos[5])) + ' ' + str (int(pos[6])) + ' ' + str (int(pos[7])) + 'd'
-	#print('zeros: ' + str(pos) + ' data: ' + str(data))
 	client_socket.send(data.encode())
 	return data
 
