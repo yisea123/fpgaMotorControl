@@ -6,7 +6,7 @@ import socket
 import re
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect(('192.168.1.10', 1111))
+client_socket.connect(('192.168.1.10', 1115))
 client_socket.setblocking(0)
 client_socket.settimeout(0.1)
 
@@ -58,7 +58,7 @@ zero_flag = 1
 command_motors(client_socket, current_pos)
 
 print('setting priority')
-setpriority()
+#setpriority()
 print('starting loop')
 time.sleep(1)
 while (1): #time.time()-start_time<25):

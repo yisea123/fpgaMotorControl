@@ -35,15 +35,42 @@ def setpriority(pid=None,priority=5):
     win32process.SetPriorityClass(handle, priorityclasses[priority])
 
 def command_motors(client_socket, pos):
-	data = 'b'+str(int(pos[0])) + ' ' + str(int(pos[1])) + ' ' + str(int(pos[2])) + ' ' + str (int(pos[3])) + ' ' + str (int(pos[4]))  + ' ' + str (int(pos[5])) + ' ' + str (int(pos[6])) + ' ' + str (int(pos[7])) + 'd'
+	data = 'b'+str(int(pos[0])) + ' ' + str(int(pos[1])) + ' ' + str(int(pos[2])) + ' ' + str (int(pos[3])) + ' ' + str (int(pos[4]))  + ' ' + str (int(pos[5])) + ' ' + str (int(pos[6])) + ' ' + str (int(pos[7])) +  ' ' + str(int(pos[8])) + 'd'
 	client_socket.send(data.encode())
 	return data
 
 def incr_pos(position_increment, current_pos):
 	return current_pos + position_increment
 	
-current_pos = np.zeros((8,1))	
+
+
+
+
+	
+current_pos = np.zeros((9,1))
+
 command_motors(client_socket, current_pos)
+
+state = 0
+client_socket.setblocking(1)
+while(state==0):
+		switch_state = str(client_socket.recv(256))
+		test = re.split('\s', switch_state)
+		print("Current state is: ", test[1],"rate is: ", test[2])
+		state=int(test[1])
+		command_motors(client_socket, current_pos)
+		time.sleep(dt)
+
+time.sleep(5)
+x = np.ones(9)
+x[1:] = x[1:]*-5000
+print(x)
+command_motors(client_socket, x)
+time.sleep(5)
+
+print("Finishing zeroing")
+print("Current state is: ", test[1],"rate is: ", test[2])
+
 
 #setpriority()
 
@@ -51,10 +78,14 @@ start_time = time.time()
 
 j = 0
 while (1): #time.time()-start_time<25):
+
 	current_pos_1 = (np.sin((time.time()-start_time)*2)*1000)*(1)
 			
 	for i in range(len(current_pos)):
-		current_pos[i] = np.power(-1,(i+1))*current_pos_1
+		if i==0:
+			current_pos[i] = 1;
+		else:
+			current_pos[i] = np.power(-1,(i+1))*current_pos_1
 	command_motors(client_socket, current_pos)
 	time.sleep(dt)
 	
@@ -66,5 +97,5 @@ while (1): #time.time()-start_time<25):
 	j = j+1
 	
 for i in range(len(current_pos)):
-	current_pos = np.zeros(8)
+	current_pos = np.zeros(9)
 	command_motors(client_socket, current_pos)
