@@ -46,6 +46,7 @@ volatile unsigned long *h2p_lw_quad_reset_addr;//=NULL;
 volatile unsigned long *h2p_lw_limit_switch_addr;//=NULL;
 
 volatile unsigned long *h2p_lw_quad_addr[8];//=NULL;
+volatile unsigned long *h2p_lw_quad_addr_external[4];//=NULL
 volatile unsigned long *h2p_lw_pid_input_addr[8];//=NULL;
 volatile unsigned long *h2p_lw_pid_output_addr[8];//=NULL;
 volatile unsigned long *h2p_lw_pwm_values_addr[8];//=NULL;
@@ -72,13 +73,16 @@ int freezeMain = 0;
 uint8_t P=2;
 uint8_t I=0;
 uint8_t D=0;
+//uint8_t P = 1;
+//uint8_t I = 0;
+//uint8_t D = 0;
 
 int portnumber_global;
 int socket_error = 0;
 int system_state = 1;
 
 uint8_t switch_states[8];
-
+int32_t arm_encoders1=0,arm_encoders2=0,arm_encoders3=0,arm_encoders4=0;
 
 struct axis_motor{
 		double accGoal;
@@ -168,6 +172,12 @@ int main(int argc, char **argv)
 	h2p_lw_quad_addr[5]=virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + QUAD_PIO_5_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
 	h2p_lw_quad_addr[6]=virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + QUAD_PIO_6_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
 	h2p_lw_quad_addr[7]=virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + QUAD_PIO_7_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
+	
+	//External encoders for robot arm
+	h2p_lw_quad_addr_external[0] = virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + QUAD_PIO_8_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
+	h2p_lw_quad_addr_external[1] = virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + QUAD_PIO_9_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
+	h2p_lw_quad_addr_external[2] = virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + QUAD_PIO_10_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
+	h2p_lw_quad_addr_external[3] = virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + QUAD_PIO_11_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
 	
 	
 	h2p_lw_pid_input_addr[0] = virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + PID_ERROR_PIO_0_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
@@ -266,7 +276,14 @@ int main(int argc, char **argv)
 			//j = 0;
 			for(j = 0; j<8; j++){
 				int32_t output = alt_read_word(h2p_lw_quad_addr[j]); //& mask;
+
+				arm_encoders1 = alt_read_word(h2p_lw_quad_addr_external[0]);
+				arm_encoders2 = alt_read_word(h2p_lw_quad_addr_external[1]);
+				arm_encoders3 = alt_read_word(h2p_lw_quad_addr_external[2]);
+				arm_encoders4 = alt_read_word(h2p_lw_quad_addr_external[3]);
+
 				//int32_t nativeInt = createNativeInt(output, 30);
+
 				int32_t error = output - position_setpoints[j];
 				alt_write_word(h2p_lw_pid_input_addr[j], error);
 				int32_t check_error = (int32_t)(*h2p_lw_quad_addr[j]);// - position_setpoints[j];
@@ -306,9 +323,10 @@ int main(int argc, char **argv)
 				sprintf(string_write, "Axis %d, Position Setpoint %d, Current count %d, Error %d, Current PID output unsigned %d\n", j, position_setpoints[j], output, error, pid_output);
 				if(j==2)
 					//fprintf(fp, string_write);
-				if(myCounter%300 == 0){
+				if(myCounter%100 == 0){
 					printf("Axis: %d;Position Setpoint: %d; Error: %d; Current PID output, unsigned: %d; Cutoff output: %d\n", j, position_setpoints[j], error, pid_output, pid_output_cutoff);
 					printf("Heartbeat: %d; Error: %d; Error read: %d; PID out: %d\n", myCounter, error, check_error, pid_output);
+					printf("External encoder counts: %d, %d, %d, %d\n", arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4);
 					printf("%d,%d,%d,%d,%d,%d,%d,%d\n", switch_states[0],switch_states[1],switch_states[2],switch_states[3],switch_states[4],switch_states[5],switch_states[6],switch_states[7]);
 					printf("%d,%d,%d,%d,%d,%d,%d,%d\n", position_setpoints[0],position_setpoints[1],position_setpoints[2],position_setpoints[3],position_setpoints[4],position_setpoints[5],position_setpoints[6],position_setpoints[7]);
 					if(j==7)
@@ -375,7 +393,7 @@ setup socket communication
     char write_buffer[256];
     struct sockaddr_in serv_addr, cli_addr;
     int n, j, k, done=0;
-    int state, zero_rates[6] = {5,5,5,1,1,1},rate=0, switch_count=0,switch_temp=0;
+    int state=1, zero_rates[6] = {5,5,5,1,1,1},rate=0, switch_count=0,switch_temp=0;
 
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -427,6 +445,22 @@ setup socket communication
    			break;
    		}
 
+		/*--------------------------------
+		write external encoders to socket
+		--------------------------------*/
+		arm_encoders1 = alt_read_word(h2p_lw_quad_addr_external[0]);
+		arm_encoders2 = alt_read_word(h2p_lw_quad_addr_external[1]);
+		arm_encoders3 = alt_read_word(h2p_lw_quad_addr_external[2]);
+		arm_encoders4 = alt_read_word(h2p_lw_quad_addr_external[3]);
+   		sprintf(write_buffer,"nn %d %d %d %d qq",arm_encoders1,arm_encoders2,arm_encoders3,arm_encoders4);
+   		if (state==1){
+			n = write(newsockfd,write_buffer,256);
+			if (n < 0){
+    			error("ERROR writing to socket");
+    		break;
+    		}
+   		}
+
    		/*--------------------------------
 		write switch state to socket
 		--------------------------------*/
@@ -440,7 +474,6 @@ setup socket communication
     	/*--------------------------------
 		parse received message from socket
 		--------------------------------*/
-
     	for(k = 0; k<9; k++){
     		if(k==0){
 				pch = strtok (buffer,"bd ");
@@ -462,7 +495,6 @@ setup socket communication
 				}
 			}
 		}
-
 
 
 		/*--------------------------------
@@ -508,7 +540,14 @@ setup socket communication
 
 			if(rate==5){
 				done=1;
-				sprintf(write_buffer,"nn %d qq",done);
+				rate=5;
+
+				//for(k=0; k<8; k++){
+					//want to move back from limit switches
+				//	position_setpoints[k] = position_setpoints[k];
+				//}
+
+				sprintf(write_buffer,"nn %d %d qq",done,rate);
 				n = write(newsockfd,write_buffer,256);
 				if (n < 0){
     				error("ERROR writing to socket");
@@ -518,7 +557,7 @@ setup socket communication
     			printf("**Done zeroing**\n");
 
 
-    			freezeMain = 1;
+    			//freezeMain = 1;
     			//set PWM values to zero
 				for(j=0;j<8;j++){
 					alt_write_word(h2p_lw_pwm_values_addr[j], 255);
@@ -535,8 +574,6 @@ setup socket communication
 				freezeMain = 0;
 			}
 		}
-
-
 	}
 
 
@@ -581,4 +618,3 @@ void zero_motor_axis(void){
 		}
 	}
 }
-

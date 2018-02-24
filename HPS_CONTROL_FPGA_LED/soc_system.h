@@ -60,7 +60,7 @@
 #define FPGA_ONLY_MASTER_SYSID_QSYS_SPAN 8
 #define FPGA_ONLY_MASTER_SYSID_QSYS_END 0x10007
 #define FPGA_ONLY_MASTER_SYSID_QSYS_ID 2899645186
-#define FPGA_ONLY_MASTER_SYSID_QSYS_TIMESTAMP 1505337062
+#define FPGA_ONLY_MASTER_SYSID_QSYS_TIMESTAMP 1518132715
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'
@@ -427,6 +427,106 @@
 #define FPGA_ONLY_MASTER_QUAD_PIO_7_HAS_TRI 0
 #define FPGA_ONLY_MASTER_QUAD_PIO_7_IRQ_TYPE NONE
 #define FPGA_ONLY_MASTER_QUAD_PIO_7_RESET_VALUE 0
+
+/*
+ * Macros for device 'quad_pio_8', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'fpga_only_master'.
+ * The macros are prefixed with 'FPGA_ONLY_MASTER_QUAD_PIO_8_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define FPGA_ONLY_MASTER_QUAD_PIO_8_COMPONENT_TYPE altera_avalon_pio
+#define FPGA_ONLY_MASTER_QUAD_PIO_8_COMPONENT_NAME quad_pio_8
+#define FPGA_ONLY_MASTER_QUAD_PIO_8_BASE 0x21060
+#define FPGA_ONLY_MASTER_QUAD_PIO_8_SPAN 16
+#define FPGA_ONLY_MASTER_QUAD_PIO_8_END 0x2106f
+#define FPGA_ONLY_MASTER_QUAD_PIO_8_BIT_CLEARING_EDGE_REGISTER 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_8_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_8_CAPTURE 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_8_DATA_WIDTH 32
+#define FPGA_ONLY_MASTER_QUAD_PIO_8_DO_TEST_BENCH_WIRING 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_8_DRIVEN_SIM_VALUE 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_8_EDGE_TYPE NONE
+#define FPGA_ONLY_MASTER_QUAD_PIO_8_FREQ 50000000
+#define FPGA_ONLY_MASTER_QUAD_PIO_8_HAS_IN 1
+#define FPGA_ONLY_MASTER_QUAD_PIO_8_HAS_OUT 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_8_HAS_TRI 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_8_IRQ_TYPE NONE
+#define FPGA_ONLY_MASTER_QUAD_PIO_8_RESET_VALUE 0
+
+/*
+ * Macros for device 'quad_pio_9', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'fpga_only_master'.
+ * The macros are prefixed with 'FPGA_ONLY_MASTER_QUAD_PIO_9_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define FPGA_ONLY_MASTER_QUAD_PIO_9_COMPONENT_TYPE altera_avalon_pio
+#define FPGA_ONLY_MASTER_QUAD_PIO_9_COMPONENT_NAME quad_pio_9
+#define FPGA_ONLY_MASTER_QUAD_PIO_9_BASE 0x21070
+#define FPGA_ONLY_MASTER_QUAD_PIO_9_SPAN 16
+#define FPGA_ONLY_MASTER_QUAD_PIO_9_END 0x2107f
+#define FPGA_ONLY_MASTER_QUAD_PIO_9_BIT_CLEARING_EDGE_REGISTER 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_9_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_9_CAPTURE 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_9_DATA_WIDTH 32
+#define FPGA_ONLY_MASTER_QUAD_PIO_9_DO_TEST_BENCH_WIRING 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_9_DRIVEN_SIM_VALUE 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_9_EDGE_TYPE NONE
+#define FPGA_ONLY_MASTER_QUAD_PIO_9_FREQ 50000000
+#define FPGA_ONLY_MASTER_QUAD_PIO_9_HAS_IN 1
+#define FPGA_ONLY_MASTER_QUAD_PIO_9_HAS_OUT 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_9_HAS_TRI 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_9_IRQ_TYPE NONE
+#define FPGA_ONLY_MASTER_QUAD_PIO_9_RESET_VALUE 0
+
+/*
+ * Macros for device 'quad_pio_10', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'fpga_only_master'.
+ * The macros are prefixed with 'FPGA_ONLY_MASTER_QUAD_PIO_10_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define FPGA_ONLY_MASTER_QUAD_PIO_10_COMPONENT_TYPE altera_avalon_pio
+#define FPGA_ONLY_MASTER_QUAD_PIO_10_COMPONENT_NAME quad_pio_10
+#define FPGA_ONLY_MASTER_QUAD_PIO_10_BASE 0x21080
+#define FPGA_ONLY_MASTER_QUAD_PIO_10_SPAN 16
+#define FPGA_ONLY_MASTER_QUAD_PIO_10_END 0x2108f
+#define FPGA_ONLY_MASTER_QUAD_PIO_10_BIT_CLEARING_EDGE_REGISTER 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_10_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_10_CAPTURE 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_10_DATA_WIDTH 32
+#define FPGA_ONLY_MASTER_QUAD_PIO_10_DO_TEST_BENCH_WIRING 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_10_DRIVEN_SIM_VALUE 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_10_EDGE_TYPE NONE
+#define FPGA_ONLY_MASTER_QUAD_PIO_10_FREQ 50000000
+#define FPGA_ONLY_MASTER_QUAD_PIO_10_HAS_IN 1
+#define FPGA_ONLY_MASTER_QUAD_PIO_10_HAS_OUT 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_10_HAS_TRI 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_10_IRQ_TYPE NONE
+#define FPGA_ONLY_MASTER_QUAD_PIO_10_RESET_VALUE 0
+
+/*
+ * Macros for device 'quad_pio_11', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'fpga_only_master'.
+ * The macros are prefixed with 'FPGA_ONLY_MASTER_QUAD_PIO_11_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define FPGA_ONLY_MASTER_QUAD_PIO_11_COMPONENT_TYPE altera_avalon_pio
+#define FPGA_ONLY_MASTER_QUAD_PIO_11_COMPONENT_NAME quad_pio_11
+#define FPGA_ONLY_MASTER_QUAD_PIO_11_BASE 0x21090
+#define FPGA_ONLY_MASTER_QUAD_PIO_11_SPAN 16
+#define FPGA_ONLY_MASTER_QUAD_PIO_11_END 0x2109f
+#define FPGA_ONLY_MASTER_QUAD_PIO_11_BIT_CLEARING_EDGE_REGISTER 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_11_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_11_CAPTURE 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_11_DATA_WIDTH 32
+#define FPGA_ONLY_MASTER_QUAD_PIO_11_DO_TEST_BENCH_WIRING 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_11_DRIVEN_SIM_VALUE 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_11_EDGE_TYPE NONE
+#define FPGA_ONLY_MASTER_QUAD_PIO_11_FREQ 50000000
+#define FPGA_ONLY_MASTER_QUAD_PIO_11_HAS_IN 1
+#define FPGA_ONLY_MASTER_QUAD_PIO_11_HAS_OUT 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_11_HAS_TRI 0
+#define FPGA_ONLY_MASTER_QUAD_PIO_11_IRQ_TYPE NONE
+#define FPGA_ONLY_MASTER_QUAD_PIO_11_RESET_VALUE 0
 
 /*
  * Macros for device 'pid_error_pio_0', class 'altera_avalon_pio'
@@ -1136,7 +1236,7 @@
 #define HPS_0_SYSID_QSYS_SPAN 8
 #define HPS_0_SYSID_QSYS_END 0x10007
 #define HPS_0_SYSID_QSYS_ID 2899645186
-#define HPS_0_SYSID_QSYS_TIMESTAMP 1505337062
+#define HPS_0_SYSID_QSYS_TIMESTAMP 1518132715
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'
@@ -1506,6 +1606,106 @@
 #define HPS_0_QUAD_PIO_7_HAS_TRI 0
 #define HPS_0_QUAD_PIO_7_IRQ_TYPE NONE
 #define HPS_0_QUAD_PIO_7_RESET_VALUE 0
+
+/*
+ * Macros for device 'quad_pio_8', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'hps_0'.
+ * The macros are prefixed with 'HPS_0_QUAD_PIO_8_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_QUAD_PIO_8_COMPONENT_TYPE altera_avalon_pio
+#define HPS_0_QUAD_PIO_8_COMPONENT_NAME quad_pio_8
+#define HPS_0_QUAD_PIO_8_BASE 0x21060
+#define HPS_0_QUAD_PIO_8_SPAN 16
+#define HPS_0_QUAD_PIO_8_END 0x2106f
+#define HPS_0_QUAD_PIO_8_BIT_CLEARING_EDGE_REGISTER 0
+#define HPS_0_QUAD_PIO_8_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define HPS_0_QUAD_PIO_8_CAPTURE 0
+#define HPS_0_QUAD_PIO_8_DATA_WIDTH 32
+#define HPS_0_QUAD_PIO_8_DO_TEST_BENCH_WIRING 0
+#define HPS_0_QUAD_PIO_8_DRIVEN_SIM_VALUE 0
+#define HPS_0_QUAD_PIO_8_EDGE_TYPE NONE
+#define HPS_0_QUAD_PIO_8_FREQ 50000000
+#define HPS_0_QUAD_PIO_8_HAS_IN 1
+#define HPS_0_QUAD_PIO_8_HAS_OUT 0
+#define HPS_0_QUAD_PIO_8_HAS_TRI 0
+#define HPS_0_QUAD_PIO_8_IRQ_TYPE NONE
+#define HPS_0_QUAD_PIO_8_RESET_VALUE 0
+
+/*
+ * Macros for device 'quad_pio_9', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'hps_0'.
+ * The macros are prefixed with 'HPS_0_QUAD_PIO_9_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_QUAD_PIO_9_COMPONENT_TYPE altera_avalon_pio
+#define HPS_0_QUAD_PIO_9_COMPONENT_NAME quad_pio_9
+#define HPS_0_QUAD_PIO_9_BASE 0x21070
+#define HPS_0_QUAD_PIO_9_SPAN 16
+#define HPS_0_QUAD_PIO_9_END 0x2107f
+#define HPS_0_QUAD_PIO_9_BIT_CLEARING_EDGE_REGISTER 0
+#define HPS_0_QUAD_PIO_9_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define HPS_0_QUAD_PIO_9_CAPTURE 0
+#define HPS_0_QUAD_PIO_9_DATA_WIDTH 32
+#define HPS_0_QUAD_PIO_9_DO_TEST_BENCH_WIRING 0
+#define HPS_0_QUAD_PIO_9_DRIVEN_SIM_VALUE 0
+#define HPS_0_QUAD_PIO_9_EDGE_TYPE NONE
+#define HPS_0_QUAD_PIO_9_FREQ 50000000
+#define HPS_0_QUAD_PIO_9_HAS_IN 1
+#define HPS_0_QUAD_PIO_9_HAS_OUT 0
+#define HPS_0_QUAD_PIO_9_HAS_TRI 0
+#define HPS_0_QUAD_PIO_9_IRQ_TYPE NONE
+#define HPS_0_QUAD_PIO_9_RESET_VALUE 0
+
+/*
+ * Macros for device 'quad_pio_10', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'hps_0'.
+ * The macros are prefixed with 'HPS_0_QUAD_PIO_10_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_QUAD_PIO_10_COMPONENT_TYPE altera_avalon_pio
+#define HPS_0_QUAD_PIO_10_COMPONENT_NAME quad_pio_10
+#define HPS_0_QUAD_PIO_10_BASE 0x21080
+#define HPS_0_QUAD_PIO_10_SPAN 16
+#define HPS_0_QUAD_PIO_10_END 0x2108f
+#define HPS_0_QUAD_PIO_10_BIT_CLEARING_EDGE_REGISTER 0
+#define HPS_0_QUAD_PIO_10_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define HPS_0_QUAD_PIO_10_CAPTURE 0
+#define HPS_0_QUAD_PIO_10_DATA_WIDTH 32
+#define HPS_0_QUAD_PIO_10_DO_TEST_BENCH_WIRING 0
+#define HPS_0_QUAD_PIO_10_DRIVEN_SIM_VALUE 0
+#define HPS_0_QUAD_PIO_10_EDGE_TYPE NONE
+#define HPS_0_QUAD_PIO_10_FREQ 50000000
+#define HPS_0_QUAD_PIO_10_HAS_IN 1
+#define HPS_0_QUAD_PIO_10_HAS_OUT 0
+#define HPS_0_QUAD_PIO_10_HAS_TRI 0
+#define HPS_0_QUAD_PIO_10_IRQ_TYPE NONE
+#define HPS_0_QUAD_PIO_10_RESET_VALUE 0
+
+/*
+ * Macros for device 'quad_pio_11', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'hps_0'.
+ * The macros are prefixed with 'HPS_0_QUAD_PIO_11_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_QUAD_PIO_11_COMPONENT_TYPE altera_avalon_pio
+#define HPS_0_QUAD_PIO_11_COMPONENT_NAME quad_pio_11
+#define HPS_0_QUAD_PIO_11_BASE 0x21090
+#define HPS_0_QUAD_PIO_11_SPAN 16
+#define HPS_0_QUAD_PIO_11_END 0x2109f
+#define HPS_0_QUAD_PIO_11_BIT_CLEARING_EDGE_REGISTER 0
+#define HPS_0_QUAD_PIO_11_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define HPS_0_QUAD_PIO_11_CAPTURE 0
+#define HPS_0_QUAD_PIO_11_DATA_WIDTH 32
+#define HPS_0_QUAD_PIO_11_DO_TEST_BENCH_WIRING 0
+#define HPS_0_QUAD_PIO_11_DRIVEN_SIM_VALUE 0
+#define HPS_0_QUAD_PIO_11_EDGE_TYPE NONE
+#define HPS_0_QUAD_PIO_11_FREQ 50000000
+#define HPS_0_QUAD_PIO_11_HAS_IN 1
+#define HPS_0_QUAD_PIO_11_HAS_OUT 0
+#define HPS_0_QUAD_PIO_11_HAS_TRI 0
+#define HPS_0_QUAD_PIO_11_IRQ_TYPE NONE
+#define HPS_0_QUAD_PIO_11_RESET_VALUE 0
 
 /*
  * Macros for device 'pid_error_pio_0', class 'altera_avalon_pio'
@@ -2221,7 +2421,7 @@
 #define HPS_0_BRIDGES_SYSID_QSYS_SPAN 8
 #define HPS_0_BRIDGES_SYSID_QSYS_END 0x10007
 #define HPS_0_BRIDGES_SYSID_QSYS_ID 2899645186
-#define HPS_0_BRIDGES_SYSID_QSYS_TIMESTAMP 1505337062
+#define HPS_0_BRIDGES_SYSID_QSYS_TIMESTAMP 1518132715
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'
@@ -2588,6 +2788,106 @@
 #define HPS_0_BRIDGES_QUAD_PIO_7_HAS_TRI 0
 #define HPS_0_BRIDGES_QUAD_PIO_7_IRQ_TYPE NONE
 #define HPS_0_BRIDGES_QUAD_PIO_7_RESET_VALUE 0
+
+/*
+ * Macros for device 'quad_pio_8', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'hps_0_bridges'.
+ * The macros are prefixed with 'HPS_0_BRIDGES_QUAD_PIO_8_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_BRIDGES_QUAD_PIO_8_COMPONENT_TYPE altera_avalon_pio
+#define HPS_0_BRIDGES_QUAD_PIO_8_COMPONENT_NAME quad_pio_8
+#define HPS_0_BRIDGES_QUAD_PIO_8_BASE 0x21060
+#define HPS_0_BRIDGES_QUAD_PIO_8_SPAN 16
+#define HPS_0_BRIDGES_QUAD_PIO_8_END 0x2106f
+#define HPS_0_BRIDGES_QUAD_PIO_8_BIT_CLEARING_EDGE_REGISTER 0
+#define HPS_0_BRIDGES_QUAD_PIO_8_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define HPS_0_BRIDGES_QUAD_PIO_8_CAPTURE 0
+#define HPS_0_BRIDGES_QUAD_PIO_8_DATA_WIDTH 32
+#define HPS_0_BRIDGES_QUAD_PIO_8_DO_TEST_BENCH_WIRING 0
+#define HPS_0_BRIDGES_QUAD_PIO_8_DRIVEN_SIM_VALUE 0
+#define HPS_0_BRIDGES_QUAD_PIO_8_EDGE_TYPE NONE
+#define HPS_0_BRIDGES_QUAD_PIO_8_FREQ 50000000
+#define HPS_0_BRIDGES_QUAD_PIO_8_HAS_IN 1
+#define HPS_0_BRIDGES_QUAD_PIO_8_HAS_OUT 0
+#define HPS_0_BRIDGES_QUAD_PIO_8_HAS_TRI 0
+#define HPS_0_BRIDGES_QUAD_PIO_8_IRQ_TYPE NONE
+#define HPS_0_BRIDGES_QUAD_PIO_8_RESET_VALUE 0
+
+/*
+ * Macros for device 'quad_pio_9', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'hps_0_bridges'.
+ * The macros are prefixed with 'HPS_0_BRIDGES_QUAD_PIO_9_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_BRIDGES_QUAD_PIO_9_COMPONENT_TYPE altera_avalon_pio
+#define HPS_0_BRIDGES_QUAD_PIO_9_COMPONENT_NAME quad_pio_9
+#define HPS_0_BRIDGES_QUAD_PIO_9_BASE 0x21070
+#define HPS_0_BRIDGES_QUAD_PIO_9_SPAN 16
+#define HPS_0_BRIDGES_QUAD_PIO_9_END 0x2107f
+#define HPS_0_BRIDGES_QUAD_PIO_9_BIT_CLEARING_EDGE_REGISTER 0
+#define HPS_0_BRIDGES_QUAD_PIO_9_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define HPS_0_BRIDGES_QUAD_PIO_9_CAPTURE 0
+#define HPS_0_BRIDGES_QUAD_PIO_9_DATA_WIDTH 32
+#define HPS_0_BRIDGES_QUAD_PIO_9_DO_TEST_BENCH_WIRING 0
+#define HPS_0_BRIDGES_QUAD_PIO_9_DRIVEN_SIM_VALUE 0
+#define HPS_0_BRIDGES_QUAD_PIO_9_EDGE_TYPE NONE
+#define HPS_0_BRIDGES_QUAD_PIO_9_FREQ 50000000
+#define HPS_0_BRIDGES_QUAD_PIO_9_HAS_IN 1
+#define HPS_0_BRIDGES_QUAD_PIO_9_HAS_OUT 0
+#define HPS_0_BRIDGES_QUAD_PIO_9_HAS_TRI 0
+#define HPS_0_BRIDGES_QUAD_PIO_9_IRQ_TYPE NONE
+#define HPS_0_BRIDGES_QUAD_PIO_9_RESET_VALUE 0
+
+/*
+ * Macros for device 'quad_pio_10', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'hps_0_bridges'.
+ * The macros are prefixed with 'HPS_0_BRIDGES_QUAD_PIO_10_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_BRIDGES_QUAD_PIO_10_COMPONENT_TYPE altera_avalon_pio
+#define HPS_0_BRIDGES_QUAD_PIO_10_COMPONENT_NAME quad_pio_10
+#define HPS_0_BRIDGES_QUAD_PIO_10_BASE 0x21080
+#define HPS_0_BRIDGES_QUAD_PIO_10_SPAN 16
+#define HPS_0_BRIDGES_QUAD_PIO_10_END 0x2108f
+#define HPS_0_BRIDGES_QUAD_PIO_10_BIT_CLEARING_EDGE_REGISTER 0
+#define HPS_0_BRIDGES_QUAD_PIO_10_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define HPS_0_BRIDGES_QUAD_PIO_10_CAPTURE 0
+#define HPS_0_BRIDGES_QUAD_PIO_10_DATA_WIDTH 32
+#define HPS_0_BRIDGES_QUAD_PIO_10_DO_TEST_BENCH_WIRING 0
+#define HPS_0_BRIDGES_QUAD_PIO_10_DRIVEN_SIM_VALUE 0
+#define HPS_0_BRIDGES_QUAD_PIO_10_EDGE_TYPE NONE
+#define HPS_0_BRIDGES_QUAD_PIO_10_FREQ 50000000
+#define HPS_0_BRIDGES_QUAD_PIO_10_HAS_IN 1
+#define HPS_0_BRIDGES_QUAD_PIO_10_HAS_OUT 0
+#define HPS_0_BRIDGES_QUAD_PIO_10_HAS_TRI 0
+#define HPS_0_BRIDGES_QUAD_PIO_10_IRQ_TYPE NONE
+#define HPS_0_BRIDGES_QUAD_PIO_10_RESET_VALUE 0
+
+/*
+ * Macros for device 'quad_pio_11', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'hps_0_bridges'.
+ * The macros are prefixed with 'HPS_0_BRIDGES_QUAD_PIO_11_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_BRIDGES_QUAD_PIO_11_COMPONENT_TYPE altera_avalon_pio
+#define HPS_0_BRIDGES_QUAD_PIO_11_COMPONENT_NAME quad_pio_11
+#define HPS_0_BRIDGES_QUAD_PIO_11_BASE 0x21090
+#define HPS_0_BRIDGES_QUAD_PIO_11_SPAN 16
+#define HPS_0_BRIDGES_QUAD_PIO_11_END 0x2109f
+#define HPS_0_BRIDGES_QUAD_PIO_11_BIT_CLEARING_EDGE_REGISTER 0
+#define HPS_0_BRIDGES_QUAD_PIO_11_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define HPS_0_BRIDGES_QUAD_PIO_11_CAPTURE 0
+#define HPS_0_BRIDGES_QUAD_PIO_11_DATA_WIDTH 32
+#define HPS_0_BRIDGES_QUAD_PIO_11_DO_TEST_BENCH_WIRING 0
+#define HPS_0_BRIDGES_QUAD_PIO_11_DRIVEN_SIM_VALUE 0
+#define HPS_0_BRIDGES_QUAD_PIO_11_EDGE_TYPE NONE
+#define HPS_0_BRIDGES_QUAD_PIO_11_FREQ 50000000
+#define HPS_0_BRIDGES_QUAD_PIO_11_HAS_IN 1
+#define HPS_0_BRIDGES_QUAD_PIO_11_HAS_OUT 0
+#define HPS_0_BRIDGES_QUAD_PIO_11_HAS_TRI 0
+#define HPS_0_BRIDGES_QUAD_PIO_11_IRQ_TYPE NONE
+#define HPS_0_BRIDGES_QUAD_PIO_11_RESET_VALUE 0
 
 /*
  * Macros for device 'pid_error_pio_0', class 'altera_avalon_pio'
@@ -3739,7 +4039,7 @@
 #define HPS_0_ARM_A9_0_SYSID_QSYS_SPAN 8
 #define HPS_0_ARM_A9_0_SYSID_QSYS_END 0xff210007
 #define HPS_0_ARM_A9_0_SYSID_QSYS_ID 2899645186
-#define HPS_0_ARM_A9_0_SYSID_QSYS_TIMESTAMP 1505337062
+#define HPS_0_ARM_A9_0_SYSID_QSYS_TIMESTAMP 1518132715
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'
@@ -4106,6 +4406,106 @@
 #define HPS_0_ARM_A9_0_QUAD_PIO_7_HAS_TRI 0
 #define HPS_0_ARM_A9_0_QUAD_PIO_7_IRQ_TYPE NONE
 #define HPS_0_ARM_A9_0_QUAD_PIO_7_RESET_VALUE 0
+
+/*
+ * Macros for device 'quad_pio_8', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'hps_0_arm_a9_0'.
+ * The macros are prefixed with 'HPS_0_ARM_A9_0_QUAD_PIO_8_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_ARM_A9_0_QUAD_PIO_8_COMPONENT_TYPE altera_avalon_pio
+#define HPS_0_ARM_A9_0_QUAD_PIO_8_COMPONENT_NAME quad_pio_8
+#define HPS_0_ARM_A9_0_QUAD_PIO_8_BASE 0xff221060
+#define HPS_0_ARM_A9_0_QUAD_PIO_8_SPAN 16
+#define HPS_0_ARM_A9_0_QUAD_PIO_8_END 0xff22106f
+#define HPS_0_ARM_A9_0_QUAD_PIO_8_BIT_CLEARING_EDGE_REGISTER 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_8_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_8_CAPTURE 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_8_DATA_WIDTH 32
+#define HPS_0_ARM_A9_0_QUAD_PIO_8_DO_TEST_BENCH_WIRING 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_8_DRIVEN_SIM_VALUE 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_8_EDGE_TYPE NONE
+#define HPS_0_ARM_A9_0_QUAD_PIO_8_FREQ 50000000
+#define HPS_0_ARM_A9_0_QUAD_PIO_8_HAS_IN 1
+#define HPS_0_ARM_A9_0_QUAD_PIO_8_HAS_OUT 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_8_HAS_TRI 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_8_IRQ_TYPE NONE
+#define HPS_0_ARM_A9_0_QUAD_PIO_8_RESET_VALUE 0
+
+/*
+ * Macros for device 'quad_pio_9', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'hps_0_arm_a9_0'.
+ * The macros are prefixed with 'HPS_0_ARM_A9_0_QUAD_PIO_9_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_ARM_A9_0_QUAD_PIO_9_COMPONENT_TYPE altera_avalon_pio
+#define HPS_0_ARM_A9_0_QUAD_PIO_9_COMPONENT_NAME quad_pio_9
+#define HPS_0_ARM_A9_0_QUAD_PIO_9_BASE 0xff221070
+#define HPS_0_ARM_A9_0_QUAD_PIO_9_SPAN 16
+#define HPS_0_ARM_A9_0_QUAD_PIO_9_END 0xff22107f
+#define HPS_0_ARM_A9_0_QUAD_PIO_9_BIT_CLEARING_EDGE_REGISTER 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_9_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_9_CAPTURE 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_9_DATA_WIDTH 32
+#define HPS_0_ARM_A9_0_QUAD_PIO_9_DO_TEST_BENCH_WIRING 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_9_DRIVEN_SIM_VALUE 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_9_EDGE_TYPE NONE
+#define HPS_0_ARM_A9_0_QUAD_PIO_9_FREQ 50000000
+#define HPS_0_ARM_A9_0_QUAD_PIO_9_HAS_IN 1
+#define HPS_0_ARM_A9_0_QUAD_PIO_9_HAS_OUT 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_9_HAS_TRI 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_9_IRQ_TYPE NONE
+#define HPS_0_ARM_A9_0_QUAD_PIO_9_RESET_VALUE 0
+
+/*
+ * Macros for device 'quad_pio_10', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'hps_0_arm_a9_0'.
+ * The macros are prefixed with 'HPS_0_ARM_A9_0_QUAD_PIO_10_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_ARM_A9_0_QUAD_PIO_10_COMPONENT_TYPE altera_avalon_pio
+#define HPS_0_ARM_A9_0_QUAD_PIO_10_COMPONENT_NAME quad_pio_10
+#define HPS_0_ARM_A9_0_QUAD_PIO_10_BASE 0xff221080
+#define HPS_0_ARM_A9_0_QUAD_PIO_10_SPAN 16
+#define HPS_0_ARM_A9_0_QUAD_PIO_10_END 0xff22108f
+#define HPS_0_ARM_A9_0_QUAD_PIO_10_BIT_CLEARING_EDGE_REGISTER 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_10_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_10_CAPTURE 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_10_DATA_WIDTH 32
+#define HPS_0_ARM_A9_0_QUAD_PIO_10_DO_TEST_BENCH_WIRING 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_10_DRIVEN_SIM_VALUE 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_10_EDGE_TYPE NONE
+#define HPS_0_ARM_A9_0_QUAD_PIO_10_FREQ 50000000
+#define HPS_0_ARM_A9_0_QUAD_PIO_10_HAS_IN 1
+#define HPS_0_ARM_A9_0_QUAD_PIO_10_HAS_OUT 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_10_HAS_TRI 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_10_IRQ_TYPE NONE
+#define HPS_0_ARM_A9_0_QUAD_PIO_10_RESET_VALUE 0
+
+/*
+ * Macros for device 'quad_pio_11', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'hps_0_arm_a9_0'.
+ * The macros are prefixed with 'HPS_0_ARM_A9_0_QUAD_PIO_11_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_ARM_A9_0_QUAD_PIO_11_COMPONENT_TYPE altera_avalon_pio
+#define HPS_0_ARM_A9_0_QUAD_PIO_11_COMPONENT_NAME quad_pio_11
+#define HPS_0_ARM_A9_0_QUAD_PIO_11_BASE 0xff221090
+#define HPS_0_ARM_A9_0_QUAD_PIO_11_SPAN 16
+#define HPS_0_ARM_A9_0_QUAD_PIO_11_END 0xff22109f
+#define HPS_0_ARM_A9_0_QUAD_PIO_11_BIT_CLEARING_EDGE_REGISTER 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_11_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_11_CAPTURE 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_11_DATA_WIDTH 32
+#define HPS_0_ARM_A9_0_QUAD_PIO_11_DO_TEST_BENCH_WIRING 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_11_DRIVEN_SIM_VALUE 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_11_EDGE_TYPE NONE
+#define HPS_0_ARM_A9_0_QUAD_PIO_11_FREQ 50000000
+#define HPS_0_ARM_A9_0_QUAD_PIO_11_HAS_IN 1
+#define HPS_0_ARM_A9_0_QUAD_PIO_11_HAS_OUT 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_11_HAS_TRI 0
+#define HPS_0_ARM_A9_0_QUAD_PIO_11_IRQ_TYPE NONE
+#define HPS_0_ARM_A9_0_QUAD_PIO_11_RESET_VALUE 0
 
 /*
  * Macros for device 'pid_error_pio_0', class 'altera_avalon_pio'
@@ -5293,7 +5693,7 @@
 #define HPS_0_ARM_A9_1_SYSID_QSYS_SPAN 8
 #define HPS_0_ARM_A9_1_SYSID_QSYS_END 0xff210007
 #define HPS_0_ARM_A9_1_SYSID_QSYS_ID 2899645186
-#define HPS_0_ARM_A9_1_SYSID_QSYS_TIMESTAMP 1505337062
+#define HPS_0_ARM_A9_1_SYSID_QSYS_TIMESTAMP 1518132715
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'
@@ -5660,6 +6060,106 @@
 #define HPS_0_ARM_A9_1_QUAD_PIO_7_HAS_TRI 0
 #define HPS_0_ARM_A9_1_QUAD_PIO_7_IRQ_TYPE NONE
 #define HPS_0_ARM_A9_1_QUAD_PIO_7_RESET_VALUE 0
+
+/*
+ * Macros for device 'quad_pio_8', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'hps_0_arm_a9_1'.
+ * The macros are prefixed with 'HPS_0_ARM_A9_1_QUAD_PIO_8_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_ARM_A9_1_QUAD_PIO_8_COMPONENT_TYPE altera_avalon_pio
+#define HPS_0_ARM_A9_1_QUAD_PIO_8_COMPONENT_NAME quad_pio_8
+#define HPS_0_ARM_A9_1_QUAD_PIO_8_BASE 0xff221060
+#define HPS_0_ARM_A9_1_QUAD_PIO_8_SPAN 16
+#define HPS_0_ARM_A9_1_QUAD_PIO_8_END 0xff22106f
+#define HPS_0_ARM_A9_1_QUAD_PIO_8_BIT_CLEARING_EDGE_REGISTER 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_8_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_8_CAPTURE 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_8_DATA_WIDTH 32
+#define HPS_0_ARM_A9_1_QUAD_PIO_8_DO_TEST_BENCH_WIRING 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_8_DRIVEN_SIM_VALUE 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_8_EDGE_TYPE NONE
+#define HPS_0_ARM_A9_1_QUAD_PIO_8_FREQ 50000000
+#define HPS_0_ARM_A9_1_QUAD_PIO_8_HAS_IN 1
+#define HPS_0_ARM_A9_1_QUAD_PIO_8_HAS_OUT 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_8_HAS_TRI 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_8_IRQ_TYPE NONE
+#define HPS_0_ARM_A9_1_QUAD_PIO_8_RESET_VALUE 0
+
+/*
+ * Macros for device 'quad_pio_9', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'hps_0_arm_a9_1'.
+ * The macros are prefixed with 'HPS_0_ARM_A9_1_QUAD_PIO_9_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_ARM_A9_1_QUAD_PIO_9_COMPONENT_TYPE altera_avalon_pio
+#define HPS_0_ARM_A9_1_QUAD_PIO_9_COMPONENT_NAME quad_pio_9
+#define HPS_0_ARM_A9_1_QUAD_PIO_9_BASE 0xff221070
+#define HPS_0_ARM_A9_1_QUAD_PIO_9_SPAN 16
+#define HPS_0_ARM_A9_1_QUAD_PIO_9_END 0xff22107f
+#define HPS_0_ARM_A9_1_QUAD_PIO_9_BIT_CLEARING_EDGE_REGISTER 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_9_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_9_CAPTURE 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_9_DATA_WIDTH 32
+#define HPS_0_ARM_A9_1_QUAD_PIO_9_DO_TEST_BENCH_WIRING 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_9_DRIVEN_SIM_VALUE 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_9_EDGE_TYPE NONE
+#define HPS_0_ARM_A9_1_QUAD_PIO_9_FREQ 50000000
+#define HPS_0_ARM_A9_1_QUAD_PIO_9_HAS_IN 1
+#define HPS_0_ARM_A9_1_QUAD_PIO_9_HAS_OUT 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_9_HAS_TRI 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_9_IRQ_TYPE NONE
+#define HPS_0_ARM_A9_1_QUAD_PIO_9_RESET_VALUE 0
+
+/*
+ * Macros for device 'quad_pio_10', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'hps_0_arm_a9_1'.
+ * The macros are prefixed with 'HPS_0_ARM_A9_1_QUAD_PIO_10_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_ARM_A9_1_QUAD_PIO_10_COMPONENT_TYPE altera_avalon_pio
+#define HPS_0_ARM_A9_1_QUAD_PIO_10_COMPONENT_NAME quad_pio_10
+#define HPS_0_ARM_A9_1_QUAD_PIO_10_BASE 0xff221080
+#define HPS_0_ARM_A9_1_QUAD_PIO_10_SPAN 16
+#define HPS_0_ARM_A9_1_QUAD_PIO_10_END 0xff22108f
+#define HPS_0_ARM_A9_1_QUAD_PIO_10_BIT_CLEARING_EDGE_REGISTER 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_10_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_10_CAPTURE 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_10_DATA_WIDTH 32
+#define HPS_0_ARM_A9_1_QUAD_PIO_10_DO_TEST_BENCH_WIRING 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_10_DRIVEN_SIM_VALUE 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_10_EDGE_TYPE NONE
+#define HPS_0_ARM_A9_1_QUAD_PIO_10_FREQ 50000000
+#define HPS_0_ARM_A9_1_QUAD_PIO_10_HAS_IN 1
+#define HPS_0_ARM_A9_1_QUAD_PIO_10_HAS_OUT 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_10_HAS_TRI 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_10_IRQ_TYPE NONE
+#define HPS_0_ARM_A9_1_QUAD_PIO_10_RESET_VALUE 0
+
+/*
+ * Macros for device 'quad_pio_11', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'hps_0_arm_a9_1'.
+ * The macros are prefixed with 'HPS_0_ARM_A9_1_QUAD_PIO_11_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_ARM_A9_1_QUAD_PIO_11_COMPONENT_TYPE altera_avalon_pio
+#define HPS_0_ARM_A9_1_QUAD_PIO_11_COMPONENT_NAME quad_pio_11
+#define HPS_0_ARM_A9_1_QUAD_PIO_11_BASE 0xff221090
+#define HPS_0_ARM_A9_1_QUAD_PIO_11_SPAN 16
+#define HPS_0_ARM_A9_1_QUAD_PIO_11_END 0xff22109f
+#define HPS_0_ARM_A9_1_QUAD_PIO_11_BIT_CLEARING_EDGE_REGISTER 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_11_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_11_CAPTURE 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_11_DATA_WIDTH 32
+#define HPS_0_ARM_A9_1_QUAD_PIO_11_DO_TEST_BENCH_WIRING 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_11_DRIVEN_SIM_VALUE 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_11_EDGE_TYPE NONE
+#define HPS_0_ARM_A9_1_QUAD_PIO_11_FREQ 50000000
+#define HPS_0_ARM_A9_1_QUAD_PIO_11_HAS_IN 1
+#define HPS_0_ARM_A9_1_QUAD_PIO_11_HAS_OUT 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_11_HAS_TRI 0
+#define HPS_0_ARM_A9_1_QUAD_PIO_11_IRQ_TYPE NONE
+#define HPS_0_ARM_A9_1_QUAD_PIO_11_RESET_VALUE 0
 
 /*
  * Macros for device 'pid_error_pio_0', class 'altera_avalon_pio'

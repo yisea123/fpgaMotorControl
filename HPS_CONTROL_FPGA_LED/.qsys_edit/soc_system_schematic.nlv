@@ -1,27 +1,27 @@
 # # File gsaved with Nlview version 6.3.8  2013-12-19 bk=1.2992 VDI=34 GEI=35
 # 
-preplace inst soc_system.pid_error_pio_1 -pg 1 -lvl 4 -y 1770
-preplace inst soc_system.pid_correction_pio_7 -pg 1 -lvl 4 -y 1570
+preplace inst soc_system.pid_error_pio_1 -pg 1 -lvl 4 -y 1870
+preplace inst soc_system.pid_correction_pio_7 -pg 1 -lvl 4 -y 1670
 preplace inst soc_system.clk_0 -pg 1 -lvl 1 -y 530
-preplace inst soc_system.pid_error_pio_2 -pg 1 -lvl 4 -y 1870
+preplace inst soc_system.pid_error_pio_2 -pg 1 -lvl 4 -y 1970
 preplace inst soc_system.hps_0.clk_0 -pg 1
 preplace inst soc_system.fpga_only_master.p2b_adapter -pg 1
 preplace inst soc_system.fpga_only_master.b2p_adapter -pg 1
-preplace inst soc_system.pid_error_pio_3 -pg 1 -lvl 4 -y 1970
+preplace inst soc_system.pid_error_pio_3 -pg 1 -lvl 4 -y 2070
 preplace inst soc_system.hps_only_master.b2p -pg 1
 preplace inst soc_system.fpga_only_master.clk_rst -pg 1
 preplace inst soc_system.gpio_pio_0 -pg 1 -lvl 4 -y 130
-preplace inst soc_system.pid_error_pio_4 -pg 1 -lvl 4 -y 2070
-preplace inst soc_system.gpio_pio_1 -pg 1 -lvl 4 -y 230
-preplace inst soc_system.pid_error_pio_5 -pg 1 -lvl 4 -y 2170
-preplace inst soc_system.pid_error_pio_6 -pg 1 -lvl 4 -y 2270
+preplace inst soc_system.pid_error_pio_4 -pg 1 -lvl 4 -y 2170
+preplace inst soc_system.gpio_pio_1 -pg 1 -lvl 4 -y 350
+preplace inst soc_system.pid_error_pio_5 -pg 1 -lvl 4 -y 2270
+preplace inst soc_system.pid_error_pio_6 -pg 1 -lvl 4 -y 2370
 preplace inst soc_system.hps_only_master.b2p_adapter -pg 1
 preplace inst soc_system.hps_0.axi_sdram -pg 1
 preplace inst soc_system -pg 1 -lvl 1 -y 40 -regy -20
 preplace inst soc_system.fpga_only_master.timing_adt -pg 1
-preplace inst soc_system.pid_error_pio_7 -pg 1 -lvl 4 -y 2370
+preplace inst soc_system.pid_error_pio_7 -pg 1 -lvl 4 -y 2470
 preplace inst soc_system.hps_0.timer0 -pg 1
-preplace inst soc_system.quad_reset_pio -pg 1 -lvl 4 -y 3770
+preplace inst soc_system.quad_reset_pio -pg 1 -lvl 4 -y 3870
 preplace inst soc_system.hps_0.timer1 -pg 1
 preplace inst soc_system.hps_0.i2c0 -pg 1
 preplace inst soc_system.hps_0.timer2 -pg 1
@@ -31,7 +31,7 @@ preplace inst soc_system.hps_only_master.clk_rst -pg 1
 preplace inst soc_system.hps_0.timer3 -pg 1
 preplace inst soc_system.hps_0.wd_timer1 -pg 1
 preplace inst soc_system.hps_0.i2c2 -pg 1
-preplace inst soc_system.fpga_only_master -pg 1 -lvl 3 -y 350
+preplace inst soc_system.fpga_only_master -pg 1 -lvl 3 -y 290
 preplace inst soc_system.hps_0.qspi -pg 1
 preplace inst soc_system.hps_0.gpio0 -pg 1
 preplace inst soc_system.hps_0.i2c3 -pg 1
@@ -39,42 +39,42 @@ preplace inst soc_system.hps_0.clkmgr -pg 1
 preplace inst soc_system.hps_0.gpio1 -pg 1
 preplace inst soc_system.hps_0.arm_a9_0 -pg 1
 preplace inst soc_system.hps_0.L2 -pg 1
-preplace inst soc_system.onchip_memory2_0 -pg 1 -lvl 5 -y 570
+preplace inst soc_system.onchip_memory2_0 -pg 1 -lvl 5 -y 580
 preplace inst soc_system.hps_only_master.transacto -pg 1
 preplace inst soc_system.hps_0.gpio2 -pg 1
 preplace inst soc_system.hps_0.arm_a9_1 -pg 1
 preplace inst soc_system.hps_0.uart0 -pg 1
 preplace inst soc_system.hps_0.uart1 -pg 1
 preplace inst soc_system.hps_only_master.p2b_adapter -pg 1
-preplace inst soc_system.hps_only_master -pg 1 -lvl 2 -y 520
+preplace inst soc_system.hps_only_master -pg 1 -lvl 2 -y 460
 preplace inst soc_system.hps_0.spim0 -pg 1
-preplace inst soc_system.quad_pio_0 -pg 1 -lvl 4 -y 890
+preplace inst soc_system.quad_pio_0 -pg 1 -lvl 4 -y 1090
 preplace inst soc_system.pwm_pio_0 -pg 1 -lvl 4 -y 30
 preplace inst soc_system.hps_0.spim1 -pg 1
-preplace inst soc_system.quad_pio_1 -pg 1 -lvl 4 -y 2970
-preplace inst soc_system.pwm_pio_1 -pg 1 -lvl 4 -y 350
+preplace inst soc_system.quad_pio_1 -pg 1 -lvl 4 -y 3070
+preplace inst soc_system.pwm_pio_1 -pg 1 -lvl 4 -y 450
 preplace inst soc_system.hps_0.timer -pg 1
 preplace inst soc_system.hps_0.sysmgr -pg 1
-preplace inst soc_system.quad_pio_2 -pg 1 -lvl 4 -y 3070
-preplace inst soc_system.pwm_pio_2 -pg 1 -lvl 4 -y 670
-preplace inst soc_system.quad_pio_3 -pg 1 -lvl 4 -y 3170
-preplace inst soc_system.pwm_pio_3 -pg 1 -lvl 4 -y 770
+preplace inst soc_system.quad_pio_2 -pg 1 -lvl 4 -y 3170
+preplace inst soc_system.pwm_pio_2 -pg 1 -lvl 4 -y 810
+preplace inst soc_system.quad_pio_3 -pg 1 -lvl 4 -y 3270
+preplace inst soc_system.pwm_pio_3 -pg 1 -lvl 4 -y 910
 preplace inst soc_system.hps_0.f2s_periph_ref_clk -pg 1
 preplace inst soc_system.hps_0.l3regs -pg 1
-preplace inst soc_system.quad_pio_4 -pg 1 -lvl 4 -y 3270
-preplace inst soc_system.pwm_pio_4 -pg 1 -lvl 4 -y 2570
+preplace inst soc_system.quad_pio_4 -pg 1 -lvl 4 -y 3370
+preplace inst soc_system.pwm_pio_4 -pg 1 -lvl 4 -y 2670
 preplace inst soc_system.hps_only_master.fifo -pg 1
 preplace inst soc_system.hps_0.sdmmc -pg 1
 preplace inst soc_system.button_pio -pg 1 -lvl 5 -y 200
 preplace inst soc_system.hps_0.axi_ocram -pg 1
 preplace inst soc_system.sysid_qsys -pg 1 -lvl 5 -y 670
-preplace inst soc_system.quad_pio_5 -pg 1 -lvl 4 -y 3370
-preplace inst soc_system.pwm_pio_5 -pg 1 -lvl 4 -y 2670
-preplace inst soc_system.quad_pio_6 -pg 1 -lvl 4 -y 3470
-preplace inst soc_system.pwm_pio_6 -pg 1 -lvl 4 -y 2770
+preplace inst soc_system.quad_pio_5 -pg 1 -lvl 4 -y 3470
+preplace inst soc_system.pwm_pio_5 -pg 1 -lvl 4 -y 2770
+preplace inst soc_system.quad_pio_6 -pg 1 -lvl 4 -y 3570
+preplace inst soc_system.pwm_pio_6 -pg 1 -lvl 4 -y 2870
 preplace inst soc_system.hps_only_master.jtag_phy_embedded_in_jtag_master -pg 1
-preplace inst soc_system.quad_pio_7 -pg 1 -lvl 4 -y 3670
-preplace inst soc_system.pwm_pio_7 -pg 1 -lvl 4 -y 2870
+preplace inst soc_system.quad_pio_7 -pg 1 -lvl 4 -y 3770
+preplace inst soc_system.pwm_pio_7 -pg 1 -lvl 4 -y 2970
 preplace inst soc_system.led_pio -pg 1 -lvl 5 -y 830
 preplace inst soc_system.hps_only_master.p2b -pg 1
 preplace inst soc_system.hps_only_master.clk_src -pg 1
@@ -96,76 +96,78 @@ preplace inst soc_system.hps_0.gmac1 -pg 1
 preplace inst soc_system.hps_0.eosc1 -pg 1
 preplace inst soc_system.hps_0.fpgamgr -pg 1
 preplace inst soc_system.dipsw_pio -pg 1 -lvl 5 -y 330
-preplace inst soc_system.pid_values_pio -pg 1 -lvl 4 -y 2470
-preplace inst soc_system.jtag_uart -pg 1 -lvl 5 -y 470
+preplace inst soc_system.pid_values_pio -pg 1 -lvl 4 -y 2570
+preplace inst soc_system.limit_pio -pg 1 -lvl 4 -y 230
+preplace inst soc_system.jtag_uart -pg 1 -lvl 5 -y 460
 preplace inst soc_system.hps_0.dcan0 -pg 1
 preplace inst soc_system.hps_0.eosc2 -pg 1
-preplace inst soc_system.pid_correction_pio_0 -pg 1 -lvl 4 -y 3570
+preplace inst soc_system.pid_correction_pio_0 -pg 1 -lvl 4 -y 3670
 preplace inst soc_system.hps_0.fpga_interfaces -pg 1
 preplace inst soc_system.hps_0.dcan1 -pg 1
 preplace inst soc_system.fpga_only_master.jtag_phy_embedded_in_jtag_master -pg 1
 preplace inst soc_system.hps_0.f2s_sdram_ref_clk -pg 1
 preplace inst soc_system.fpga_only_master.transacto -pg 1
-preplace inst soc_system.pid_correction_pio_1 -pg 1 -lvl 4 -y 450
-preplace inst soc_system.pid_correction_pio_2 -pg 1 -lvl 4 -y 570
-preplace inst soc_system.pid_correction_pio_3 -pg 1 -lvl 4 -y 1090
+preplace inst soc_system.pid_correction_pio_1 -pg 1 -lvl 4 -y 550
+preplace inst soc_system.pid_correction_pio_2 -pg 1 -lvl 4 -y 710
+preplace inst soc_system.pid_correction_pio_3 -pg 1 -lvl 4 -y 1270
 preplace inst soc_system.hps_0.dma -pg 1
 preplace inst soc_system.hps_0.sdrctl -pg 1
-preplace inst soc_system.pid_correction_pio_4 -pg 1 -lvl 4 -y 1270
-preplace inst soc_system.intr_capturer_0 -pg 1 -lvl 4 -y 1010
-preplace inst soc_system.pid_correction_pio_5 -pg 1 -lvl 4 -y 1370
+preplace inst soc_system.pid_correction_pio_4 -pg 1 -lvl 4 -y 1370
+preplace inst soc_system.intr_capturer_0 -pg 1 -lvl 4 -y 1190
+preplace inst soc_system.pid_correction_pio_5 -pg 1 -lvl 4 -y 1470
 preplace inst soc_system.fpga_only_master.b2p -pg 1
 preplace inst soc_system.hps_0.bridges -pg 1
-preplace inst soc_system.pid_error_pio_0 -pg 1 -lvl 4 -y 1670
-preplace inst soc_system.pid_correction_pio_6 -pg 1 -lvl 4 -y 1470
+preplace inst soc_system.pid_error_pio_0 -pg 1 -lvl 4 -y 1770
+preplace inst soc_system.pid_correction_pio_6 -pg 1 -lvl 4 -y 1570
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)quad_pio_3.external_connection,(SLAVE)soc_system.quad_pio_3_external_connection) 1 0 4 NJ 3300 NJ 3300 NJ 3300 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.pwm_pio_3_external_connection,(SLAVE)pwm_pio_3.external_connection) 1 0 4 NJ 860 NJ 860 NJ 860 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)pid_correction_pio_5.external_connection,(SLAVE)soc_system.pid_correction_pio_5_external_connection) 1 0 4 NJ 1500 NJ 1500 NJ 1500 NJ
 preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.pid_correction_pio_1_external_connection,(SLAVE)pid_correction_pio_1.external_connection) 1 0 4 NJ 250 NJ 250 NJ 250 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)pid_error_pio_5.external_connection,(SLAVE)soc_system.pid_error_pio_5_external_connection) 1 0 4 NJ 2300 NJ 2300 NJ 2300 NJ
 preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.pid_correction_pio_3_external_connection,(SLAVE)pid_correction_pio_3.external_connection) 1 0 4 NJ 900 NJ 900 NJ 900 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.clk,(SLAVE)clk_0.clk_in) 1 0 1 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)led_pio.external_connection,(SLAVE)soc_system.led_pio_external_connection) 1 0 5 NJ 880 NJ 880 NJ 880 NJ 1040 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.reset,(SLAVE)clk_0.clk_in_reset) 1 0 1 NJ
 preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)hps_0.memory,(SLAVE)soc_system.memory) 1 0 3 NJ 680 NJ 680 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)clk_0.clk_in_reset,(SLAVE)soc_system.reset) 1 0 1 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)button_pio.external_connection,(SLAVE)soc_system.button_pio_external_connection) 1 0 5 NJ 230 NJ 230 NJ 230 NJ 340 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)quad_pio_7.external_connection,(SLAVE)soc_system.quad_pio_7_external_connection) 1 0 4 NJ 3700 NJ 3700 NJ 3700 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.pwm_pio_7_external_connection,(SLAVE)pwm_pio_7.external_connection) 1 0 4 NJ 2580 NJ 2580 NJ 2580 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)pid_error_pio_7.external_connection,(SLAVE)soc_system.pid_error_pio_7_external_connection) 1 0 4 NJ 2400 NJ 2400 NJ 2400 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.pid_error_pio_5_external_connection,(SLAVE)pid_error_pio_5.external_connection) 1 0 4 NJ 2200 NJ 2200 NJ 2200 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)pid_error_pio_0.external_connection,(SLAVE)soc_system.pid_error_pio_0_external_connection) 1 0 4 NJ 1700 NJ 1700 NJ 1700 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.pid_correction_pio_6_external_connection,(SLAVE)pid_correction_pio_6.external_connection) 1 0 4 NJ 1500 NJ 1500 NJ 1500 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.gpio_pio_0_external_connection,(SLAVE)gpio_pio_0.external_connection) 1 0 4 NJ 160 NJ 160 NJ 160 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.quad_pio_4_external_connection,(SLAVE)quad_pio_4.external_connection) 1 0 4 NJ 3300 NJ 3300 NJ 3300 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.pwm_pio_1_external_connection,(SLAVE)pwm_pio_1.external_connection) 1 0 4 NJ 290 NJ 290 NJ 290 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.quad_pio_5_external_connection,(SLAVE)quad_pio_5.external_connection) 1 0 4 NJ 3400 NJ 3400 NJ 3400 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.pid_correction_pio_7_external_connection,(SLAVE)pid_correction_pio_7.external_connection) 1 0 4 NJ 1600 NJ 1600 NJ 1600 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.pid_error_pio_7_external_connection,(SLAVE)pid_error_pio_7.external_connection) 1 0 4 NJ 2480 NJ 2480 NJ 2480 NJ
+preplace netloc FAN_OUT<net_container>soc_system</net_container>(SLAVE)pid_error_pio_2.clk,(SLAVE)hps_0.h2f_lw_axi_clock,(SLAVE)pwm_pio_3.clk,(SLAVE)fpga_only_master.clk,(SLAVE)pid_error_pio_3.clk,(SLAVE)pid_correction_pio_6.clk,(SLAVE)intr_capturer_0.clock,(SLAVE)quad_pio_4.clk,(SLAVE)quad_pio_5.clk,(SLAVE)pid_correction_pio_1.clk,(SLAVE)hps_0.h2f_axi_clock,(SLAVE)hps_0.f2h_axi_clock,(SLAVE)quad_reset_pio.clk,(SLAVE)pid_correction_pio_4.clk,(SLAVE)pid_error_pio_4.clk,(MASTER)clk_0.clk,(SLAVE)hps_only_master.clk,(SLAVE)gpio_pio_0.clk,(SLAVE)gpio_pio_1.clk,(SLAVE)pid_values_pio.clk,(SLAVE)limit_pio.clk,(SLAVE)dipsw_pio.clk,(SLAVE)quad_pio_0.clk,(SLAVE)pid_error_pio_1.clk,(SLAVE)pid_correction_pio_7.clk,(SLAVE)pid_correction_pio_0.clk,(SLAVE)jtag_uart.clk,(SLAVE)button_pio.clk,(SLAVE)sysid_qsys.clk,(SLAVE)pid_error_pio_5.clk,(SLAVE)quad_pio_1.clk,(SLAVE)pwm_pio_6.clk,(SLAVE)quad_pio_3.clk,(SLAVE)pwm_pio_1.clk,(SLAVE)pwm_pio_2.clk,(SLAVE)pid_correction_pio_3.clk,(SLAVE)quad_pio_2.clk,(SLAVE)quad_pio_7.clk,(SLAVE)pid_correction_pio_5.clk,(SLAVE)led_pio.clk,(SLAVE)pwm_pio_0.clk,(SLAVE)pid_error_pio_6.clk,(SLAVE)onchip_memory2_0.clk1,(SLAVE)pid_error_pio_0.clk,(SLAVE)pwm_pio_4.clk,(SLAVE)pid_error_pio_7.clk,(SLAVE)pwm_pio_5.clk,(SLAVE)pid_correction_pio_2.clk,(SLAVE)quad_pio_6.clk,(SLAVE)pwm_pio_7.clk) 1 1 4 410 540 830 370 1420 1020 1720
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)clk_0.clk_in,(SLAVE)soc_system.clk) 1 0 1 NJ
+preplace netloc INTERCONNECT<net_container>soc_system</net_container>(SLAVE)pwm_pio_0.s1,(SLAVE)pid_error_pio_4.s1,(SLAVE)pid_correction_pio_3.s1,(SLAVE)pid_correction_pio_6.s1,(SLAVE)sysid_qsys.control_slave,(SLAVE)quad_pio_0.s1,(SLAVE)pid_error_pio_0.s1,(SLAVE)gpio_pio_1.s1,(SLAVE)pid_correction_pio_0.s1,(SLAVE)quad_reset_pio.s1,(SLAVE)pwm_pio_4.s1,(SLAVE)pwm_pio_2.s1,(SLAVE)quad_pio_1.s1,(SLAVE)pid_correction_pio_1.s1,(SLAVE)jtag_uart.avalon_jtag_slave,(MASTER)hps_0.h2f_lw_axi_master,(SLAVE)pwm_pio_7.s1,(SLAVE)pwm_pio_6.s1,(SLAVE)pwm_pio_1.s1,(SLAVE)pid_error_pio_1.s1,(SLAVE)button_pio.s1,(SLAVE)onchip_memory2_0.s1,(MASTER)hps_0.h2f_axi_master,(SLAVE)pid_correction_pio_2.s1,(SLAVE)pid_error_pio_3.s1,(SLAVE)pid_values_pio.s1,(SLAVE)pid_error_pio_6.s1,(SLAVE)quad_pio_3.s1,(SLAVE)quad_pio_7.s1,(SLAVE)pid_correction_pio_7.s1,(SLAVE)led_pio.s1,(SLAVE)quad_pio_4.s1,(SLAVE)pwm_pio_3.s1,(SLAVE)limit_pio.s1,(SLAVE)pid_error_pio_2.s1,(SLAVE)intr_capturer_0.avalon_slave_0,(SLAVE)dipsw_pio.s1,(SLAVE)quad_pio_6.s1,(SLAVE)gpio_pio_0.s1,(MASTER)fpga_only_master.master,(SLAVE)pwm_pio_5.s1,(SLAVE)quad_pio_5.s1,(SLAVE)pid_error_pio_7.s1,(SLAVE)pid_error_pio_5.s1,(SLAVE)quad_pio_2.s1,(SLAVE)pid_correction_pio_4.s1,(SLAVE)pid_correction_pio_5.s1) 1 3 2 1440 1080 1800
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.limit_pio_external_connection,(SLAVE)limit_pio.external_connection) 1 0 4 NJ 190 NJ 190 NJ 190 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.pid_error_pio_1_external_connection,(SLAVE)pid_error_pio_1.external_connection) 1 0 4 NJ 1900 NJ 1900 NJ 1900 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.pid_error_pio_2_external_connection,(SLAVE)pid_error_pio_2.external_connection) 1 0 4 NJ 2000 NJ 2000 NJ 2000 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.pid_error_pio_0_external_connection,(SLAVE)pid_error_pio_0.external_connection) 1 0 4 NJ 1800 NJ 1800 NJ 1800 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)quad_reset_pio.external_connection,(SLAVE)soc_system.quad_reset_pio_external_connection) 1 0 4 NJ 3900 NJ 3900 NJ 3900 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)pwm_pio_1.external_connection,(SLAVE)soc_system.pwm_pio_1_external_connection) 1 0 4 NJ 360 NJ 360 NJ 390 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.pid_correction_pio_6_external_connection,(SLAVE)pid_correction_pio_6.external_connection) 1 0 4 NJ 1600 NJ 1600 NJ 1600 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.quad_pio_4_external_connection,(SLAVE)quad_pio_4.external_connection) 1 0 4 NJ 3400 NJ 3400 NJ 3400 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.quad_pio_5_external_connection,(SLAVE)quad_pio_5.external_connection) 1 0 4 NJ 3500 NJ 3500 NJ 3500 NJ
 preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)pwm_pio_0.external_connection,(SLAVE)soc_system.pwm_pio_0_external_connection) 1 0 4 NJ 60 NJ 60 NJ 60 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)pid_values_pio.external_connection,(SLAVE)soc_system.pid_values_pio_external_connection) 1 0 4 NJ 2500 NJ 2500 NJ 2500 NJ
-preplace netloc INTERCONNECT<net_container>soc_system</net_container>(SLAVE)pid_correction_pio_5.s1,(SLAVE)pid_correction_pio_7.s1,(SLAVE)pid_correction_pio_1.s1,(MASTER)hps_0.h2f_axi_master,(SLAVE)pwm_pio_0.s1,(SLAVE)pid_error_pio_4.s1,(SLAVE)quad_pio_0.s1,(SLAVE)pid_correction_pio_3.s1,(SLAVE)led_pio.s1,(SLAVE)pwm_pio_2.s1,(SLAVE)button_pio.s1,(SLAVE)pid_correction_pio_2.s1,(SLAVE)quad_pio_5.s1,(SLAVE)intr_capturer_0.avalon_slave_0,(SLAVE)quad_pio_3.s1,(SLAVE)gpio_pio_1.s1,(SLAVE)pid_error_pio_0.s1,(MASTER)hps_0.h2f_lw_axi_master,(SLAVE)pid_error_pio_3.s1,(SLAVE)pid_error_pio_6.s1,(SLAVE)pwm_pio_3.s1,(SLAVE)jtag_uart.avalon_jtag_slave,(SLAVE)dipsw_pio.s1,(SLAVE)pid_values_pio.s1,(SLAVE)pid_correction_pio_4.s1,(SLAVE)quad_pio_1.s1,(SLAVE)pwm_pio_6.s1,(SLAVE)quad_pio_6.s1,(MASTER)fpga_only_master.master,(SLAVE)pid_error_pio_5.s1,(SLAVE)onchip_memory2_0.s1,(SLAVE)quad_pio_2.s1,(SLAVE)gpio_pio_0.s1,(SLAVE)quad_pio_4.s1,(SLAVE)pwm_pio_5.s1,(SLAVE)pwm_pio_1.s1,(SLAVE)quad_reset_pio.s1,(SLAVE)pid_error_pio_1.s1,(SLAVE)pwm_pio_4.s1,(SLAVE)pid_correction_pio_6.s1,(SLAVE)sysid_qsys.control_slave,(SLAVE)quad_pio_7.s1,(SLAVE)pwm_pio_7.s1,(SLAVE)pid_correction_pio_0.s1,(SLAVE)pid_error_pio_2.s1,(SLAVE)pid_error_pio_7.s1) 1 3 2 1280 1260 1720
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.quad_reset_pio_external_connection,(SLAVE)quad_reset_pio.external_connection) 1 0 4 NJ 3800 NJ 3800 NJ 3800 NJ
-preplace netloc INTERCONNECT<net_container>soc_system</net_container>(SLAVE)button_pio.irq,(MASTER)intr_capturer_0.interrupt_receiver,(MASTER)hps_0.f2h_irq0,(SLAVE)jtag_uart.irq,(SLAVE)dipsw_pio.irq) 1 3 2 NJ 1000 1640
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.led_pio_external_connection,(SLAVE)led_pio.external_connection) 1 0 5 NJ 920 NJ 920 NJ 920 NJ 1220 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)pwm_pio_3.external_connection,(SLAVE)soc_system.pwm_pio_3_external_connection) 1 0 4 NJ 460 NJ 460 NJ 530 NJ
-preplace netloc FAN_OUT<net_container>soc_system</net_container>(SLAVE)led_pio.reset,(SLAVE)pwm_pio_1.reset,(SLAVE)pwm_pio_2.reset,(SLAVE)hps_only_master.clk_reset,(SLAVE)gpio_pio_0.reset,(SLAVE)pwm_pio_3.reset,(SLAVE)pid_correction_pio_0.reset,(SLAVE)quad_pio_6.reset,(SLAVE)pwm_pio_6.reset,(SLAVE)quad_pio_1.reset,(SLAVE)pid_correction_pio_5.reset,(SLAVE)intr_capturer_0.reset_sink,(SLAVE)gpio_pio_1.reset,(SLAVE)pid_error_pio_4.reset,(SLAVE)quad_reset_pio.reset,(SLAVE)pid_error_pio_0.reset,(SLAVE)pid_error_pio_3.reset,(SLAVE)dipsw_pio.reset,(SLAVE)pwm_pio_7.reset,(SLAVE)quad_pio_5.reset,(SLAVE)pid_correction_pio_2.reset,(SLAVE)pid_error_pio_1.reset,(SLAVE)quad_pio_2.reset,(SLAVE)pid_values_pio.reset,(SLAVE)pid_error_pio_2.reset,(SLAVE)pid_error_pio_7.reset,(SLAVE)pid_correction_pio_7.reset,(SLAVE)button_pio.reset,(MASTER)clk_0.clk_reset,(SLAVE)pid_error_pio_6.reset,(SLAVE)pid_correction_pio_4.reset,(SLAVE)fpga_only_master.clk_reset,(SLAVE)pwm_pio_5.reset,(SLAVE)quad_pio_4.reset,(SLAVE)pid_correction_pio_1.reset,(SLAVE)quad_pio_3.reset,(SLAVE)pid_correction_pio_6.reset,(SLAVE)quad_pio_0.reset,(SLAVE)pid_correction_pio_3.reset,(SLAVE)onchip_memory2_0.reset1,(SLAVE)quad_pio_7.reset,(SLAVE)pid_error_pio_5.reset,(SLAVE)pwm_pio_0.reset,(SLAVE)pwm_pio_4.reset,(SLAVE)jtag_uart.reset,(SLAVE)sysid_qsys.reset) 1 1 4 430 480 850 500 1360 1240 1700
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.pid_correction_pio_5_external_connection,(SLAVE)pid_correction_pio_5.external_connection) 1 0 4 NJ 1400 NJ 1400 NJ 1400 NJ
-preplace netloc FAN_OUT<net_container>soc_system</net_container>(SLAVE)pid_correction_pio_0.clk,(SLAVE)intr_capturer_0.clock,(SLAVE)quad_pio_6.clk,(SLAVE)hps_0.h2f_lw_axi_clock,(SLAVE)pid_correction_pio_2.clk,(SLAVE)quad_pio_7.clk,(SLAVE)onchip_memory2_0.clk1,(SLAVE)led_pio.clk,(SLAVE)pid_error_pio_4.clk,(SLAVE)pid_error_pio_7.clk,(SLAVE)pid_correction_pio_1.clk,(SLAVE)pid_correction_pio_3.clk,(SLAVE)pid_error_pio_3.clk,(SLAVE)pid_correction_pio_6.clk,(SLAVE)quad_pio_4.clk,(SLAVE)pwm_pio_2.clk,(SLAVE)hps_0.f2h_axi_clock,(SLAVE)pid_correction_pio_5.clk,(SLAVE)jtag_uart.clk,(SLAVE)quad_reset_pio.clk,(SLAVE)button_pio.clk,(SLAVE)pid_error_pio_2.clk,(SLAVE)hps_only_master.clk,(SLAVE)sysid_qsys.clk,(SLAVE)quad_pio_0.clk,(SLAVE)hps_0.h2f_axi_clock,(SLAVE)pwm_pio_7.clk,(SLAVE)pwm_pio_3.clk,(SLAVE)pwm_pio_5.clk,(SLAVE)quad_pio_3.clk,(SLAVE)pid_error_pio_6.clk,(SLAVE)pwm_pio_1.clk,(SLAVE)pid_error_pio_0.clk,(MASTER)clk_0.clk,(SLAVE)pid_error_pio_5.clk,(SLAVE)quad_pio_5.clk,(SLAVE)pid_correction_pio_4.clk,(SLAVE)pid_error_pio_1.clk,(SLAVE)pwm_pio_0.clk,(SLAVE)gpio_pio_1.clk,(SLAVE)gpio_pio_0.clk,(SLAVE)pid_correction_pio_7.clk,(SLAVE)pid_values_pio.clk,(SLAVE)pwm_pio_6.clk,(SLAVE)dipsw_pio.clk,(SLAVE)pwm_pio_4.clk,(SLAVE)fpga_only_master.clk,(SLAVE)quad_pio_1.clk,(SLAVE)quad_pio_2.clk) 1 1 4 410 600 730 730 1340 1200 1620
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)quad_pio_2.external_connection,(SLAVE)soc_system.quad_pio_2_external_connection) 1 0 4 NJ 3100 NJ 3100 NJ 3100 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)pid_error_pio_3.external_connection,(SLAVE)soc_system.pid_error_pio_3_external_connection) 1 0 4 NJ 2000 NJ 2000 NJ 2000 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.gpio_pio_1_external_connection,(SLAVE)gpio_pio_1.external_connection) 1 0 4 NJ 210 NJ 210 NJ 210 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.pid_correction_pio_2_external_connection,(SLAVE)pid_correction_pio_2.external_connection) 1 0 4 NJ 310 NJ 310 NJ 310 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.dipsw_pio_external_connection,(SLAVE)dipsw_pio.external_connection) 1 0 5 NJ 380 NJ 380 NJ 430 NJ 560 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.quad_pio_6_external_connection,(SLAVE)quad_pio_6.external_connection) 1 0 4 NJ 3420 NJ 3420 NJ 3420 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)pid_correction_pio_7.external_connection,(SLAVE)soc_system.pid_correction_pio_7_external_connection) 1 0 4 NJ 1700 NJ 1700 NJ 1700 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)pwm_pio_5.external_connection,(SLAVE)soc_system.pwm_pio_5_external_connection) 1 0 4 NJ 2540 NJ 2540 NJ 2540 NJ
+preplace netloc FAN_OUT<net_container>soc_system</net_container>(SLAVE)pwm_pio_7.reset,(SLAVE)gpio_pio_0.reset,(SLAVE)pid_correction_pio_1.reset,(SLAVE)quad_pio_2.reset,(SLAVE)pid_correction_pio_6.reset,(SLAVE)quad_pio_5.reset,(SLAVE)onchip_memory2_0.reset1,(SLAVE)pid_error_pio_0.reset,(SLAVE)pwm_pio_0.reset,(SLAVE)pwm_pio_1.reset,(SLAVE)quad_pio_7.reset,(SLAVE)quad_pio_1.reset,(SLAVE)pid_error_pio_1.reset,(SLAVE)quad_pio_4.reset,(SLAVE)hps_only_master.clk_reset,(SLAVE)quad_pio_0.reset,(SLAVE)quad_pio_6.reset,(SLAVE)fpga_only_master.clk_reset,(SLAVE)pid_correction_pio_2.reset,(SLAVE)quad_pio_3.reset,(SLAVE)pwm_pio_6.reset,(SLAVE)intr_capturer_0.reset_sink,(SLAVE)pid_correction_pio_4.reset,(SLAVE)pwm_pio_4.reset,(SLAVE)pid_error_pio_5.reset,(SLAVE)led_pio.reset,(SLAVE)quad_reset_pio.reset,(MASTER)clk_0.clk_reset,(SLAVE)pid_values_pio.reset,(SLAVE)sysid_qsys.reset,(SLAVE)pid_error_pio_6.reset,(SLAVE)pid_correction_pio_7.reset,(SLAVE)pid_correction_pio_0.reset,(SLAVE)pid_error_pio_4.reset,(SLAVE)pwm_pio_5.reset,(SLAVE)pwm_pio_3.reset,(SLAVE)pwm_pio_2.reset,(SLAVE)button_pio.reset,(SLAVE)jtag_uart.reset,(SLAVE)pid_correction_pio_3.reset,(SLAVE)dipsw_pio.reset,(SLAVE)pid_error_pio_7.reset,(SLAVE)pid_correction_pio_5.reset,(SLAVE)gpio_pio_1.reset,(SLAVE)pid_error_pio_2.reset,(SLAVE)limit_pio.reset,(SLAVE)pid_error_pio_3.reset) 1 1 4 430 560 850 730 1400 1060 1760
+preplace netloc POINT_TO_POINT<net_container>soc_system</net_container>(MASTER)hps_only_master.master,(SLAVE)hps_0.f2h_axi_slave) 1 2 1 730
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)pwm_pio_7.external_connection,(SLAVE)soc_system.pwm_pio_7_external_connection) 1 0 4 NJ 2580 NJ 2580 NJ 2580 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)gpio_pio_1.external_connection,(SLAVE)soc_system.gpio_pio_1_external_connection) 1 0 4 NJ 230 NJ 230 NJ 230 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)quad_pio_2.external_connection,(SLAVE)soc_system.quad_pio_2_external_connection) 1 0 4 NJ 3200 NJ 3200 NJ 3200 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.pid_error_pio_6_external_connection,(SLAVE)pid_error_pio_6.external_connection) 1 0 4 NJ 2400 NJ 2400 NJ 2400 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)gpio_pio_0.external_connection,(SLAVE)soc_system.gpio_pio_0_external_connection) 1 0 4 NJ 160 NJ 160 NJ 160 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.dipsw_pio_external_connection,(SLAVE)dipsw_pio.external_connection) 1 0 5 NJ 380 NJ 380 NJ 430 NJ 660 NJ
 preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)pwm_pio_4.external_connection,(SLAVE)soc_system.pwm_pio_4_external_connection) 1 0 4 NJ 2520 NJ 2520 NJ 2520 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)pid_error_pio_1.external_connection,(SLAVE)soc_system.pid_error_pio_1_external_connection) 1 0 4 NJ 1800 NJ 1800 NJ 1800 NJ
+preplace netloc INTERCONNECT<net_container>soc_system</net_container>(MASTER)intr_capturer_0.interrupt_receiver,(SLAVE)jtag_uart.irq,(MASTER)hps_0.f2h_irq0,(SLAVE)button_pio.irq,(SLAVE)dipsw_pio.irq) 1 3 2 NJ 680 1700
 preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)pwm_pio_6.external_connection,(SLAVE)soc_system.pwm_pio_6_external_connection) 1 0 4 NJ 2560 NJ 2560 NJ 2560 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.pid_values_pio_external_connection,(SLAVE)pid_values_pio.external_connection) 1 0 4 NJ 2500 NJ 2500 NJ 2500 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)pid_correction_pio_2.external_connection,(SLAVE)soc_system.pid_correction_pio_2_external_connection) 1 0 4 NJ 750 NJ 750 NJ 750 NJ
 preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)quad_pio_1.external_connection,(SLAVE)soc_system.quad_pio_1_external_connection) 1 0 4 NJ 2600 NJ 2600 NJ 2600 NJ
-preplace netloc POINT_TO_POINT<net_container>soc_system</net_container>(SLAVE)hps_0.f2h_axi_slave,(MASTER)hps_only_master.master) 1 2 1 750
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.pid_error_pio_4_external_connection,(SLAVE)pid_error_pio_4.external_connection) 1 0 4 NJ 2020 NJ 2020 NJ 2020 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.quad_pio_3_external_connection,(SLAVE)quad_pio_3.external_connection) 1 0 4 NJ 3200 NJ 3200 NJ 3200 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.quad_pio_7_external_connection,(SLAVE)quad_pio_7.external_connection) 1 0 4 NJ 3800 NJ 3800 NJ 3800 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)quad_pio_6.external_connection,(SLAVE)soc_system.quad_pio_6_external_connection) 1 0 4 NJ 3520 NJ 3520 NJ 3520 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)pid_error_pio_4.external_connection,(SLAVE)soc_system.pid_error_pio_4_external_connection) 1 0 4 NJ 2200 NJ 2200 NJ 2200 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.pid_error_pio_3_external_connection,(SLAVE)pid_error_pio_3.external_connection) 1 0 4 NJ 2100 NJ 2100 NJ 2100 NJ
 preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.quad_pio_0_external_connection,(SLAVE)quad_pio_0.external_connection) 1 0 4 NJ 420 NJ 420 NJ 480 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)pid_error_pio_2.external_connection,(SLAVE)soc_system.pid_error_pio_2_external_connection) 1 0 4 NJ 1900 NJ 1900 NJ 1900 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)pid_correction_pio_4.external_connection,(SLAVE)soc_system.pid_correction_pio_4_external_connection) 1 0 4 NJ 1300 NJ 1300 NJ 1300 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(MASTER)soc_system.hps_0_h2f_reset,(MASTER)hps_0.h2f_reset) 1 3 3 NJ 880 NJ 460 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)pid_error_pio_6.external_connection,(SLAVE)soc_system.pid_error_pio_6_external_connection) 1 0 4 NJ 2220 NJ 2220 NJ 2220 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.pid_correction_pio_0_external_connection,(SLAVE)pid_correction_pio_0.external_connection) 1 0 4 NJ 3440 NJ 3440 NJ 3440 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.pwm_pio_5_external_connection,(SLAVE)pwm_pio_5.external_connection) 1 0 4 NJ 2540 NJ 2540 NJ 2540 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)pid_correction_pio_4.external_connection,(SLAVE)soc_system.pid_correction_pio_4_external_connection) 1 0 4 NJ 1400 NJ 1400 NJ 1400 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(MASTER)hps_0.h2f_reset,(MASTER)soc_system.hps_0_h2f_reset) 1 3 3 NJ 700 NJ 570 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.pid_correction_pio_0_external_connection,(SLAVE)pid_correction_pio_0.external_connection) 1 0 4 NJ 3540 NJ 3540 NJ 3540 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.button_pio_external_connection,(SLAVE)button_pio.external_connection) 1 0 5 NJ 210 NJ 210 NJ 210 NJ 340 NJ
 preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)pwm_pio_2.external_connection,(SLAVE)soc_system.pwm_pio_2_external_connection) 1 0 4 NJ 400 NJ 400 NJ 460 NJ
 preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)hps_0.hps_io,(SLAVE)soc_system.hps_0_hps_io) 1 0 3 NJ 620 NJ 620 NJ
-levelinfo -pg 1 0 200 2070
-levelinfo -hier soc_system 210 240 570 990 1410 1790 1940
+levelinfo -pg 1 0 200 2150
+levelinfo -hier soc_system 210 240 570 990 1490 1870 2020

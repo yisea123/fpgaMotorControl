@@ -55,6 +55,7 @@ module soc_system (
 	hps_0_hps_io_hps_io_gpio_inst_GPIO54,
 	hps_0_hps_io_hps_io_gpio_inst_GPIO61,
 	led_pio_external_connection_export,
+	limit_pio_external_connection_export,
 	memory_mem_a,
 	memory_mem_ba,
 	memory_mem_ck,
@@ -106,7 +107,10 @@ module soc_system (
 	quad_pio_7_external_connection_export,
 	quad_reset_pio_external_connection_export,
 	reset_reset_n,
-	limit_pio_external_connection_export);	
+	quad_pio_8_external_connection_export,
+	quad_pio_9_external_connection_export,
+	quad_pio_10_external_connection_export,
+	quad_pio_11_external_connection_export);	
 
 	input	[3:0]	button_pio_external_connection_export;
 	input		clk_clk;
@@ -163,6 +167,7 @@ module soc_system (
 	inout		hps_0_hps_io_hps_io_gpio_inst_GPIO54;
 	inout		hps_0_hps_io_hps_io_gpio_inst_GPIO61;
 	output	[7:0]	led_pio_external_connection_export;
+	input	[7:0]	limit_pio_external_connection_export;
 	output	[14:0]	memory_mem_a;
 	output	[2:0]	memory_mem_ba;
 	output		memory_mem_ck;
@@ -214,5 +219,8 @@ module soc_system (
 	input	[31:0]	quad_pio_7_external_connection_export;
 	output	[31:0]	quad_reset_pio_external_connection_export;
 	input		reset_reset_n;
-	input	[7:0]	limit_pio_external_connection_export;
+	input	[31:0]	quad_pio_8_external_connection_export;
+	input	[31:0]	quad_pio_9_external_connection_export;
+	input	[31:0]	quad_pio_10_external_connection_export;
+	input	[31:0]	quad_pio_11_external_connection_export;
 endmodule

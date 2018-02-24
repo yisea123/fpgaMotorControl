@@ -80,7 +80,7 @@
 #define SYSID_QSYS_SPAN 8
 #define SYSID_QSYS_END 0xff210007
 #define SYSID_QSYS_ID 2899645186
-#define SYSID_QSYS_TIMESTAMP 1505337062
+#define SYSID_QSYS_TIMESTAMP 1518132715
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'
@@ -432,6 +432,102 @@
 #define QUAD_PIO_7_HAS_TRI 0
 #define QUAD_PIO_7_IRQ_TYPE NONE
 #define QUAD_PIO_7_RESET_VALUE 0
+
+/*
+ * Macros for device 'quad_pio_8', class 'altera_avalon_pio'
+ * The macros are prefixed with 'QUAD_PIO_8_'.
+ * The prefix is the slave descriptor.
+ */
+#define QUAD_PIO_8_COMPONENT_TYPE altera_avalon_pio
+#define QUAD_PIO_8_COMPONENT_NAME quad_pio_8
+#define QUAD_PIO_8_BASE 0xff221060
+#define QUAD_PIO_8_SPAN 16
+#define QUAD_PIO_8_END 0xff22106f
+#define QUAD_PIO_8_BIT_CLEARING_EDGE_REGISTER 0
+#define QUAD_PIO_8_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define QUAD_PIO_8_CAPTURE 0
+#define QUAD_PIO_8_DATA_WIDTH 32
+#define QUAD_PIO_8_DO_TEST_BENCH_WIRING 0
+#define QUAD_PIO_8_DRIVEN_SIM_VALUE 0
+#define QUAD_PIO_8_EDGE_TYPE NONE
+#define QUAD_PIO_8_FREQ 50000000
+#define QUAD_PIO_8_HAS_IN 1
+#define QUAD_PIO_8_HAS_OUT 0
+#define QUAD_PIO_8_HAS_TRI 0
+#define QUAD_PIO_8_IRQ_TYPE NONE
+#define QUAD_PIO_8_RESET_VALUE 0
+
+/*
+ * Macros for device 'quad_pio_9', class 'altera_avalon_pio'
+ * The macros are prefixed with 'QUAD_PIO_9_'.
+ * The prefix is the slave descriptor.
+ */
+#define QUAD_PIO_9_COMPONENT_TYPE altera_avalon_pio
+#define QUAD_PIO_9_COMPONENT_NAME quad_pio_9
+#define QUAD_PIO_9_BASE 0xff221070
+#define QUAD_PIO_9_SPAN 16
+#define QUAD_PIO_9_END 0xff22107f
+#define QUAD_PIO_9_BIT_CLEARING_EDGE_REGISTER 0
+#define QUAD_PIO_9_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define QUAD_PIO_9_CAPTURE 0
+#define QUAD_PIO_9_DATA_WIDTH 32
+#define QUAD_PIO_9_DO_TEST_BENCH_WIRING 0
+#define QUAD_PIO_9_DRIVEN_SIM_VALUE 0
+#define QUAD_PIO_9_EDGE_TYPE NONE
+#define QUAD_PIO_9_FREQ 50000000
+#define QUAD_PIO_9_HAS_IN 1
+#define QUAD_PIO_9_HAS_OUT 0
+#define QUAD_PIO_9_HAS_TRI 0
+#define QUAD_PIO_9_IRQ_TYPE NONE
+#define QUAD_PIO_9_RESET_VALUE 0
+
+/*
+ * Macros for device 'quad_pio_10', class 'altera_avalon_pio'
+ * The macros are prefixed with 'QUAD_PIO_10_'.
+ * The prefix is the slave descriptor.
+ */
+#define QUAD_PIO_10_COMPONENT_TYPE altera_avalon_pio
+#define QUAD_PIO_10_COMPONENT_NAME quad_pio_10
+#define QUAD_PIO_10_BASE 0xff221080
+#define QUAD_PIO_10_SPAN 16
+#define QUAD_PIO_10_END 0xff22108f
+#define QUAD_PIO_10_BIT_CLEARING_EDGE_REGISTER 0
+#define QUAD_PIO_10_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define QUAD_PIO_10_CAPTURE 0
+#define QUAD_PIO_10_DATA_WIDTH 32
+#define QUAD_PIO_10_DO_TEST_BENCH_WIRING 0
+#define QUAD_PIO_10_DRIVEN_SIM_VALUE 0
+#define QUAD_PIO_10_EDGE_TYPE NONE
+#define QUAD_PIO_10_FREQ 50000000
+#define QUAD_PIO_10_HAS_IN 1
+#define QUAD_PIO_10_HAS_OUT 0
+#define QUAD_PIO_10_HAS_TRI 0
+#define QUAD_PIO_10_IRQ_TYPE NONE
+#define QUAD_PIO_10_RESET_VALUE 0
+
+/*
+ * Macros for device 'quad_pio_11', class 'altera_avalon_pio'
+ * The macros are prefixed with 'QUAD_PIO_11_'.
+ * The prefix is the slave descriptor.
+ */
+#define QUAD_PIO_11_COMPONENT_TYPE altera_avalon_pio
+#define QUAD_PIO_11_COMPONENT_NAME quad_pio_11
+#define QUAD_PIO_11_BASE 0xff221090
+#define QUAD_PIO_11_SPAN 16
+#define QUAD_PIO_11_END 0xff22109f
+#define QUAD_PIO_11_BIT_CLEARING_EDGE_REGISTER 0
+#define QUAD_PIO_11_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define QUAD_PIO_11_CAPTURE 0
+#define QUAD_PIO_11_DATA_WIDTH 32
+#define QUAD_PIO_11_DO_TEST_BENCH_WIRING 0
+#define QUAD_PIO_11_DRIVEN_SIM_VALUE 0
+#define QUAD_PIO_11_EDGE_TYPE NONE
+#define QUAD_PIO_11_FREQ 50000000
+#define QUAD_PIO_11_HAS_IN 1
+#define QUAD_PIO_11_HAS_OUT 0
+#define QUAD_PIO_11_HAS_TRI 0
+#define QUAD_PIO_11_IRQ_TYPE NONE
+#define QUAD_PIO_11_RESET_VALUE 0
 
 /*
  * Macros for device 'pid_error_pio_0', class 'altera_avalon_pio'

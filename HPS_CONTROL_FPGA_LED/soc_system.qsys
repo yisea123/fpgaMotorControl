@@ -208,7 +208,7 @@
    {
       datum _sortIndex
       {
-         value = "47";
+         value = "51";
          type = "int";
       }
    }
@@ -240,7 +240,7 @@
    {
       datum _sortIndex
       {
-         value = "30";
+         value = "34";
          type = "int";
       }
    }
@@ -256,7 +256,7 @@
    {
       datum _sortIndex
       {
-         value = "31";
+         value = "35";
          type = "int";
       }
    }
@@ -272,7 +272,7 @@
    {
       datum _sortIndex
       {
-         value = "32";
+         value = "36";
          type = "int";
       }
    }
@@ -288,7 +288,7 @@
    {
       datum _sortIndex
       {
-         value = "33";
+         value = "37";
          type = "int";
       }
    }
@@ -304,7 +304,7 @@
    {
       datum _sortIndex
       {
-         value = "34";
+         value = "38";
          type = "int";
       }
    }
@@ -320,7 +320,7 @@
    {
       datum _sortIndex
       {
-         value = "35";
+         value = "39";
          type = "int";
       }
    }
@@ -336,7 +336,7 @@
    {
       datum _sortIndex
       {
-         value = "36";
+         value = "40";
          type = "int";
       }
    }
@@ -352,7 +352,7 @@
    {
       datum _sortIndex
       {
-         value = "37";
+         value = "41";
          type = "int";
       }
    }
@@ -368,7 +368,7 @@
    {
       datum _sortIndex
       {
-         value = "22";
+         value = "26";
          type = "int";
       }
    }
@@ -384,7 +384,7 @@
    {
       datum _sortIndex
       {
-         value = "23";
+         value = "27";
          type = "int";
       }
    }
@@ -400,7 +400,7 @@
    {
       datum _sortIndex
       {
-         value = "24";
+         value = "28";
          type = "int";
       }
    }
@@ -416,7 +416,7 @@
    {
       datum _sortIndex
       {
-         value = "25";
+         value = "29";
          type = "int";
       }
    }
@@ -432,7 +432,7 @@
    {
       datum _sortIndex
       {
-         value = "26";
+         value = "30";
          type = "int";
       }
    }
@@ -448,7 +448,7 @@
    {
       datum _sortIndex
       {
-         value = "27";
+         value = "31";
          type = "int";
       }
    }
@@ -464,7 +464,7 @@
    {
       datum _sortIndex
       {
-         value = "28";
+         value = "32";
          type = "int";
       }
    }
@@ -480,7 +480,7 @@
    {
       datum _sortIndex
       {
-         value = "29";
+         value = "33";
          type = "int";
       }
    }
@@ -496,7 +496,7 @@
    {
       datum _sortIndex
       {
-         value = "38";
+         value = "42";
          type = "int";
       }
    }
@@ -512,7 +512,7 @@
    {
       datum _sortIndex
       {
-         value = "39";
+         value = "43";
          type = "int";
       }
    }
@@ -528,7 +528,7 @@
    {
       datum _sortIndex
       {
-         value = "40";
+         value = "44";
          type = "int";
       }
    }
@@ -544,7 +544,7 @@
    {
       datum _sortIndex
       {
-         value = "41";
+         value = "45";
          type = "int";
       }
    }
@@ -560,7 +560,7 @@
    {
       datum _sortIndex
       {
-         value = "42";
+         value = "46";
          type = "int";
       }
    }
@@ -576,7 +576,7 @@
    {
       datum _sortIndex
       {
-         value = "43";
+         value = "47";
          type = "int";
       }
    }
@@ -592,7 +592,7 @@
    {
       datum _sortIndex
       {
-         value = "44";
+         value = "48";
          type = "int";
       }
    }
@@ -608,7 +608,7 @@
    {
       datum _sortIndex
       {
-         value = "45";
+         value = "49";
          type = "int";
       }
    }
@@ -624,7 +624,7 @@
    {
       datum _sortIndex
       {
-         value = "46";
+         value = "50";
          type = "int";
       }
    }
@@ -665,6 +665,38 @@
       datum baseAddress
       {
          value = "132240";
+         type = "String";
+      }
+   }
+   element quad_pio_10
+   {
+      datum _sortIndex
+      {
+         value = "24";
+         type = "int";
+      }
+   }
+   element quad_pio_10.s1
+   {
+      datum baseAddress
+      {
+         value = "135296";
+         type = "String";
+      }
+   }
+   element quad_pio_11
+   {
+      datum _sortIndex
+      {
+         value = "25";
+         type = "int";
+      }
+   }
+   element quad_pio_11.s1
+   {
+      datum baseAddress
+      {
+         value = "135312";
          type = "String";
       }
    }
@@ -761,6 +793,38 @@
       datum baseAddress
       {
          value = "135248";
+         type = "String";
+      }
+   }
+   element quad_pio_8
+   {
+      datum _sortIndex
+      {
+         value = "22";
+         type = "int";
+      }
+   }
+   element quad_pio_8.s1
+   {
+      datum baseAddress
+      {
+         value = "135264";
+         type = "String";
+      }
+   }
+   element quad_pio_9
+   {
+      datum _sortIndex
+      {
+         value = "23";
+         type = "int";
+      }
+   }
+   element quad_pio_9.s1
+   {
+      datum baseAddress
+      {
+         value = "135280";
          type = "String";
       }
    }
@@ -996,6 +1060,16 @@
    type="conduit"
    dir="end" />
  <interface
+   name="quad_pio_10_external_connection"
+   internal="quad_pio_10.external_connection"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="quad_pio_11_external_connection"
+   internal="quad_pio_11.external_connection"
+   type="conduit"
+   dir="end" />
+ <interface
    name="quad_pio_1_external_connection"
    internal="quad_pio_1.external_connection"
    type="conduit"
@@ -1028,6 +1102,16 @@
  <interface
    name="quad_pio_7_external_connection"
    internal="quad_pio_7.external_connection"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="quad_pio_8_external_connection"
+   internal="quad_pio_8.external_connection"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="quad_pio_9_external_connection"
+   internal="quad_pio_9.external_connection"
    type="conduit"
    dir="end" />
  <interface
@@ -2189,6 +2273,42 @@
   <parameter name="simDrivenValue" value="0" />
   <parameter name="width" value="32" />
  </module>
+ <module
+   name="quad_pio_10"
+   kind="altera_avalon_pio"
+   version="17.0"
+   enabled="1">
+  <parameter name="bitClearingEdgeCapReg" value="false" />
+  <parameter name="bitModifyingOutReg" value="false" />
+  <parameter name="captureEdge" value="false" />
+  <parameter name="clockRate" value="50000000" />
+  <parameter name="direction" value="Input" />
+  <parameter name="edgeType" value="RISING" />
+  <parameter name="generateIRQ" value="false" />
+  <parameter name="irqType" value="LEVEL" />
+  <parameter name="resetValue" value="0" />
+  <parameter name="simDoTestBenchWiring" value="false" />
+  <parameter name="simDrivenValue" value="0" />
+  <parameter name="width" value="32" />
+ </module>
+ <module
+   name="quad_pio_11"
+   kind="altera_avalon_pio"
+   version="17.0"
+   enabled="1">
+  <parameter name="bitClearingEdgeCapReg" value="false" />
+  <parameter name="bitModifyingOutReg" value="false" />
+  <parameter name="captureEdge" value="false" />
+  <parameter name="clockRate" value="50000000" />
+  <parameter name="direction" value="Input" />
+  <parameter name="edgeType" value="RISING" />
+  <parameter name="generateIRQ" value="false" />
+  <parameter name="irqType" value="LEVEL" />
+  <parameter name="resetValue" value="0" />
+  <parameter name="simDoTestBenchWiring" value="false" />
+  <parameter name="simDrivenValue" value="0" />
+  <parameter name="width" value="32" />
+ </module>
  <module name="quad_pio_2" kind="altera_avalon_pio" version="17.0" enabled="1">
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
@@ -2260,6 +2380,34 @@
   <parameter name="width" value="32" />
  </module>
  <module name="quad_pio_7" kind="altera_avalon_pio" version="17.0" enabled="1">
+  <parameter name="bitClearingEdgeCapReg" value="false" />
+  <parameter name="bitModifyingOutReg" value="false" />
+  <parameter name="captureEdge" value="false" />
+  <parameter name="clockRate" value="50000000" />
+  <parameter name="direction" value="Input" />
+  <parameter name="edgeType" value="RISING" />
+  <parameter name="generateIRQ" value="false" />
+  <parameter name="irqType" value="LEVEL" />
+  <parameter name="resetValue" value="0" />
+  <parameter name="simDoTestBenchWiring" value="false" />
+  <parameter name="simDrivenValue" value="0" />
+  <parameter name="width" value="32" />
+ </module>
+ <module name="quad_pio_8" kind="altera_avalon_pio" version="17.0" enabled="1">
+  <parameter name="bitClearingEdgeCapReg" value="false" />
+  <parameter name="bitModifyingOutReg" value="false" />
+  <parameter name="captureEdge" value="false" />
+  <parameter name="clockRate" value="50000000" />
+  <parameter name="direction" value="Input" />
+  <parameter name="edgeType" value="RISING" />
+  <parameter name="generateIRQ" value="false" />
+  <parameter name="irqType" value="LEVEL" />
+  <parameter name="resetValue" value="0" />
+  <parameter name="simDoTestBenchWiring" value="false" />
+  <parameter name="simDrivenValue" value="0" />
+  <parameter name="width" value="32" />
+ </module>
+ <module name="quad_pio_9" kind="altera_avalon_pio" version="17.0" enabled="1">
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
   <parameter name="captureEdge" value="false" />
@@ -2688,6 +2836,42 @@
  <connection
    kind="avalon"
    version="17.0"
+   start="hps_0.h2f_lw_axi_master"
+   end="quad_pio_8.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00021060" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="17.0"
+   start="hps_0.h2f_lw_axi_master"
+   end="quad_pio_9.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00021070" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="17.0"
+   start="hps_0.h2f_lw_axi_master"
+   end="quad_pio_10.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00021080" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="17.0"
+   start="hps_0.h2f_lw_axi_master"
+   end="quad_pio_11.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00021090" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="17.0"
    start="fpga_only_master.master"
    end="jtag_uart.avalon_jtag_slave">
   <parameter name="arbitrationPriority" value="1" />
@@ -3091,6 +3275,42 @@
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
+   kind="avalon"
+   version="17.0"
+   start="fpga_only_master.master"
+   end="quad_pio_8.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00021060" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="17.0"
+   start="fpga_only_master.master"
+   end="quad_pio_9.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00021070" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="17.0"
+   start="fpga_only_master.master"
+   end="quad_pio_10.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00021080" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="17.0"
+   start="fpga_only_master.master"
+   end="quad_pio_11.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00021090" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
    kind="clock"
    version="17.0"
    start="clk_0.clk"
@@ -3214,6 +3434,10 @@
  <connection kind="clock" version="17.0" start="clk_0.clk" end="pwm_pio_6.clk" />
  <connection kind="clock" version="17.0" start="clk_0.clk" end="pwm_pio_7.clk" />
  <connection kind="clock" version="17.0" start="clk_0.clk" end="limit_pio.clk" />
+ <connection kind="clock" version="17.0" start="clk_0.clk" end="quad_pio_8.clk" />
+ <connection kind="clock" version="17.0" start="clk_0.clk" end="quad_pio_9.clk" />
+ <connection kind="clock" version="17.0" start="clk_0.clk" end="quad_pio_10.clk" />
+ <connection kind="clock" version="17.0" start="clk_0.clk" end="quad_pio_11.clk" />
  <connection
    kind="clock"
    version="17.0"
@@ -3501,6 +3725,26 @@
    version="17.0"
    start="clk_0.clk_reset"
    end="limit_pio.reset" />
+ <connection
+   kind="reset"
+   version="17.0"
+   start="clk_0.clk_reset"
+   end="quad_pio_8.reset" />
+ <connection
+   kind="reset"
+   version="17.0"
+   start="clk_0.clk_reset"
+   end="quad_pio_9.reset" />
+ <connection
+   kind="reset"
+   version="17.0"
+   start="clk_0.clk_reset"
+   end="quad_pio_10.reset" />
+ <connection
+   kind="reset"
+   version="17.0"
+   start="clk_0.clk_reset"
+   end="quad_pio_11.reset" />
  <connection
    kind="reset"
    version="17.0"

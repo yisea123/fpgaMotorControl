@@ -6,7 +6,7 @@ import socket
 import re
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect(('192.168.1.10', 1111))
+client_socket.connect(('192.168.1.10', 1114))
 client_socket.setblocking(0)
 client_socket.settimeout(0.1)
 
@@ -44,58 +44,126 @@ def incr_pos(position_increment, current_pos):
 	
 
 
+zeroing = 0
 
+if zeroing == 1:
+	current_pos = np.zeros((9,1))
 
-	
-current_pos = np.zeros((9,1))
+	command_motors(client_socket, current_pos)
 
-command_motors(client_socket, current_pos)
+	#to enable zeroing set state to 0
+	state = 0
+	client_socket.setblocking(1)
+	while(state==0):
+			switch_state = str(client_socket.recv(256))
+			test = re.split('\s', switch_state)
+			print("Current state is: ", test[1],"rate is: ", test[2])
+			state=int(test[1])
+			command_motors(client_socket, current_pos)
+			time.sleep(dt)
 
-state = 0
-client_socket.setblocking(1)
-while(state==0):
-		switch_state = str(client_socket.recv(256))
-		test = re.split('\s', switch_state)
-		print("Current state is: ", test[1],"rate is: ", test[2])
-		state=int(test[1])
-		command_motors(client_socket, current_pos)
-		time.sleep(dt)
+	time.sleep(5)
 
-time.sleep(5)
-x = np.ones(9)
-x[1:] = x[1:]*-5000
-print(x)
-command_motors(client_socket, x)
-time.sleep(5)
+	x = np.ones(9).astype(int)
+	x[1:] = (x[1:]-5000).astype(int)
+	print(x)
+	command_motors(client_socket, x)
+	time.sleep(2)
+	x[1:] = (x[1:]-5000).astype(int)
+	print(x)
+	command_motors(client_socket, x)
+	time.sleep(2)
+	x[1:] = (x[1:]-5000).astype(int)
+	print(x)
+	command_motors(client_socket, x)
+	time.sleep(2)
 
-print("Finishing zeroing")
-print("Current state is: ", test[1],"rate is: ", test[2])
+	print("Finishing zeroing")
+	print("Current state is: ", test[1],"rate is: ", test[2])
+
 
 
 #setpriority()
-
-start_time = time.time()
+x = np.ones(9).astype(int)
+x[1:] = x[1:] + 5
+command_motors(client_socket, x)
+time.sleep(2)
 
 j = 0
+encoder_position = 0
+error = 0
+#P=300
+P=0
+x_temp = np.ones(9)
+
+encoder_steps = np.arange(0,250)
+counter = 0
+start_time = time.time()
+
+degrees_per_count_motor = 0.00743 #degrees per count
+degrees_per_count_joint = 360 / 1440
+
 while (1): #time.time()-start_time<25):
 
-	current_pos_1 = (np.sin((time.time()-start_time)*2)*1000)*(1)
-			
-	for i in range(len(current_pos)):
-		if i==0:
-			current_pos[i] = 1;
-		else:
-			current_pos[i] = np.power(-1,(i+1))*current_pos_1
-	command_motors(client_socket, current_pos)
+	encoder_positions = str(client_socket.recv(256))
+	encoders = re.split('\s', encoder_positions)
+
+	if counter % 50 == 0:
+		#print("Encoder1: ", encoders[1],"Encoder2: ", encoders[2],"Encoder3: ", encoders[3],"Encoder4: ", encoders[4])
+		#print("Encoder Setpoint: ", encoder_position)
+		#print("Error: ", error)
+		#print("Temp: ",x_temp)
+		print("output error is {}, encoder joint is {}".format(error, float(encoders[1]) * degrees_per_count_joint))
+
+
+	tst = (time.time()-start_time)
+	encoder_position = (np.sin(tst*0.5)*100/degrees_per_count_motor)*1
+
+
+	error = encoder_position * degrees_per_count_motor - float(encoders[1]) * degrees_per_count_joint
+
+	x_temp[3] = (encoder_position + error*P).astype(int)
+	x_temp[4] = (-encoder_position - error*P).astype(int)
+	x_temp[1] = x_temp[3]
+	x_temp[2] = x_temp[4]
+
+	#x[1] = np.round(x[1] + error*P).astype(int)
+	#x[2] = np.round(x[2] - error*P).astype(int)
+
+	# x[1:5] = np.round(x[1:5] + error*P).astype(int)
+	# x[5:9] = np.round(x[5:9] - error*P).astype(int)
+
+	counter = counter + 1
+	command_motors(client_socket,x_temp)
 	time.sleep(dt)
+
+
+	#current_pos_1 = (np.sin((time.time()-start_time)*2)*1000)*(1)
+			
+	# for i in range(len(current_pos)):
+	# 	if i==0:
+	# 		current_pos[i] = 1;
+	# 	else:
+	# 		current_pos[i] = np.power(-1,(i+1))*current_pos_1
+	# command_motors(client_socket, current_pos)
+	# time.sleep(dt)
 	
 	#if np.abs(current_pos_1) < 5:
 	#	time.sleep(0)
 	
-	if j%50 == 0:
-		print('zeros: ' + str(current_pos))
-	j = j+1
+	# if j%50 == 0:
+	# 	print('zeros: ' + str(current_pos))
+	# j = j+1
 	
+
+
+
+
+
+
+
+
+
 for i in range(len(current_pos)):
 	current_pos = np.zeros(9)
 	command_motors(client_socket, current_pos)

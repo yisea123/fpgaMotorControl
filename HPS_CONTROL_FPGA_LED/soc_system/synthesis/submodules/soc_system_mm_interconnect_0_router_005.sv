@@ -50,9 +50,9 @@ module soc_system_mm_interconnect_0_router_005_default_decode
                DEFAULT_DESTID = 1 
    )
   (output [146 - 141 : 0] default_destination_id,
-   output [44-1 : 0] default_wr_channel,
-   output [44-1 : 0] default_rd_channel,
-   output [44-1 : 0] default_src_channel
+   output [48-1 : 0] default_wr_channel,
+   output [48-1 : 0] default_rd_channel,
+   output [48-1 : 0] default_src_channel
   );
 
   assign default_destination_id = 
@@ -63,7 +63,7 @@ module soc_system_mm_interconnect_0_router_005_default_decode
       assign default_src_channel = '0;
     end
     else begin : default_channel_assignment
-      assign default_src_channel = 44'b1 << DEFAULT_CHANNEL;
+      assign default_src_channel = 48'b1 << DEFAULT_CHANNEL;
     end
   endgenerate
 
@@ -73,8 +73,8 @@ module soc_system_mm_interconnect_0_router_005_default_decode
       assign default_rd_channel = '0;
     end
     else begin : default_rw_channel_assignment
-      assign default_wr_channel = 44'b1 << DEFAULT_WR_CHANNEL;
-      assign default_rd_channel = 44'b1 << DEFAULT_RD_CHANNEL;
+      assign default_wr_channel = 48'b1 << DEFAULT_WR_CHANNEL;
+      assign default_rd_channel = 48'b1 << DEFAULT_RD_CHANNEL;
     end
   endgenerate
 
@@ -103,7 +103,7 @@ module soc_system_mm_interconnect_0_router_005
     // -------------------
     output                          src_valid,
     output reg [171-1    : 0] src_data,
-    output reg [44-1 : 0] src_channel,
+    output reg [48-1 : 0] src_channel,
     output                          src_startofpacket,
     output                          src_endofpacket,
     input                           src_ready
@@ -119,7 +119,7 @@ module soc_system_mm_interconnect_0_router_005
     localparam PKT_PROTECTION_H = 161;
     localparam PKT_PROTECTION_L = 159;
     localparam ST_DATA_W = 171;
-    localparam ST_CHANNEL_W = 44;
+    localparam ST_CHANNEL_W = 48;
     localparam DECODER_TYPE = 1;
 
     localparam PKT_TRANS_WRITE = 106;
@@ -158,8 +158,8 @@ module soc_system_mm_interconnect_0_router_005
     assign src_valid         = sink_valid;
     assign src_startofpacket = sink_startofpacket;
     assign src_endofpacket   = sink_endofpacket;
-    wire [44-1 : 0] default_rd_channel;
-    wire [44-1 : 0] default_wr_channel;
+    wire [48-1 : 0] default_rd_channel;
+    wire [48-1 : 0] default_wr_channel;
 
 
 
@@ -193,15 +193,15 @@ module soc_system_mm_interconnect_0_router_005
 
 
         if (destid == 1  && write_transaction) begin
-            src_channel = 44'b001;
+            src_channel = 48'b001;
         end
 
         if (destid == 1  && read_transaction) begin
-            src_channel = 44'b010;
+            src_channel = 48'b010;
         end
 
         if (destid == 0 ) begin
-            src_channel = 44'b100;
+            src_channel = 48'b100;
         end
 
 

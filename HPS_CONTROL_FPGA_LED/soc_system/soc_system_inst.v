@@ -54,6 +54,7 @@
 		.hps_0_hps_io_hps_io_gpio_inst_GPIO54            (<connected-to-hps_0_hps_io_hps_io_gpio_inst_GPIO54>),            //                                         .hps_io_gpio_inst_GPIO54
 		.hps_0_hps_io_hps_io_gpio_inst_GPIO61            (<connected-to-hps_0_hps_io_hps_io_gpio_inst_GPIO61>),            //                                         .hps_io_gpio_inst_GPIO61
 		.led_pio_external_connection_export              (<connected-to-led_pio_external_connection_export>),              //              led_pio_external_connection.export
+		.limit_pio_external_connection_export            (<connected-to-limit_pio_external_connection_export>),            //            limit_pio_external_connection.export
 		.memory_mem_a                                    (<connected-to-memory_mem_a>),                                    //                                   memory.mem_a
 		.memory_mem_ba                                   (<connected-to-memory_mem_ba>),                                   //                                         .mem_ba
 		.memory_mem_ck                                   (<connected-to-memory_mem_ck>),                                   //                                         .mem_ck
@@ -105,6 +106,9 @@
 		.quad_pio_7_external_connection_export           (<connected-to-quad_pio_7_external_connection_export>),           //           quad_pio_7_external_connection.export
 		.quad_reset_pio_external_connection_export       (<connected-to-quad_reset_pio_external_connection_export>),       //       quad_reset_pio_external_connection.export
 		.reset_reset_n                                   (<connected-to-reset_reset_n>),                                   //                                    reset.reset_n
-		.limit_pio_external_connection_export            (<connected-to-limit_pio_external_connection_export>)             //            limit_pio_external_connection.export
+		.quad_pio_8_external_connection_export           (<connected-to-quad_pio_8_external_connection_export>),           //           quad_pio_8_external_connection.export
+		.quad_pio_9_external_connection_export           (<connected-to-quad_pio_9_external_connection_export>),           //           quad_pio_9_external_connection.export
+		.quad_pio_10_external_connection_export          (<connected-to-quad_pio_10_external_connection_export>),          //          quad_pio_10_external_connection.export
+		.quad_pio_11_external_connection_export          (<connected-to-quad_pio_11_external_connection_export>)           //          quad_pio_11_external_connection.export
 	);
 

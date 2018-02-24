@@ -102,6 +102,8 @@ module soc_system (
 		output wire [31:0] pwm_pio_6_external_connection_export,            //            pwm_pio_6_external_connection.export
 		output wire [31:0] pwm_pio_7_external_connection_export,            //            pwm_pio_7_external_connection.export
 		input  wire [31:0] quad_pio_0_external_connection_export,           //           quad_pio_0_external_connection.export
+		input  wire [31:0] quad_pio_10_external_connection_export,          //          quad_pio_10_external_connection.export
+		input  wire [31:0] quad_pio_11_external_connection_export,          //          quad_pio_11_external_connection.export
 		input  wire [31:0] quad_pio_1_external_connection_export,           //           quad_pio_1_external_connection.export
 		input  wire [31:0] quad_pio_2_external_connection_export,           //           quad_pio_2_external_connection.export
 		input  wire [31:0] quad_pio_3_external_connection_export,           //           quad_pio_3_external_connection.export
@@ -109,6 +111,8 @@ module soc_system (
 		input  wire [31:0] quad_pio_5_external_connection_export,           //           quad_pio_5_external_connection.export
 		input  wire [31:0] quad_pio_6_external_connection_export,           //           quad_pio_6_external_connection.export
 		input  wire [31:0] quad_pio_7_external_connection_export,           //           quad_pio_7_external_connection.export
+		input  wire [31:0] quad_pio_8_external_connection_export,           //           quad_pio_8_external_connection.export
+		input  wire [31:0] quad_pio_9_external_connection_export,           //           quad_pio_9_external_connection.export
 		output wire [31:0] quad_reset_pio_external_connection_export,       //       quad_reset_pio_external_connection.export
 		input  wire        reset_reset_n                                    //                                    reset.reset_n
 	);
@@ -361,6 +365,14 @@ module soc_system (
 	wire   [31:0] mm_interconnect_0_pwm_pio_7_s1_writedata;                  // mm_interconnect_0:pwm_pio_7_s1_writedata -> pwm_pio_7:writedata
 	wire   [31:0] mm_interconnect_0_limit_pio_s1_readdata;                   // limit_pio:readdata -> mm_interconnect_0:limit_pio_s1_readdata
 	wire    [1:0] mm_interconnect_0_limit_pio_s1_address;                    // mm_interconnect_0:limit_pio_s1_address -> limit_pio:address
+	wire   [31:0] mm_interconnect_0_quad_pio_8_s1_readdata;                  // quad_pio_8:readdata -> mm_interconnect_0:quad_pio_8_s1_readdata
+	wire    [1:0] mm_interconnect_0_quad_pio_8_s1_address;                   // mm_interconnect_0:quad_pio_8_s1_address -> quad_pio_8:address
+	wire   [31:0] mm_interconnect_0_quad_pio_9_s1_readdata;                  // quad_pio_9:readdata -> mm_interconnect_0:quad_pio_9_s1_readdata
+	wire    [1:0] mm_interconnect_0_quad_pio_9_s1_address;                   // mm_interconnect_0:quad_pio_9_s1_address -> quad_pio_9:address
+	wire   [31:0] mm_interconnect_0_quad_pio_10_s1_readdata;                 // quad_pio_10:readdata -> mm_interconnect_0:quad_pio_10_s1_readdata
+	wire    [1:0] mm_interconnect_0_quad_pio_10_s1_address;                  // mm_interconnect_0:quad_pio_10_s1_address -> quad_pio_10:address
+	wire   [31:0] mm_interconnect_0_quad_pio_11_s1_readdata;                 // quad_pio_11:readdata -> mm_interconnect_0:quad_pio_11_s1_readdata
+	wire    [1:0] mm_interconnect_0_quad_pio_11_s1_address;                  // mm_interconnect_0:quad_pio_11_s1_address -> quad_pio_11:address
 	wire   [31:0] hps_only_master_master_readdata;                           // mm_interconnect_1:hps_only_master_master_readdata -> hps_only_master:master_readdata
 	wire          hps_only_master_master_waitrequest;                        // mm_interconnect_1:hps_only_master_master_waitrequest -> hps_only_master:master_waitrequest
 	wire   [31:0] hps_only_master_master_address;                            // hps_only_master:master_address -> mm_interconnect_1:hps_only_master_master_address
@@ -413,7 +425,7 @@ module soc_system (
 	wire          irq_mapper_receiver1_irq;                                  // button_pio:irq -> [irq_mapper:receiver1_irq, irq_mapper_002:receiver1_irq]
 	wire          irq_mapper_receiver2_irq;                                  // dipsw_pio:irq -> [irq_mapper:receiver2_irq, irq_mapper_002:receiver2_irq]
 	wire          irq_mapper_receiver0_irq;                                  // jtag_uart:av_irq -> [irq_mapper:receiver0_irq, irq_mapper_002:receiver0_irq]
-	wire          rst_controller_reset_out_reset;                            // rst_controller:reset_out -> [button_pio:reset_n, dipsw_pio:reset_n, gpio_pio_0:reset_n, gpio_pio_1:reset_n, intr_capturer_0:rst_n, irq_mapper_002:reset, jtag_uart:rst_n, led_pio:reset_n, limit_pio:reset_n, mm_interconnect_0:fpga_only_master_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_0:onchip_memory2_0_reset1_reset_bridge_in_reset_reset, mm_interconnect_1:hps_only_master_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_1:hps_only_master_master_translator_reset_reset_bridge_in_reset_reset, onchip_memory2_0:reset, pid_correction_pio_0:reset_n, pid_correction_pio_1:reset_n, pid_correction_pio_2:reset_n, pid_correction_pio_3:reset_n, pid_correction_pio_4:reset_n, pid_correction_pio_5:reset_n, pid_correction_pio_6:reset_n, pid_correction_pio_7:reset_n, pid_error_pio_0:reset_n, pid_error_pio_1:reset_n, pid_error_pio_2:reset_n, pid_error_pio_3:reset_n, pid_error_pio_4:reset_n, pid_error_pio_5:reset_n, pid_error_pio_6:reset_n, pid_error_pio_7:reset_n, pid_values_pio:reset_n, pwm_pio_0:reset_n, pwm_pio_1:reset_n, pwm_pio_2:reset_n, pwm_pio_3:reset_n, pwm_pio_4:reset_n, pwm_pio_5:reset_n, pwm_pio_6:reset_n, pwm_pio_7:reset_n, quad_pio_0:reset_n, quad_pio_1:reset_n, quad_pio_2:reset_n, quad_pio_3:reset_n, quad_pio_4:reset_n, quad_pio_5:reset_n, quad_pio_6:reset_n, quad_pio_7:reset_n, quad_reset_pio:reset_n, rst_translator:in_reset, sysid_qsys:reset_n]
+	wire          rst_controller_reset_out_reset;                            // rst_controller:reset_out -> [button_pio:reset_n, dipsw_pio:reset_n, gpio_pio_0:reset_n, gpio_pio_1:reset_n, intr_capturer_0:rst_n, irq_mapper_002:reset, jtag_uart:rst_n, led_pio:reset_n, limit_pio:reset_n, mm_interconnect_0:fpga_only_master_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_0:onchip_memory2_0_reset1_reset_bridge_in_reset_reset, mm_interconnect_1:hps_only_master_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_1:hps_only_master_master_translator_reset_reset_bridge_in_reset_reset, onchip_memory2_0:reset, pid_correction_pio_0:reset_n, pid_correction_pio_1:reset_n, pid_correction_pio_2:reset_n, pid_correction_pio_3:reset_n, pid_correction_pio_4:reset_n, pid_correction_pio_5:reset_n, pid_correction_pio_6:reset_n, pid_correction_pio_7:reset_n, pid_error_pio_0:reset_n, pid_error_pio_1:reset_n, pid_error_pio_2:reset_n, pid_error_pio_3:reset_n, pid_error_pio_4:reset_n, pid_error_pio_5:reset_n, pid_error_pio_6:reset_n, pid_error_pio_7:reset_n, pid_values_pio:reset_n, pwm_pio_0:reset_n, pwm_pio_1:reset_n, pwm_pio_2:reset_n, pwm_pio_3:reset_n, pwm_pio_4:reset_n, pwm_pio_5:reset_n, pwm_pio_6:reset_n, pwm_pio_7:reset_n, quad_pio_0:reset_n, quad_pio_10:reset_n, quad_pio_11:reset_n, quad_pio_1:reset_n, quad_pio_2:reset_n, quad_pio_3:reset_n, quad_pio_4:reset_n, quad_pio_5:reset_n, quad_pio_6:reset_n, quad_pio_7:reset_n, quad_pio_8:reset_n, quad_pio_9:reset_n, quad_reset_pio:reset_n, rst_translator:in_reset, sysid_qsys:reset_n]
 	wire          rst_controller_reset_out_reset_req;                        // rst_controller:reset_req -> [onchip_memory2_0:reset_req, rst_translator:reset_req_in]
 	wire          rst_controller_001_reset_out_reset;                        // rst_controller_001:reset_out -> [mm_interconnect_0:hps_0_h2f_axi_master_agent_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_1:hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge_in_reset_reset]
 
@@ -1009,6 +1021,22 @@ module soc_system (
 		.in_port  (quad_pio_1_external_connection_export)     // external_connection.export
 	);
 
+	soc_system_pid_correction_pio_0 quad_pio_10 (
+		.clk      (clk_clk),                                   //                 clk.clk
+		.reset_n  (~rst_controller_reset_out_reset),           //               reset.reset_n
+		.address  (mm_interconnect_0_quad_pio_10_s1_address),  //                  s1.address
+		.readdata (mm_interconnect_0_quad_pio_10_s1_readdata), //                    .readdata
+		.in_port  (quad_pio_10_external_connection_export)     // external_connection.export
+	);
+
+	soc_system_pid_correction_pio_0 quad_pio_11 (
+		.clk      (clk_clk),                                   //                 clk.clk
+		.reset_n  (~rst_controller_reset_out_reset),           //               reset.reset_n
+		.address  (mm_interconnect_0_quad_pio_11_s1_address),  //                  s1.address
+		.readdata (mm_interconnect_0_quad_pio_11_s1_readdata), //                    .readdata
+		.in_port  (quad_pio_11_external_connection_export)     // external_connection.export
+	);
+
 	soc_system_pid_correction_pio_0 quad_pio_2 (
 		.clk      (clk_clk),                                  //                 clk.clk
 		.reset_n  (~rst_controller_reset_out_reset),          //               reset.reset_n
@@ -1055,6 +1083,22 @@ module soc_system (
 		.address  (mm_interconnect_0_quad_pio_7_s1_address),  //                  s1.address
 		.readdata (mm_interconnect_0_quad_pio_7_s1_readdata), //                    .readdata
 		.in_port  (quad_pio_7_external_connection_export)     // external_connection.export
+	);
+
+	soc_system_pid_correction_pio_0 quad_pio_8 (
+		.clk      (clk_clk),                                  //                 clk.clk
+		.reset_n  (~rst_controller_reset_out_reset),          //               reset.reset_n
+		.address  (mm_interconnect_0_quad_pio_8_s1_address),  //                  s1.address
+		.readdata (mm_interconnect_0_quad_pio_8_s1_readdata), //                    .readdata
+		.in_port  (quad_pio_8_external_connection_export)     // external_connection.export
+	);
+
+	soc_system_pid_correction_pio_0 quad_pio_9 (
+		.clk      (clk_clk),                                  //                 clk.clk
+		.reset_n  (~rst_controller_reset_out_reset),          //               reset.reset_n
+		.address  (mm_interconnect_0_quad_pio_9_s1_address),  //                  s1.address
+		.readdata (mm_interconnect_0_quad_pio_9_s1_readdata), //                    .readdata
+		.in_port  (quad_pio_9_external_connection_export)     // external_connection.export
 	);
 
 	soc_system_pid_error_pio_0 quad_reset_pio (
@@ -1309,6 +1353,10 @@ module soc_system (
 		.quad_pio_0_s1_readdata                                           (mm_interconnect_0_quad_pio_0_s1_readdata),                  //                                                           .readdata
 		.quad_pio_1_s1_address                                            (mm_interconnect_0_quad_pio_1_s1_address),                   //                                              quad_pio_1_s1.address
 		.quad_pio_1_s1_readdata                                           (mm_interconnect_0_quad_pio_1_s1_readdata),                  //                                                           .readdata
+		.quad_pio_10_s1_address                                           (mm_interconnect_0_quad_pio_10_s1_address),                  //                                             quad_pio_10_s1.address
+		.quad_pio_10_s1_readdata                                          (mm_interconnect_0_quad_pio_10_s1_readdata),                 //                                                           .readdata
+		.quad_pio_11_s1_address                                           (mm_interconnect_0_quad_pio_11_s1_address),                  //                                             quad_pio_11_s1.address
+		.quad_pio_11_s1_readdata                                          (mm_interconnect_0_quad_pio_11_s1_readdata),                 //                                                           .readdata
 		.quad_pio_2_s1_address                                            (mm_interconnect_0_quad_pio_2_s1_address),                   //                                              quad_pio_2_s1.address
 		.quad_pio_2_s1_readdata                                           (mm_interconnect_0_quad_pio_2_s1_readdata),                  //                                                           .readdata
 		.quad_pio_3_s1_address                                            (mm_interconnect_0_quad_pio_3_s1_address),                   //                                              quad_pio_3_s1.address
@@ -1321,6 +1369,10 @@ module soc_system (
 		.quad_pio_6_s1_readdata                                           (mm_interconnect_0_quad_pio_6_s1_readdata),                  //                                                           .readdata
 		.quad_pio_7_s1_address                                            (mm_interconnect_0_quad_pio_7_s1_address),                   //                                              quad_pio_7_s1.address
 		.quad_pio_7_s1_readdata                                           (mm_interconnect_0_quad_pio_7_s1_readdata),                  //                                                           .readdata
+		.quad_pio_8_s1_address                                            (mm_interconnect_0_quad_pio_8_s1_address),                   //                                              quad_pio_8_s1.address
+		.quad_pio_8_s1_readdata                                           (mm_interconnect_0_quad_pio_8_s1_readdata),                  //                                                           .readdata
+		.quad_pio_9_s1_address                                            (mm_interconnect_0_quad_pio_9_s1_address),                   //                                              quad_pio_9_s1.address
+		.quad_pio_9_s1_readdata                                           (mm_interconnect_0_quad_pio_9_s1_readdata),                  //                                                           .readdata
 		.quad_reset_pio_s1_address                                        (mm_interconnect_0_quad_reset_pio_s1_address),               //                                          quad_reset_pio_s1.address
 		.quad_reset_pio_s1_write                                          (mm_interconnect_0_quad_reset_pio_s1_write),                 //                                                           .write
 		.quad_reset_pio_s1_readdata                                       (mm_interconnect_0_quad_reset_pio_s1_readdata),              //                                                           .readdata

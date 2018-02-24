@@ -128,7 +128,8 @@ module HPS_CONTROL_FPGA_LED(
 //  REG/WIRE declarations
 //=======================================================
 wire  hps_fpga_reset_n;
-wire [31:0] enc_count[7:0];
+wire [31:0] enc_count[11:0];
+//wire [31:0] enc_count[7:0];
 wire [31:0] enc_reset;
 wire [31:0] pid_error[7:0];
 wire [31:0] pid_correction[7:0];
@@ -240,7 +241,13 @@ assign fpga_clk_50=FPGA_CLK1_50;
 		.quad_pio_5_external_connection_export (	enc_count[5][31:0]	),
 		.quad_pio_6_external_connection_export (	enc_count[6][31:0]	),
 		.quad_pio_7_external_connection_export (	enc_count[7][31:0]	),
-		
+		//External encoders
+		.quad_pio_8_external_connection_export (	enc_count[8][31:0]	),
+		.quad_pio_9_external_connection_export (	enc_count[9][31:0]	),
+		.quad_pio_10_external_connection_export (	enc_count[10][31:0]	),
+		.quad_pio_11_external_connection_export (	enc_count[11][31:0]	),
+								
+								
 		.quad_reset_pio_external_connection_export (	enc_reset[31:0]	),
 		
 		//.gpio_pio_0_external_connection_export    (	GPIO_0[31:24]	),
@@ -391,6 +398,38 @@ quad_counter quad7(
 	.reset		(enc_reset[7])
 );
 
+//For external encoders
+quad_counter quad8(
+	.clk  		(fpga_clk_50),
+	.quadA		(GPIO_1[24]),
+	.quadB		(GPIO_1[25]), 
+	.count		(enc_count[8][31:0]),
+	.reset		(enc_reset[8])
+);
+
+quad_counter quad9(
+	.clk  		(fpga_clk_50),
+	.quadA		(GPIO_1[26]),
+	.quadB		(GPIO_1[27]), 
+	.count		(enc_count[9][31:0]),
+	.reset		(enc_reset[9])
+);
+
+quad_counter quad10(
+	.clk  		(fpga_clk_50),
+	.quadA		(GPIO_1[28]),
+	.quadB		(GPIO_1[29]), 
+	.count		(enc_count[10][31:0]),
+	.reset		(enc_reset[10])
+);
+
+quad_counter quad11(
+	.clk  		(fpga_clk_50),
+	.quadA		(GPIO_1[30]),
+	.quadB		(GPIO_1[31]), 
+	.count		(enc_count[11][31:0]),
+	.reset		(enc_reset[11])
+);
 
 
 PID pid0(
