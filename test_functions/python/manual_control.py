@@ -53,9 +53,15 @@ def which_motors():
 		motors = "12345678"
 	return motors
 
+def zero_motors(client_socket):
+	zero_pos = np.zeros((9,1)).astype(int)
+	command_motors(client_socket, zero_pos)
+	print("System Zeroing")
+	time.sleep(3)
+	return
 
 # + is out and - is in
-def get_direction(default_counts):
+def get_direction(default_counts,client_socket):
 	while True:
 		direction = input("Enter direction +/- keys and number of counts(ex:+ 100): ")
 		direction = re.split('\s',direction)
@@ -70,6 +76,11 @@ def get_direction(default_counts):
 			if direction[0] == "m":
 				counts = which_motors()
 				return counts
+				break
+
+			if direction[0] == "z":
+				zero_motors(client_socket)
+				return "z"
 				break
 
 			direction.append(str(default_counts))
@@ -88,50 +99,6 @@ def get_direction(default_counts):
 			return counts
 			break
 	return;
-
-#**********************************************************************
-#**************					Zeroing				   	***************
-#**********************************************************************
-zeroing = 0
-
-if zeroing == 1:
-	current_pos = np.zeros((9,1))
-
-	command_motors(client_socket, current_pos)
-
-	#to enable zeroing set state to 0
-	state = 0
-	client_socket.setblocking(1)
-	while(state==0):
-			switch_state = str(client_socket.recv(256))
-			test = re.split('\s', switch_state)
-			print("Current state is: ", test[1],"rate is: ", test[2])
-			state=int(test[1])
-			command_motors(client_socket, current_pos)
-			time.sleep(dt)
-
-	time.sleep(5)
-
-	x = np.ones(9).astype(int)
-	x[1:] = (x[1:]-5000).astype(int)
-	print(x)
-	command_motors(client_socket, x)
-	time.sleep(2)
-	x[1:] = (x[1:]-5000).astype(int)
-	print(x)
-	command_motors(client_socket, x)
-	time.sleep(2)
-	x[1:] = (x[1:]-5000).astype(int)
-	print(x)
-	command_motors(client_socket, x)
-	time.sleep(2)
-
-	print("Finishing zeroing")
-	print("Current state is: ", test[1],"rate is: ", test[2])
-
-#**********************************************************************
-#**************					Done Zeroing		 	***************
-#**********************************************************************
 
 
 
@@ -162,11 +129,20 @@ while(manual_control):
 	encoder_positions = str(client_socket.recv(256))
 	encoders = re.split('\s', encoder_positions)
 
-	default_counts = get_direction(default_counts)	
+	#Blocking function
+	default_counts = get_direction(default_counts,client_socket)	
 
+	#If return (default_counts) is string indicating which motors to control
 	if isinstance(default_counts, str):
-		motors = default_counts
-		default_counts = 0
+		if default_counts == "z":
+			x = np.ones(9).astype(int)
+			#Gives motors length 0
+			motors = ""
+			default_counts = 0
+
+		else:
+			motors = default_counts
+			default_counts = 0
 
 	for i in range(len(motors)):
  		x[int(motors[i])] = x[int(motors[i])] + default_counts
@@ -181,6 +157,75 @@ while(manual_control):
 #**********************************************************************
 #**************				Done Manual control		 	***************
 #**********************************************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#**********************************************************************
+#**************					Zeroing				   	***************
+#**********************************************************************
+# zeroing = 0
+
+# if zeroing == 1:
+# 	current_pos = np.zeros((9,1))
+
+# 	command_motors(client_socket, current_pos)
+
+# 	#to enable zeroing set state to 0
+# 	state = 0
+# 	client_socket.setblocking(1)
+# 	while(state==0):
+# 			switch_state = str(client_socket.recv(256))
+# 			test = re.split('\s', switch_state)
+# 			print("Current state is: ", test[1],"rate is: ", test[2])
+# 			state=int(test[1])
+# 			command_motors(client_socket, current_pos)
+# 			time.sleep(dt)
+
+# 	time.sleep(5)
+
+# 	x = np.ones(9).astype(int)
+# 	x[1:] = (x[1:]-5000).astype(int)
+# 	print(x)
+# 	command_motors(client_socket, x)
+# 	time.sleep(2)
+# 	x[1:] = (x[1:]-5000).astype(int)
+# 	print(x)
+# 	command_motors(client_socket, x)
+# 	time.sleep(2)
+# 	x[1:] = (x[1:]-5000).astype(int)
+# 	print(x)
+# 	command_motors(client_socket, x)
+# 	time.sleep(2)
+
+# 	print("Finishing zeroing")
+# 	print("Current state is: ", test[1],"rate is: ", test[2])
+
+#**********************************************************************
+#**************					Done Zeroing		 	***************
+#**********************************************************************
+
+
 
 '''
 

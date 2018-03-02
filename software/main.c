@@ -62,6 +62,7 @@ uint32_t createNativeInt(uint32_t input, int size);
 void *threadFunc(void *arg);
 void error(const char *msg);
 void zero_motor_axis(void);
+void zero_motors(char *write_buffer,int newsockfd);
 void my_handler(int s){
            printf("Caught signal %d\n",s);
            exit_flag = 1; 
@@ -495,84 +496,9 @@ setup socket communication
 				}
 			}
 		}
-
-
-		/*--------------------------------
-		Zeroing
-		--------------------------------*/
-		if(state==0 && rate< 5){
-			//moves out
-			if(switch_temp==0){
-				switch_count = 0;
-				for(k = 0; k<8; k++) {
-					//want to move forward until all switches read 1
-					switch_count = switch_count + switch_states[k];
-					position_setpoints[k] = position_setpoints[k] + (!switch_states[k])*zero_rates[rate];
-				}
-				switch_temp = switch_count == 8;
-				if(switch_temp==1){
-					//position_setpoints[0]=-10000;
-					rate=rate+1;
-				}
-			}
-			//moves in
-			else if(switch_temp==1){
-				switch_count = 0;	
-				for(k=0; k<8; k++){
-					//want to move back until all switches read 0
-					switch_count = switch_count + !switch_states[k];
-					position_setpoints[k] = position_setpoints[k] - switch_states[k]*zero_rates[rate];
-				}
-				switch_temp = switch_count == 8;
-				switch_temp = !switch_temp;
-				if(switch_temp==0){
-					//position_setpoints[0]=-10000;
-					rate=rate+1;
-				}
-			}
-
-			sprintf(write_buffer,"nn %d %d qq",done,rate);
-			n = write(newsockfd,write_buffer,256);
-			if (n < 0){
-    			error("ERROR writing to socket");
-    			break;
-    		}
-
-			if(rate==5){
-				done=1;
-				rate=5;
-
-				//for(k=0; k<8; k++){
-					//want to move back from limit switches
-				//	position_setpoints[k] = position_setpoints[k];
-				//}
-
-				sprintf(write_buffer,"nn %d %d qq",done,rate);
-				n = write(newsockfd,write_buffer,256);
-				if (n < 0){
-    				error("ERROR writing to socket");
-    				break;
-    			}
-
-    			printf("**Done zeroing**\n");
-
-
-    			//freezeMain = 1;
-    			//set PWM values to zero
-				for(j=0;j<8;j++){
-					alt_write_word(h2p_lw_pwm_values_addr[j], 255);
-				}
-
-				//zero_motor_axis();
-				//usleep(1000*15000);
-				//below resets all counters, PID controllers
-				alt_write_word(h2p_lw_quad_reset_addr, 0xFFFFFFFF);
-				usleep(1000*1000);
-				alt_write_word(h2p_lw_quad_reset_addr, 0);
-				usleep(1000*1000);
-
-				freezeMain = 0;
-			}
+		//When state == 0, we are zeroing
+		if(state==0){
+			zero_motors(write_buffer,newsockfd);
 		}
 	}
 
@@ -617,4 +543,91 @@ void zero_motor_axis(void){
 			}
 		}
 	}
+}
+
+void zero_motors(char *write_buffer,int newsockfd){
+	int i, k, j, n;
+	int rate=0, direction=1,switch_count=0, done=0;
+	int zero_rates[6]={5,5,5,1,1,1};
+
+	while(rate<5){
+		//Moves out until all switches read 1
+		while(direction==1){
+			switch_count = 0;
+			for(k=0; k<8; k++){
+				switch_count = switch_count + switch_states[k];
+				position_setpoints[k] = position_setpoints[k] + (!switch_states[k])*zero_rates[rate];
+			}
+			if(switch_count==8){ //if true all switches read 1
+				direction = 0;
+				rate=rate+1;
+			}
+			/*--------------------------------
+			write switch state to socket
+			--------------------------------*/
+			sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d qq", switch_states[0], switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7]);
+			//n = write(newsockfd,write_buffer,256);
+			if (n < 0){
+				error("ERROR writing to socket");
+				break;
+			}
+			usleep(10000);
+		}
+
+		//Moves in until all switches read 0
+		while(direction==0){
+			switch_count = 0;
+			for(k=0; k<8; k++){
+				switch_count = switch_count + switch_states[k];
+				position_setpoints[k] = position_setpoints[k] - switch_states[k]*zero_rates[rate];
+			}
+			if(!switch_count){ //want switch count to be 0, at this point all switches are 0
+				rate=rate+1;
+				direction = 1;
+			}
+			/*--------------------------------
+			write switch state to socket
+			--------------------------------*/
+			sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d qq", switch_states[0], switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7]);
+			//n = write(newsockfd,write_buffer,256);
+			if (n < 0){
+				error("ERROR writing to socket");
+				break;
+			}
+			usleep(10000);
+		}
+	}
+
+	//Need to pass write_buffer and newsockfd
+	done=1;
+	sprintf(write_buffer,"nn %d %d qq",done,rate);
+	//n = write(newsockfd,write_buffer,256);
+	if (n < 0){
+		error("ERROR writing to socket");
+		//break;
+	}
+
+	//want to move back from limit switches
+	// for(i=1; i<10; i++){
+	// 	for(k=0; k<8; k++){
+	// 		position_setpoints[k] = position_setpoints[k] - 100;
+	// 	}
+	// 	usleep(10000);
+	// }
+
+
+	/*printf("**Done zeroing**\n");
+
+	//set PWM values to zero
+	for(j=0;j<8;j++){
+		alt_write_word(h2p_lw_pwm_values_addr[j], 255);
+	}
+
+	//below resets all counters, PID controllers
+	alt_write_word(h2p_lw_quad_reset_addr, 0xFFFFFFFF);
+	usleep(1000*1000);
+	alt_write_word(h2p_lw_quad_reset_addr, 0);
+	usleep(1000*1000);
+	//freezeMain = 0;*/
+	
 }
