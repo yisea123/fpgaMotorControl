@@ -71,9 +71,10 @@ void my_handler(int s){
 
 int freezeMain = 0;
 
-uint8_t P=2;
+uint8_t P=10;
 uint8_t I=0;
 uint8_t D=0;
+float controllerGain = 0.1;
 //uint8_t P = 1;
 //uint8_t I = 0;
 //uint8_t D = 0;
@@ -234,12 +235,14 @@ int main(int argc, char **argv)
 	//calculate PID values
 	uint32_t PID_values = 0;
 	PID_values = PID_values | (P+I+D);
+	//Question for this
 	PID_values = PID_values | ((P+2*D) << 8);
+	//PID_values = PID_values | (10 << 8);
 	PID_values = PID_values | (D << 16);
 	alt_write_word(h2p_lw_pid_values_addr, PID_values);
 	uint32_t pid_values_read = *(uint32_t*)h2p_lw_pid_values_addr;
 	printf("Sent: P: %d, I: %d, D: %d\n\n", P, I, D);
-	printf("P: %d, I: %d, D: %d\n\n", (uint8_t)(pid_values_read & (0x000000FF)), (uint8_t)((pid_values_read & (0x0000FF00))>>8), (uint8_t)((pid_values_read & (0x00FF0000))>>16));
+	printf("Received: P: %d, I: %d, D: %d\n\n", (uint8_t)(pid_values_read & (0x000000FF)), (uint8_t)((pid_values_read & (0x0000FF00))>>8), (uint8_t)((pid_values_read & (0x00FF0000))>>16));
 	
 	
 	/*
@@ -291,7 +294,7 @@ int main(int argc, char **argv)
 				
 				//int32_t pid_output = *(int32_t*)(h2p_lw_pid_output_addr[j]);
 				usleep(100);
-				int32_t pid_output = alt_read_word(h2p_lw_pid_output_addr[j]);
+				int32_t pid_output = (int32_t)(alt_read_word(h2p_lw_pid_output_addr[j])) * controllerGain;
 				int32_t positive_pid_output = (pid_output>=0);
 				int32_t pid_output_cutoff = fabs(pid_output)*(fabs(pid_output) <= 255) + 255*(fabs(pid_output) > 255);	
 				
@@ -439,8 +442,6 @@ setup socket communication
 		read from socket
 		--------------------------------*/
 		n = read(newsockfd,buffer,255);
-		//printf("Buffer received: %s\n\n", buffer);
-
    		if (n < 0){
    			error("ERROR reading from socket");
    			break;
@@ -508,6 +509,10 @@ setup socket communication
     close(sockfd);
 }
 
+
+
+
+
 void error(const char *msg)
 {
     perror(msg);
@@ -565,12 +570,14 @@ void zero_motors(char *write_buffer,int newsockfd){
 			/*--------------------------------
 			write switch state to socket
 			--------------------------------*/
+			/*
 			sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d qq", switch_states[0], switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7]);
 			//n = write(newsockfd,write_buffer,256);
 			if (n < 0){
 				error("ERROR writing to socket");
 				break;
 			}
+			*/
 			usleep(10000);
 		}
 
@@ -588,12 +595,14 @@ void zero_motors(char *write_buffer,int newsockfd){
 			/*--------------------------------
 			write switch state to socket
 			--------------------------------*/
+			/*
 			sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d qq", switch_states[0], switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7]);
 			//n = write(newsockfd,write_buffer,256);
 			if (n < 0){
 				error("ERROR writing to socket");
 				break;
 			}
+			*/
 			usleep(10000);
 		}
 	}

@@ -4,6 +4,8 @@ import os
 import time
 import socket
 import re
+import sys
+import select
 
 client_socket = 1
 if(client_socket):
@@ -60,8 +62,36 @@ def zero_motors(client_socket):
 	time.sleep(3)
 	return
 
+
+def run_sine(x,dt = 1/50):
+	print("Running sine wave, ctrl c to break:")
+	start_time = time.time()
+	start_pos = x
+	current_pos = np.ones((len(x),1))
+	print(x[1])
+	time.sleep(3)
+	try:
+		while True:
+			current_time = time.time()
+			for i in range(len(current_pos)):
+				if i==0:
+					current_pos[i] = 1;
+				else:
+					current_pos_1 = (np.sin((current_time-start_time)*10)*1000)
+					current_pos[i] = start_pos[i] + current_pos_1
+			command_motors(client_socket, current_pos)
+			print(current_pos)
+			time.sleep(dt)
+	except KeyboardInterrupt:
+		#Gives back control to all motors
+		motors = "12345678"
+		return motors
+	return
+
+
 # + is out and - is in
-def get_direction(default_counts,client_socket):
+#This can be cleaned up later if I care enough to
+def get_direction(default_counts,client_socket,x):
 	while True:
 		direction = input("Enter direction +/- keys and number of counts(ex:+ 100): ")
 		direction = re.split('\s',direction)
@@ -75,12 +105,17 @@ def get_direction(default_counts,client_socket):
 
 			if direction[0] == "m":
 				counts = which_motors()
-				return counts
+				return counts #Returns which motors to control
 				break
 
 			if direction[0] == "z":
 				zero_motors(client_socket)
 				return "z"
+				break
+
+			if direction[0] == "sine":
+				motors = run_sine(x)
+				return motors
 				break
 
 			direction.append(str(default_counts))
@@ -102,7 +137,6 @@ def get_direction(default_counts,client_socket):
 
 
 
-
 #**********************************************************************
 #**************					Manual control		 	***************
 #**********************************************************************
@@ -117,6 +151,7 @@ start_time = time.time()
 loop_time = 1/500
 
 #initialization
+#x is the position of the encoders
 x = np.ones(9).astype(int)
 command_motors(client_socket,x)
 time.sleep(2)
@@ -129,11 +164,12 @@ while(manual_control):
 	encoder_positions = str(client_socket.recv(256))
 	encoders = re.split('\s', encoder_positions)
 
-	#Blocking function
-	default_counts = get_direction(default_counts,client_socket)	
+	#Blocking function, main thing that returns what to do
+	default_counts = get_direction(default_counts,client_socket,x)	
 
 	#If return (default_counts) is string indicating which motors to control
 	if isinstance(default_counts, str):
+		#Does nothing to motors here -> control stuff is done in functions
 		if default_counts == "z":
 			x = np.ones(9).astype(int)
 			#Gives motors length 0
@@ -177,53 +213,6 @@ while(manual_control):
 
 
 
-
-
-
-
-#**********************************************************************
-#**************					Zeroing				   	***************
-#**********************************************************************
-# zeroing = 0
-
-# if zeroing == 1:
-# 	current_pos = np.zeros((9,1))
-
-# 	command_motors(client_socket, current_pos)
-
-# 	#to enable zeroing set state to 0
-# 	state = 0
-# 	client_socket.setblocking(1)
-# 	while(state==0):
-# 			switch_state = str(client_socket.recv(256))
-# 			test = re.split('\s', switch_state)
-# 			print("Current state is: ", test[1],"rate is: ", test[2])
-# 			state=int(test[1])
-# 			command_motors(client_socket, current_pos)
-# 			time.sleep(dt)
-
-# 	time.sleep(5)
-
-# 	x = np.ones(9).astype(int)
-# 	x[1:] = (x[1:]-5000).astype(int)
-# 	print(x)
-# 	command_motors(client_socket, x)
-# 	time.sleep(2)
-# 	x[1:] = (x[1:]-5000).astype(int)
-# 	print(x)
-# 	command_motors(client_socket, x)
-# 	time.sleep(2)
-# 	x[1:] = (x[1:]-5000).astype(int)
-# 	print(x)
-# 	command_motors(client_socket, x)
-# 	time.sleep(2)
-
-# 	print("Finishing zeroing")
-# 	print("Current state is: ", test[1],"rate is: ", test[2])
-
-#**********************************************************************
-#**************					Done Zeroing		 	***************
-#**********************************************************************
 
 
 
