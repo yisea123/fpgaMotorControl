@@ -158,7 +158,6 @@ class MotorInstance():
 
 				print("Incorrect input, try again.")
 				continue
-				
 
 			#String input of two entries (ex:+ 100)
 			if len(direction)>2 or not(direction[1].isdigit()) or not(direction[0] == '+' or direction[0] == '-'):
@@ -173,8 +172,6 @@ class MotorInstance():
 				return self.step_size
 				break
 		return
-
-
 
 
 	def setpriority(pid=None,priority=5):
@@ -194,7 +191,6 @@ class MotorInstance():
 	        pid = win32api.GetCurrentProcessId()
 	    handle = win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS, True, pid)
 	    win32process.SetPriorityClass(handle, priorityclasses[priority])
-
 
 
 #**********************************************************************
@@ -227,8 +223,6 @@ if IsWindows:
 
 #tells which motors to control
 motor_numbers = motors.which_motors()
-
-
 
 
 while(ManualControl):
