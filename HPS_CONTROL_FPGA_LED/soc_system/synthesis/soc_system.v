@@ -9,6 +9,7 @@ module soc_system (
 		input  wire [3:0]  dipsw_pio_external_connection_export,            //            dipsw_pio_external_connection.export
 		output wire [7:0]  gpio_pio_0_external_connection_export,           //           gpio_pio_0_external_connection.export
 		output wire [7:0]  gpio_pio_1_external_connection_export,           //           gpio_pio_1_external_connection.export
+		output wire [31:0] heartbeat_external_connection_export,            //            heartbeat_external_connection.export
 		output wire        hps_0_h2f_reset_reset_n,                         //                          hps_0_h2f_reset.reset_n
 		output wire        hps_0_hps_io_hps_io_emac1_inst_TX_CLK,           //                             hps_0_hps_io.hps_io_emac1_inst_TX_CLK
 		output wire        hps_0_hps_io_hps_io_emac1_inst_TXD0,             //                                         .hps_io_emac1_inst_TXD0
@@ -373,6 +374,11 @@ module soc_system (
 	wire    [1:0] mm_interconnect_0_quad_pio_10_s1_address;                  // mm_interconnect_0:quad_pio_10_s1_address -> quad_pio_10:address
 	wire   [31:0] mm_interconnect_0_quad_pio_11_s1_readdata;                 // quad_pio_11:readdata -> mm_interconnect_0:quad_pio_11_s1_readdata
 	wire    [1:0] mm_interconnect_0_quad_pio_11_s1_address;                  // mm_interconnect_0:quad_pio_11_s1_address -> quad_pio_11:address
+	wire          mm_interconnect_0_heartbeat_s1_chipselect;                 // mm_interconnect_0:heartbeat_s1_chipselect -> heartbeat:chipselect
+	wire   [31:0] mm_interconnect_0_heartbeat_s1_readdata;                   // heartbeat:readdata -> mm_interconnect_0:heartbeat_s1_readdata
+	wire    [1:0] mm_interconnect_0_heartbeat_s1_address;                    // mm_interconnect_0:heartbeat_s1_address -> heartbeat:address
+	wire          mm_interconnect_0_heartbeat_s1_write;                      // mm_interconnect_0:heartbeat_s1_write -> heartbeat:write_n
+	wire   [31:0] mm_interconnect_0_heartbeat_s1_writedata;                  // mm_interconnect_0:heartbeat_s1_writedata -> heartbeat:writedata
 	wire   [31:0] hps_only_master_master_readdata;                           // mm_interconnect_1:hps_only_master_master_readdata -> hps_only_master:master_readdata
 	wire          hps_only_master_master_waitrequest;                        // mm_interconnect_1:hps_only_master_master_waitrequest -> hps_only_master:master_waitrequest
 	wire   [31:0] hps_only_master_master_address;                            // hps_only_master:master_address -> mm_interconnect_1:hps_only_master_master_address
@@ -425,7 +431,7 @@ module soc_system (
 	wire          irq_mapper_receiver1_irq;                                  // button_pio:irq -> [irq_mapper:receiver1_irq, irq_mapper_002:receiver1_irq]
 	wire          irq_mapper_receiver2_irq;                                  // dipsw_pio:irq -> [irq_mapper:receiver2_irq, irq_mapper_002:receiver2_irq]
 	wire          irq_mapper_receiver0_irq;                                  // jtag_uart:av_irq -> [irq_mapper:receiver0_irq, irq_mapper_002:receiver0_irq]
-	wire          rst_controller_reset_out_reset;                            // rst_controller:reset_out -> [button_pio:reset_n, dipsw_pio:reset_n, gpio_pio_0:reset_n, gpio_pio_1:reset_n, intr_capturer_0:rst_n, irq_mapper_002:reset, jtag_uart:rst_n, led_pio:reset_n, limit_pio:reset_n, mm_interconnect_0:fpga_only_master_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_0:onchip_memory2_0_reset1_reset_bridge_in_reset_reset, mm_interconnect_1:hps_only_master_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_1:hps_only_master_master_translator_reset_reset_bridge_in_reset_reset, onchip_memory2_0:reset, pid_correction_pio_0:reset_n, pid_correction_pio_1:reset_n, pid_correction_pio_2:reset_n, pid_correction_pio_3:reset_n, pid_correction_pio_4:reset_n, pid_correction_pio_5:reset_n, pid_correction_pio_6:reset_n, pid_correction_pio_7:reset_n, pid_error_pio_0:reset_n, pid_error_pio_1:reset_n, pid_error_pio_2:reset_n, pid_error_pio_3:reset_n, pid_error_pio_4:reset_n, pid_error_pio_5:reset_n, pid_error_pio_6:reset_n, pid_error_pio_7:reset_n, pid_values_pio:reset_n, pwm_pio_0:reset_n, pwm_pio_1:reset_n, pwm_pio_2:reset_n, pwm_pio_3:reset_n, pwm_pio_4:reset_n, pwm_pio_5:reset_n, pwm_pio_6:reset_n, pwm_pio_7:reset_n, quad_pio_0:reset_n, quad_pio_10:reset_n, quad_pio_11:reset_n, quad_pio_1:reset_n, quad_pio_2:reset_n, quad_pio_3:reset_n, quad_pio_4:reset_n, quad_pio_5:reset_n, quad_pio_6:reset_n, quad_pio_7:reset_n, quad_pio_8:reset_n, quad_pio_9:reset_n, quad_reset_pio:reset_n, rst_translator:in_reset, sysid_qsys:reset_n]
+	wire          rst_controller_reset_out_reset;                            // rst_controller:reset_out -> [button_pio:reset_n, dipsw_pio:reset_n, gpio_pio_0:reset_n, gpio_pio_1:reset_n, heartbeat:reset_n, intr_capturer_0:rst_n, irq_mapper_002:reset, jtag_uart:rst_n, led_pio:reset_n, limit_pio:reset_n, mm_interconnect_0:fpga_only_master_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_0:onchip_memory2_0_reset1_reset_bridge_in_reset_reset, mm_interconnect_1:hps_only_master_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_1:hps_only_master_master_translator_reset_reset_bridge_in_reset_reset, onchip_memory2_0:reset, pid_correction_pio_0:reset_n, pid_correction_pio_1:reset_n, pid_correction_pio_2:reset_n, pid_correction_pio_3:reset_n, pid_correction_pio_4:reset_n, pid_correction_pio_5:reset_n, pid_correction_pio_6:reset_n, pid_correction_pio_7:reset_n, pid_error_pio_0:reset_n, pid_error_pio_1:reset_n, pid_error_pio_2:reset_n, pid_error_pio_3:reset_n, pid_error_pio_4:reset_n, pid_error_pio_5:reset_n, pid_error_pio_6:reset_n, pid_error_pio_7:reset_n, pid_values_pio:reset_n, pwm_pio_0:reset_n, pwm_pio_1:reset_n, pwm_pio_2:reset_n, pwm_pio_3:reset_n, pwm_pio_4:reset_n, pwm_pio_5:reset_n, pwm_pio_6:reset_n, pwm_pio_7:reset_n, quad_pio_0:reset_n, quad_pio_10:reset_n, quad_pio_11:reset_n, quad_pio_1:reset_n, quad_pio_2:reset_n, quad_pio_3:reset_n, quad_pio_4:reset_n, quad_pio_5:reset_n, quad_pio_6:reset_n, quad_pio_7:reset_n, quad_pio_8:reset_n, quad_pio_9:reset_n, quad_reset_pio:reset_n, rst_translator:in_reset, sysid_qsys:reset_n]
 	wire          rst_controller_reset_out_reset_req;                        // rst_controller:reset_req -> [onchip_memory2_0:reset_req, rst_translator:reset_req_in]
 	wire          rst_controller_001_reset_out_reset;                        // rst_controller_001:reset_out -> [mm_interconnect_0:hps_0_h2f_axi_master_agent_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_1:hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge_in_reset_reset]
 
@@ -491,6 +497,17 @@ module soc_system (
 		.chipselect (mm_interconnect_0_gpio_pio_1_s1_chipselect), //                    .chipselect
 		.readdata   (mm_interconnect_0_gpio_pio_1_s1_readdata),   //                    .readdata
 		.out_port   (gpio_pio_1_external_connection_export)       // external_connection.export
+	);
+
+	soc_system_heartbeat heartbeat (
+		.clk        (clk_clk),                                   //                 clk.clk
+		.reset_n    (~rst_controller_reset_out_reset),           //               reset.reset_n
+		.address    (mm_interconnect_0_heartbeat_s1_address),    //                  s1.address
+		.write_n    (~mm_interconnect_0_heartbeat_s1_write),     //                    .write_n
+		.writedata  (mm_interconnect_0_heartbeat_s1_writedata),  //                    .writedata
+		.chipselect (mm_interconnect_0_heartbeat_s1_chipselect), //                    .chipselect
+		.readdata   (mm_interconnect_0_heartbeat_s1_readdata),   //                    .readdata
+		.out_port   (heartbeat_external_connection_export)       // external_connection.export
 	);
 
 	soc_system_hps_0 #(
@@ -818,7 +835,7 @@ module soc_system (
 		.in_port  (pid_correction_pio_7_external_connection_export)     // external_connection.export
 	);
 
-	soc_system_pid_error_pio_0 pid_error_pio_0 (
+	soc_system_heartbeat pid_error_pio_0 (
 		.clk        (clk_clk),                                         //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),                 //               reset.reset_n
 		.address    (mm_interconnect_0_pid_error_pio_0_s1_address),    //                  s1.address
@@ -829,7 +846,7 @@ module soc_system (
 		.out_port   (pid_error_pio_0_external_connection_export)       // external_connection.export
 	);
 
-	soc_system_pid_error_pio_0 pid_error_pio_1 (
+	soc_system_heartbeat pid_error_pio_1 (
 		.clk        (clk_clk),                                         //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),                 //               reset.reset_n
 		.address    (mm_interconnect_0_pid_error_pio_1_s1_address),    //                  s1.address
@@ -840,7 +857,7 @@ module soc_system (
 		.out_port   (pid_error_pio_1_external_connection_export)       // external_connection.export
 	);
 
-	soc_system_pid_error_pio_0 pid_error_pio_2 (
+	soc_system_heartbeat pid_error_pio_2 (
 		.clk        (clk_clk),                                         //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),                 //               reset.reset_n
 		.address    (mm_interconnect_0_pid_error_pio_2_s1_address),    //                  s1.address
@@ -851,7 +868,7 @@ module soc_system (
 		.out_port   (pid_error_pio_2_external_connection_export)       // external_connection.export
 	);
 
-	soc_system_pid_error_pio_0 pid_error_pio_3 (
+	soc_system_heartbeat pid_error_pio_3 (
 		.clk        (clk_clk),                                         //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),                 //               reset.reset_n
 		.address    (mm_interconnect_0_pid_error_pio_3_s1_address),    //                  s1.address
@@ -862,7 +879,7 @@ module soc_system (
 		.out_port   (pid_error_pio_3_external_connection_export)       // external_connection.export
 	);
 
-	soc_system_pid_error_pio_0 pid_error_pio_4 (
+	soc_system_heartbeat pid_error_pio_4 (
 		.clk        (clk_clk),                                         //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),                 //               reset.reset_n
 		.address    (mm_interconnect_0_pid_error_pio_4_s1_address),    //                  s1.address
@@ -873,7 +890,7 @@ module soc_system (
 		.out_port   (pid_error_pio_4_external_connection_export)       // external_connection.export
 	);
 
-	soc_system_pid_error_pio_0 pid_error_pio_5 (
+	soc_system_heartbeat pid_error_pio_5 (
 		.clk        (clk_clk),                                         //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),                 //               reset.reset_n
 		.address    (mm_interconnect_0_pid_error_pio_5_s1_address),    //                  s1.address
@@ -884,7 +901,7 @@ module soc_system (
 		.out_port   (pid_error_pio_5_external_connection_export)       // external_connection.export
 	);
 
-	soc_system_pid_error_pio_0 pid_error_pio_6 (
+	soc_system_heartbeat pid_error_pio_6 (
 		.clk        (clk_clk),                                         //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),                 //               reset.reset_n
 		.address    (mm_interconnect_0_pid_error_pio_6_s1_address),    //                  s1.address
@@ -895,7 +912,7 @@ module soc_system (
 		.out_port   (pid_error_pio_6_external_connection_export)       // external_connection.export
 	);
 
-	soc_system_pid_error_pio_0 pid_error_pio_7 (
+	soc_system_heartbeat pid_error_pio_7 (
 		.clk        (clk_clk),                                         //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),                 //               reset.reset_n
 		.address    (mm_interconnect_0_pid_error_pio_7_s1_address),    //                  s1.address
@@ -906,7 +923,7 @@ module soc_system (
 		.out_port   (pid_error_pio_7_external_connection_export)       // external_connection.export
 	);
 
-	soc_system_pid_error_pio_0 pid_values_pio (
+	soc_system_heartbeat pid_values_pio (
 		.clk        (clk_clk),                                        //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),                //               reset.reset_n
 		.address    (mm_interconnect_0_pid_values_pio_s1_address),    //                  s1.address
@@ -917,7 +934,7 @@ module soc_system (
 		.out_port   (pid_values_pio_external_connection_export)       // external_connection.export
 	);
 
-	soc_system_pid_error_pio_0 pwm_pio_0 (
+	soc_system_heartbeat pwm_pio_0 (
 		.clk        (clk_clk),                                   //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),           //               reset.reset_n
 		.address    (mm_interconnect_0_pwm_pio_0_s1_address),    //                  s1.address
@@ -928,7 +945,7 @@ module soc_system (
 		.out_port   (pwm_pio_0_external_connection_export)       // external_connection.export
 	);
 
-	soc_system_pid_error_pio_0 pwm_pio_1 (
+	soc_system_heartbeat pwm_pio_1 (
 		.clk        (clk_clk),                                   //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),           //               reset.reset_n
 		.address    (mm_interconnect_0_pwm_pio_1_s1_address),    //                  s1.address
@@ -939,7 +956,7 @@ module soc_system (
 		.out_port   (pwm_pio_1_external_connection_export)       // external_connection.export
 	);
 
-	soc_system_pid_error_pio_0 pwm_pio_2 (
+	soc_system_heartbeat pwm_pio_2 (
 		.clk        (clk_clk),                                   //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),           //               reset.reset_n
 		.address    (mm_interconnect_0_pwm_pio_2_s1_address),    //                  s1.address
@@ -950,7 +967,7 @@ module soc_system (
 		.out_port   (pwm_pio_2_external_connection_export)       // external_connection.export
 	);
 
-	soc_system_pid_error_pio_0 pwm_pio_3 (
+	soc_system_heartbeat pwm_pio_3 (
 		.clk        (clk_clk),                                   //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),           //               reset.reset_n
 		.address    (mm_interconnect_0_pwm_pio_3_s1_address),    //                  s1.address
@@ -961,7 +978,7 @@ module soc_system (
 		.out_port   (pwm_pio_3_external_connection_export)       // external_connection.export
 	);
 
-	soc_system_pid_error_pio_0 pwm_pio_4 (
+	soc_system_heartbeat pwm_pio_4 (
 		.clk        (clk_clk),                                   //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),           //               reset.reset_n
 		.address    (mm_interconnect_0_pwm_pio_4_s1_address),    //                  s1.address
@@ -972,7 +989,7 @@ module soc_system (
 		.out_port   (pwm_pio_4_external_connection_export)       // external_connection.export
 	);
 
-	soc_system_pid_error_pio_0 pwm_pio_5 (
+	soc_system_heartbeat pwm_pio_5 (
 		.clk        (clk_clk),                                   //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),           //               reset.reset_n
 		.address    (mm_interconnect_0_pwm_pio_5_s1_address),    //                  s1.address
@@ -983,7 +1000,7 @@ module soc_system (
 		.out_port   (pwm_pio_5_external_connection_export)       // external_connection.export
 	);
 
-	soc_system_pid_error_pio_0 pwm_pio_6 (
+	soc_system_heartbeat pwm_pio_6 (
 		.clk        (clk_clk),                                   //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),           //               reset.reset_n
 		.address    (mm_interconnect_0_pwm_pio_6_s1_address),    //                  s1.address
@@ -994,7 +1011,7 @@ module soc_system (
 		.out_port   (pwm_pio_6_external_connection_export)       // external_connection.export
 	);
 
-	soc_system_pid_error_pio_0 pwm_pio_7 (
+	soc_system_heartbeat pwm_pio_7 (
 		.clk        (clk_clk),                                   //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),           //               reset.reset_n
 		.address    (mm_interconnect_0_pwm_pio_7_s1_address),    //                  s1.address
@@ -1101,7 +1118,7 @@ module soc_system (
 		.in_port  (quad_pio_9_external_connection_export)     // external_connection.export
 	);
 
-	soc_system_pid_error_pio_0 quad_reset_pio (
+	soc_system_heartbeat quad_reset_pio (
 		.clk        (clk_clk),                                        //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),                //               reset.reset_n
 		.address    (mm_interconnect_0_quad_reset_pio_s1_address),    //                  s1.address
@@ -1224,6 +1241,11 @@ module soc_system (
 		.gpio_pio_1_s1_readdata                                           (mm_interconnect_0_gpio_pio_1_s1_readdata),                  //                                                           .readdata
 		.gpio_pio_1_s1_writedata                                          (mm_interconnect_0_gpio_pio_1_s1_writedata),                 //                                                           .writedata
 		.gpio_pio_1_s1_chipselect                                         (mm_interconnect_0_gpio_pio_1_s1_chipselect),                //                                                           .chipselect
+		.heartbeat_s1_address                                             (mm_interconnect_0_heartbeat_s1_address),                    //                                               heartbeat_s1.address
+		.heartbeat_s1_write                                               (mm_interconnect_0_heartbeat_s1_write),                      //                                                           .write
+		.heartbeat_s1_readdata                                            (mm_interconnect_0_heartbeat_s1_readdata),                   //                                                           .readdata
+		.heartbeat_s1_writedata                                           (mm_interconnect_0_heartbeat_s1_writedata),                  //                                                           .writedata
+		.heartbeat_s1_chipselect                                          (mm_interconnect_0_heartbeat_s1_chipselect),                 //                                                           .chipselect
 		.intr_capturer_0_avalon_slave_0_address                           (mm_interconnect_0_intr_capturer_0_avalon_slave_0_address),  //                             intr_capturer_0_avalon_slave_0.address
 		.intr_capturer_0_avalon_slave_0_read                              (mm_interconnect_0_intr_capturer_0_avalon_slave_0_read),     //                                                           .read
 		.intr_capturer_0_avalon_slave_0_readdata                          (mm_interconnect_0_intr_capturer_0_avalon_slave_0_readdata), //                                                           .readdata

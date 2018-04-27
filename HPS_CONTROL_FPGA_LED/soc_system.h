@@ -60,7 +60,7 @@
 #define FPGA_ONLY_MASTER_SYSID_QSYS_SPAN 8
 #define FPGA_ONLY_MASTER_SYSID_QSYS_END 0x10007
 #define FPGA_ONLY_MASTER_SYSID_QSYS_ID 2899645186
-#define FPGA_ONLY_MASTER_SYSID_QSYS_TIMESTAMP 1518132715
+#define FPGA_ONLY_MASTER_SYSID_QSYS_TIMESTAMP 1524175863
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'
@@ -1179,6 +1179,31 @@
 #define FPGA_ONLY_MASTER_LIMIT_PIO_RESET_VALUE 0
 
 /*
+ * Macros for device 'heartbeat', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'fpga_only_master'.
+ * The macros are prefixed with 'FPGA_ONLY_MASTER_HEARTBEAT_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define FPGA_ONLY_MASTER_HEARTBEAT_COMPONENT_TYPE altera_avalon_pio
+#define FPGA_ONLY_MASTER_HEARTBEAT_COMPONENT_NAME heartbeat
+#define FPGA_ONLY_MASTER_HEARTBEAT_BASE 0x23710
+#define FPGA_ONLY_MASTER_HEARTBEAT_SPAN 16
+#define FPGA_ONLY_MASTER_HEARTBEAT_END 0x2371f
+#define FPGA_ONLY_MASTER_HEARTBEAT_BIT_CLEARING_EDGE_REGISTER 0
+#define FPGA_ONLY_MASTER_HEARTBEAT_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define FPGA_ONLY_MASTER_HEARTBEAT_CAPTURE 0
+#define FPGA_ONLY_MASTER_HEARTBEAT_DATA_WIDTH 32
+#define FPGA_ONLY_MASTER_HEARTBEAT_DO_TEST_BENCH_WIRING 0
+#define FPGA_ONLY_MASTER_HEARTBEAT_DRIVEN_SIM_VALUE 0
+#define FPGA_ONLY_MASTER_HEARTBEAT_EDGE_TYPE NONE
+#define FPGA_ONLY_MASTER_HEARTBEAT_FREQ 50000000
+#define FPGA_ONLY_MASTER_HEARTBEAT_HAS_IN 0
+#define FPGA_ONLY_MASTER_HEARTBEAT_HAS_OUT 1
+#define FPGA_ONLY_MASTER_HEARTBEAT_HAS_TRI 0
+#define FPGA_ONLY_MASTER_HEARTBEAT_IRQ_TYPE NONE
+#define FPGA_ONLY_MASTER_HEARTBEAT_RESET_VALUE 0
+
+/*
  * Macros for device 'intr_capturer_0', class 'intr_capturer'
  * Path to the device is from the master group 'fpga_only_master'.
  * The macros are prefixed with 'FPGA_ONLY_MASTER_INTR_CAPTURER_0_'.
@@ -1236,7 +1261,7 @@
 #define HPS_0_SYSID_QSYS_SPAN 8
 #define HPS_0_SYSID_QSYS_END 0x10007
 #define HPS_0_SYSID_QSYS_ID 2899645186
-#define HPS_0_SYSID_QSYS_TIMESTAMP 1518132715
+#define HPS_0_SYSID_QSYS_TIMESTAMP 1524175863
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'
@@ -2358,6 +2383,31 @@
 #define HPS_0_LIMIT_PIO_RESET_VALUE 0
 
 /*
+ * Macros for device 'heartbeat', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'hps_0'.
+ * The macros are prefixed with 'HPS_0_HEARTBEAT_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_HEARTBEAT_COMPONENT_TYPE altera_avalon_pio
+#define HPS_0_HEARTBEAT_COMPONENT_NAME heartbeat
+#define HPS_0_HEARTBEAT_BASE 0x23710
+#define HPS_0_HEARTBEAT_SPAN 16
+#define HPS_0_HEARTBEAT_END 0x2371f
+#define HPS_0_HEARTBEAT_BIT_CLEARING_EDGE_REGISTER 0
+#define HPS_0_HEARTBEAT_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define HPS_0_HEARTBEAT_CAPTURE 0
+#define HPS_0_HEARTBEAT_DATA_WIDTH 32
+#define HPS_0_HEARTBEAT_DO_TEST_BENCH_WIRING 0
+#define HPS_0_HEARTBEAT_DRIVEN_SIM_VALUE 0
+#define HPS_0_HEARTBEAT_EDGE_TYPE NONE
+#define HPS_0_HEARTBEAT_FREQ 50000000
+#define HPS_0_HEARTBEAT_HAS_IN 0
+#define HPS_0_HEARTBEAT_HAS_OUT 1
+#define HPS_0_HEARTBEAT_HAS_TRI 0
+#define HPS_0_HEARTBEAT_IRQ_TYPE NONE
+#define HPS_0_HEARTBEAT_RESET_VALUE 0
+
+/*
  * Macros for device 'hps_0_axi_sdram', class 'axi_sdram'
  * Path to the device is from the master group 'hps_0_bridges'.
  * The macros are prefixed with 'HPS_0_BRIDGES_HPS_0_AXI_SDRAM_'.
@@ -2421,7 +2471,7 @@
 #define HPS_0_BRIDGES_SYSID_QSYS_SPAN 8
 #define HPS_0_BRIDGES_SYSID_QSYS_END 0x10007
 #define HPS_0_BRIDGES_SYSID_QSYS_ID 2899645186
-#define HPS_0_BRIDGES_SYSID_QSYS_TIMESTAMP 1518132715
+#define HPS_0_BRIDGES_SYSID_QSYS_TIMESTAMP 1524175863
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'
@@ -3540,6 +3590,31 @@
 #define HPS_0_BRIDGES_LIMIT_PIO_RESET_VALUE 0
 
 /*
+ * Macros for device 'heartbeat', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'hps_0_bridges'.
+ * The macros are prefixed with 'HPS_0_BRIDGES_HEARTBEAT_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_BRIDGES_HEARTBEAT_COMPONENT_TYPE altera_avalon_pio
+#define HPS_0_BRIDGES_HEARTBEAT_COMPONENT_NAME heartbeat
+#define HPS_0_BRIDGES_HEARTBEAT_BASE 0x23710
+#define HPS_0_BRIDGES_HEARTBEAT_SPAN 16
+#define HPS_0_BRIDGES_HEARTBEAT_END 0x2371f
+#define HPS_0_BRIDGES_HEARTBEAT_BIT_CLEARING_EDGE_REGISTER 0
+#define HPS_0_BRIDGES_HEARTBEAT_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define HPS_0_BRIDGES_HEARTBEAT_CAPTURE 0
+#define HPS_0_BRIDGES_HEARTBEAT_DATA_WIDTH 32
+#define HPS_0_BRIDGES_HEARTBEAT_DO_TEST_BENCH_WIRING 0
+#define HPS_0_BRIDGES_HEARTBEAT_DRIVEN_SIM_VALUE 0
+#define HPS_0_BRIDGES_HEARTBEAT_EDGE_TYPE NONE
+#define HPS_0_BRIDGES_HEARTBEAT_FREQ 50000000
+#define HPS_0_BRIDGES_HEARTBEAT_HAS_IN 0
+#define HPS_0_BRIDGES_HEARTBEAT_HAS_OUT 1
+#define HPS_0_BRIDGES_HEARTBEAT_HAS_TRI 0
+#define HPS_0_BRIDGES_HEARTBEAT_IRQ_TYPE NONE
+#define HPS_0_BRIDGES_HEARTBEAT_RESET_VALUE 0
+
+/*
  * Macros for device 'hps_0_gmac0', class 'stmmac'
  * Path to the device is from the master group 'hps_0_bridges'.
  * The macros are prefixed with 'HPS_0_BRIDGES_HPS_0_GMAC0_'.
@@ -4039,7 +4114,7 @@
 #define HPS_0_ARM_A9_0_SYSID_QSYS_SPAN 8
 #define HPS_0_ARM_A9_0_SYSID_QSYS_END 0xff210007
 #define HPS_0_ARM_A9_0_SYSID_QSYS_ID 2899645186
-#define HPS_0_ARM_A9_0_SYSID_QSYS_TIMESTAMP 1518132715
+#define HPS_0_ARM_A9_0_SYSID_QSYS_TIMESTAMP 1524175863
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'
@@ -5158,6 +5233,31 @@
 #define HPS_0_ARM_A9_0_LIMIT_PIO_RESET_VALUE 0
 
 /*
+ * Macros for device 'heartbeat', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'hps_0_arm_a9_0'.
+ * The macros are prefixed with 'HPS_0_ARM_A9_0_HEARTBEAT_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_ARM_A9_0_HEARTBEAT_COMPONENT_TYPE altera_avalon_pio
+#define HPS_0_ARM_A9_0_HEARTBEAT_COMPONENT_NAME heartbeat
+#define HPS_0_ARM_A9_0_HEARTBEAT_BASE 0xff223710
+#define HPS_0_ARM_A9_0_HEARTBEAT_SPAN 16
+#define HPS_0_ARM_A9_0_HEARTBEAT_END 0xff22371f
+#define HPS_0_ARM_A9_0_HEARTBEAT_BIT_CLEARING_EDGE_REGISTER 0
+#define HPS_0_ARM_A9_0_HEARTBEAT_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define HPS_0_ARM_A9_0_HEARTBEAT_CAPTURE 0
+#define HPS_0_ARM_A9_0_HEARTBEAT_DATA_WIDTH 32
+#define HPS_0_ARM_A9_0_HEARTBEAT_DO_TEST_BENCH_WIRING 0
+#define HPS_0_ARM_A9_0_HEARTBEAT_DRIVEN_SIM_VALUE 0
+#define HPS_0_ARM_A9_0_HEARTBEAT_EDGE_TYPE NONE
+#define HPS_0_ARM_A9_0_HEARTBEAT_FREQ 50000000
+#define HPS_0_ARM_A9_0_HEARTBEAT_HAS_IN 0
+#define HPS_0_ARM_A9_0_HEARTBEAT_HAS_OUT 1
+#define HPS_0_ARM_A9_0_HEARTBEAT_HAS_TRI 0
+#define HPS_0_ARM_A9_0_HEARTBEAT_IRQ_TYPE NONE
+#define HPS_0_ARM_A9_0_HEARTBEAT_RESET_VALUE 0
+
+/*
  * Macros for device 'hps_0_gmac0', class 'stmmac'
  * Path to the device is from the master group 'hps_0_arm_a9_0'.
  * The macros are prefixed with 'HPS_0_ARM_A9_0_HPS_0_GMAC0_'.
@@ -5693,7 +5793,7 @@
 #define HPS_0_ARM_A9_1_SYSID_QSYS_SPAN 8
 #define HPS_0_ARM_A9_1_SYSID_QSYS_END 0xff210007
 #define HPS_0_ARM_A9_1_SYSID_QSYS_ID 2899645186
-#define HPS_0_ARM_A9_1_SYSID_QSYS_TIMESTAMP 1518132715
+#define HPS_0_ARM_A9_1_SYSID_QSYS_TIMESTAMP 1524175863
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'
@@ -6810,6 +6910,31 @@
 #define HPS_0_ARM_A9_1_LIMIT_PIO_HAS_TRI 0
 #define HPS_0_ARM_A9_1_LIMIT_PIO_IRQ_TYPE NONE
 #define HPS_0_ARM_A9_1_LIMIT_PIO_RESET_VALUE 0
+
+/*
+ * Macros for device 'heartbeat', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'hps_0_arm_a9_1'.
+ * The macros are prefixed with 'HPS_0_ARM_A9_1_HEARTBEAT_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_ARM_A9_1_HEARTBEAT_COMPONENT_TYPE altera_avalon_pio
+#define HPS_0_ARM_A9_1_HEARTBEAT_COMPONENT_NAME heartbeat
+#define HPS_0_ARM_A9_1_HEARTBEAT_BASE 0xff223710
+#define HPS_0_ARM_A9_1_HEARTBEAT_SPAN 16
+#define HPS_0_ARM_A9_1_HEARTBEAT_END 0xff22371f
+#define HPS_0_ARM_A9_1_HEARTBEAT_BIT_CLEARING_EDGE_REGISTER 0
+#define HPS_0_ARM_A9_1_HEARTBEAT_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define HPS_0_ARM_A9_1_HEARTBEAT_CAPTURE 0
+#define HPS_0_ARM_A9_1_HEARTBEAT_DATA_WIDTH 32
+#define HPS_0_ARM_A9_1_HEARTBEAT_DO_TEST_BENCH_WIRING 0
+#define HPS_0_ARM_A9_1_HEARTBEAT_DRIVEN_SIM_VALUE 0
+#define HPS_0_ARM_A9_1_HEARTBEAT_EDGE_TYPE NONE
+#define HPS_0_ARM_A9_1_HEARTBEAT_FREQ 50000000
+#define HPS_0_ARM_A9_1_HEARTBEAT_HAS_IN 0
+#define HPS_0_ARM_A9_1_HEARTBEAT_HAS_OUT 1
+#define HPS_0_ARM_A9_1_HEARTBEAT_HAS_TRI 0
+#define HPS_0_ARM_A9_1_HEARTBEAT_IRQ_TYPE NONE
+#define HPS_0_ARM_A9_1_HEARTBEAT_RESET_VALUE 0
 
 /*
  * Macros for device 'hps_0_gmac0', class 'stmmac'

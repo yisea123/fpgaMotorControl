@@ -58,8 +58,8 @@ module HPS_CONTROL_FPGA_LED(
       input              FPGA_CLK3_50,
 
       ///////// GPIO /////////
-      inout       [35:0] GPIO_0,
-      inout       [35:0] GPIO_1,
+      inout       [35:0] GPIO_0 = 0,
+      inout       [35:0] GPIO_1 = 0,
 
 `ifdef ENABLE_HPS
       ///////// HPS /////////
@@ -129,18 +129,19 @@ module HPS_CONTROL_FPGA_LED(
 //=======================================================
 wire  hps_fpga_reset_n;
 wire [31:0] enc_count[11:0];
-//wire [31:0] enc_count[7:0];
+wire [31:0] global_reset;
 wire [31:0] enc_reset;
 wire [31:0] pid_error[7:0];
 wire [31:0] pid_correction[7:0];
 wire [31:0] pid_values;
 wire [31:0] pwm_values[7:0];
 wire [7:0] limit_switches;
+wire [31:0] hbeat;
+
 //limit_switches[7:0] <= GPIO_1[23:16];
 
 wire fpga_clk_5khz;
 assign fpga_clk_50=FPGA_CLK1_50;
-
 
 
 //=======================================================
@@ -280,57 +281,66 @@ assign fpga_clk_50=FPGA_CLK1_50;
 		.pwm_pio_4_external_connection_export(	pwm_values[4][31:0]	),
 		.pwm_pio_5_external_connection_export(	pwm_values[5][31:0]	),
 		.pwm_pio_6_external_connection_export(	pwm_values[6][31:0]	),
-		.pwm_pio_7_external_connection_export(	pwm_values[7][31:0]	)
+		.pwm_pio_7_external_connection_export(	pwm_values[7][31:0]	),
 	  
-	  
+	  	.heartbeat_external_connection_export( hbeat[31:0] )
+
  );
 
 pwm pwm0(
 	.clk        (fpga_clk_50),
 	.in         (pwm_values[0][7:0]),  
-	.out        (GPIO_1[4])
+	.out        (GPIO_1[4]),
+	.rst			(global_reset[0])
 );
 
 pwm pwm1(
 	.clk        (fpga_clk_50),
 	.in         (pwm_values[1][7:0]),  
-	.out        (GPIO_1[5])
+	.out        (GPIO_1[5]),
+	.rst			(global_reset[0])
 );
 
 pwm pwm2(
 	.clk        (fpga_clk_50),
 	.in         (pwm_values[2][7:0]),  
-	.out        (GPIO_1[6])
+	.out        (GPIO_1[6]),
+	.rst			(global_reset[0])
 );
 
 pwm pwm3(
 	.clk        (fpga_clk_50),
 	.in         (pwm_values[3][7:0]),  
-	.out        (GPIO_1[7])
+	.out        (GPIO_1[7]),
+	.rst			(global_reset[0])
 );
 
 pwm pwm4(
 	.clk        (fpga_clk_50),
 	.in         (pwm_values[4][7:0]),  
-	.out        (GPIO_1[0])
+	.out        (GPIO_1[0]),
+	.rst			(global_reset[0])
 );
 
 pwm pwm5(
 	.clk        (fpga_clk_50),
 	.in         (pwm_values[5][7:0]),  
-	.out        (GPIO_1[1])
+	.out        (GPIO_1[1]),
+	.rst			(global_reset[0])
 );
 
 pwm pwm6(
 	.clk        (fpga_clk_50),
 	.in         (pwm_values[6][7:0]),  
-	.out        (GPIO_1[2])
+	.out        (GPIO_1[2]),
+	.rst			(global_reset[0])
 );
 
 pwm pwm7(
 	.clk        (fpga_clk_50),
 	.in         (pwm_values[7][7:0]),  
-	.out        (GPIO_1[3])
+	.out        (GPIO_1[3]),
+	.rst			(global_reset[0])
 );
 
 
@@ -339,7 +349,7 @@ quad_counter quad0(
 	.quadA		(GPIO_0[12]),
 	.quadB		(GPIO_0[13]), 
 	.count		(enc_count[0][31:0]),
-	.reset		(enc_reset[0])
+	.reset		(global_reset[1])
 );
 
 quad_counter quad1(
@@ -347,7 +357,7 @@ quad_counter quad1(
 	.quadA		(GPIO_0[14]),
 	.quadB		(GPIO_0[15]), 
 	.count		(enc_count[1][31:0]),
-	.reset		(enc_reset[1])
+	.reset		(global_reset[2])
 );
 
 quad_counter quad2(
@@ -355,7 +365,7 @@ quad_counter quad2(
 	.quadA		(GPIO_0[16]),
 	.quadB		(GPIO_0[17]), 
 	.count		(enc_count[2][31:0]),
-	.reset		(enc_reset[2])
+	.reset		(global_reset[3])
 );
 
 quad_counter quad3(
@@ -363,7 +373,7 @@ quad_counter quad3(
 	.quadA		(GPIO_0[18]),
 	.quadB		(GPIO_0[19]), 
 	.count		(enc_count[3][31:0]),
-	.reset		(enc_reset[3])
+	.reset		(global_reset[4])
 );
 
 quad_counter quad4(
@@ -371,7 +381,7 @@ quad_counter quad4(
 	.quadA		(GPIO_0[20]),
 	.quadB		(GPIO_0[21]), 
 	.count		(enc_count[4][31:0]),
-	.reset		(enc_reset[4])
+	.reset		(global_reset[5])
 );
 
 quad_counter quad5(
@@ -379,7 +389,7 @@ quad_counter quad5(
 	.quadA		(GPIO_0[22]),
 	.quadB		(GPIO_0[23]), 
 	.count		(enc_count[5][31:0]),
-	.reset		(enc_reset[5])
+	.reset		(global_reset[6])
 );
 
 quad_counter quad6(
@@ -387,7 +397,7 @@ quad_counter quad6(
 	.quadA		(GPIO_0[24]),
 	.quadB		(GPIO_0[25]), 
 	.count		(enc_count[6][31:0]),
-	.reset		(enc_reset[6])
+	.reset		(global_reset[7])
 );
 
 quad_counter quad7(
@@ -395,7 +405,7 @@ quad_counter quad7(
 	.quadA		(GPIO_0[26]),
 	.quadB		(GPIO_0[27]), 
 	.count		(enc_count[7][31:0]),
-	.reset		(enc_reset[7])
+	.reset		(global_reset[8])
 );
 
 //For external encoders
@@ -404,7 +414,7 @@ quad_counter quad8(
 	.quadA		(GPIO_1[24]),
 	.quadB		(GPIO_1[25]), 
 	.count		(enc_count[8][31:0]),
-	.reset		(enc_reset[8])
+	.reset		(global_reset[9])
 );
 
 quad_counter quad9(
@@ -412,7 +422,7 @@ quad_counter quad9(
 	.quadA		(GPIO_1[26]),
 	.quadB		(GPIO_1[27]), 
 	.count		(enc_count[9][31:0]),
-	.reset		(enc_reset[9])
+	.reset		(global_reset[10])
 );
 
 quad_counter quad10(
@@ -420,7 +430,7 @@ quad_counter quad10(
 	.quadA		(GPIO_1[28]),
 	.quadB		(GPIO_1[29]), 
 	.count		(enc_count[10][31:0]),
-	.reset		(enc_reset[10])
+	.reset		(global_reset[11])
 );
 
 quad_counter quad11(
@@ -428,7 +438,7 @@ quad_counter quad11(
 	.quadA		(GPIO_1[30]),
 	.quadB		(GPIO_1[31]), 
 	.count		(enc_count[11][31:0]),
-	.reset		(enc_reset[11])
+	.reset		(global_reset[12])
 );
 
 
@@ -436,7 +446,7 @@ PID pid0(
 	.u_out 		(pid_correction[0][31:0]),
 	.e_in			(pid_error[0][31:0]),
 	.clk			(fpga_clk_5khz),
-	.reset		(enc_reset[0]),
+	.reset		(global_reset[0]),
 	.k1			(pid_values[7:0]),
 	.k2			(pid_values[15:8]),
 	.k3			(pid_values[23:16])
@@ -446,7 +456,7 @@ PID pid1(
 	.u_out 		(pid_correction[1][31:0]),
 	.e_in			(pid_error[1][31:0]),
 	.clk			(fpga_clk_5khz),
-	.reset		(enc_reset[0]),
+	.reset		(global_reset[0]),
 	.k1			(pid_values[7:0]),
 	.k2			(pid_values[15:8]),
 	.k3			(pid_values[23:16])
@@ -456,7 +466,7 @@ PID pid2(
 	.u_out 		(pid_correction[2][31:0]),
 	.e_in			(pid_error[2][31:0]),
 	.clk			(fpga_clk_5khz),
-	.reset		(enc_reset[0]),
+	.reset		(global_reset[0]),
 	.k1			(pid_values[7:0]),
 	.k2			(pid_values[15:8]),
 	.k3			(pid_values[23:16])
@@ -466,7 +476,7 @@ PID pid3(
 	.u_out 		(pid_correction[3][31:0]),
 	.e_in			(pid_error[3][31:0]),
 	.clk			(fpga_clk_5khz),
-	.reset		(enc_reset[0]),
+	.reset		(global_reset[0]),
 	.k1			(pid_values[7:0]),
 	.k2			(pid_values[15:8]),
 	.k3			(pid_values[23:16])
@@ -476,7 +486,7 @@ PID pid4(
 	.u_out 		(pid_correction[4][31:0]),
 	.e_in			(pid_error[4][31:0]),
 	.clk			(fpga_clk_5khz),
-	.reset		(enc_reset[0]),
+	.reset		(global_reset[0]),
 	.k1			(pid_values[7:0]),
 	.k2			(pid_values[15:8]),
 	.k3			(pid_values[23:16])
@@ -486,7 +496,7 @@ PID pid5(
 	.u_out 		(pid_correction[5][31:0]),
 	.e_in			(pid_error[5][31:0]),
 	.clk			(fpga_clk_5khz),
-	.reset		(enc_reset[0]),
+	.reset		(global_reset[0]),
 	.k1			(pid_values[7:0]),
 	.k2			(pid_values[15:8]),
 	.k3			(pid_values[23:16])
@@ -496,7 +506,7 @@ PID pid6(
 	.u_out 		(pid_correction[6][31:0]),
 	.e_in			(pid_error[6][31:0]),
 	.clk			(fpga_clk_5khz),
-	.reset		(enc_reset[0]),
+	.reset		(global_reset[0]),
 	.k1			(pid_values[7:0]),
 	.k2			(pid_values[15:8]),
 	.k3			(pid_values[23:16])
@@ -506,7 +516,7 @@ PID pid7(
 	.u_out 		(pid_correction[7][31:0]),
 	.e_in			(pid_error[7][31:0]),
 	.clk			(fpga_clk_5khz),
-	.reset		(enc_reset[0]),
+	.reset		(global_reset[0]),
 	.k1			(pid_values[7:0]),
 	.k2			(pid_values[15:8]),
 	.k3			(pid_values[23:16])
@@ -514,8 +524,18 @@ PID pid7(
 
 scale_clock scaled_clock_5khz(
 	.clk_50Mhz (fpga_clk_50),
-	.rst	  (enc_reset[0]),
+	.rst	  (global_reset[0]),
 	.clk_2Hz	  (fpga_clk_5khz)
+);
+
+
+heartbeat hbt(
+	.output_reset		(global_reset[31:0]),
+	.clk_50Mhz			(fpga_clk_50),
+	.rst					(enc_reset[31:0]),
+	.gpio_out100hz		(GPIO_1[35]),
+	.hbeat_out			(GPIO_1[34]),
+	.beat					(hbeat[31:0])
 );
 
 

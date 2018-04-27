@@ -1,12 +1,12 @@
-Fitter Status : Successful - Thu Feb  8 15:57:00 2018
+Fitter Status : Successful - Sun Apr 22 18:08:20 2018
 Quartus Prime Version : 17.0.0 Build 595 04/25/2017 SJ Lite Edition
 Revision Name : HPS_CONTROL_FPGA_LED
 Top-level Entity Name : HPS_CONTROL_FPGA_LED
 Family : Cyclone V
 Device : 5CSEMA4U23C6
 Timing Models : Final
-Logic utilization (in ALMs) : 11,698 / 15,880 ( 74 % )
-Total registers : 17128
+Logic utilization (in ALMs) : 11,942 / 15,880 ( 75 % )
+Total registers : 17427
 Total pins : 230 / 314 ( 73 % )
 Total virtual pins : 0
 Total block memory bits : 526,336 / 2,764,800 ( 19 % )

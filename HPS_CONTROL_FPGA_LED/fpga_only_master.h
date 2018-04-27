@@ -63,7 +63,7 @@
 #define SYSID_QSYS_SPAN 8
 #define SYSID_QSYS_END 0x10007
 #define SYSID_QSYS_ID 2899645186
-#define SYSID_QSYS_TIMESTAMP 1518132715
+#define SYSID_QSYS_TIMESTAMP 1524175863
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'
@@ -1135,6 +1135,30 @@
 #define LIMIT_PIO_HAS_TRI 0
 #define LIMIT_PIO_IRQ_TYPE NONE
 #define LIMIT_PIO_RESET_VALUE 0
+
+/*
+ * Macros for device 'heartbeat', class 'altera_avalon_pio'
+ * The macros are prefixed with 'HEARTBEAT_'.
+ * The prefix is the slave descriptor.
+ */
+#define HEARTBEAT_COMPONENT_TYPE altera_avalon_pio
+#define HEARTBEAT_COMPONENT_NAME heartbeat
+#define HEARTBEAT_BASE 0x23710
+#define HEARTBEAT_SPAN 16
+#define HEARTBEAT_END 0x2371f
+#define HEARTBEAT_BIT_CLEARING_EDGE_REGISTER 0
+#define HEARTBEAT_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define HEARTBEAT_CAPTURE 0
+#define HEARTBEAT_DATA_WIDTH 32
+#define HEARTBEAT_DO_TEST_BENCH_WIRING 0
+#define HEARTBEAT_DRIVEN_SIM_VALUE 0
+#define HEARTBEAT_EDGE_TYPE NONE
+#define HEARTBEAT_FREQ 50000000
+#define HEARTBEAT_HAS_IN 0
+#define HEARTBEAT_HAS_OUT 1
+#define HEARTBEAT_HAS_TRI 0
+#define HEARTBEAT_IRQ_TYPE NONE
+#define HEARTBEAT_RESET_VALUE 0
 
 /*
  * Macros for device 'intr_capturer_0', class 'intr_capturer'

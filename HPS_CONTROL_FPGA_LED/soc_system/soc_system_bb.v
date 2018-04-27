@@ -5,6 +5,7 @@ module soc_system (
 	dipsw_pio_external_connection_export,
 	gpio_pio_0_external_connection_export,
 	gpio_pio_1_external_connection_export,
+	heartbeat_external_connection_export,
 	hps_0_h2f_reset_reset_n,
 	hps_0_hps_io_hps_io_emac1_inst_TX_CLK,
 	hps_0_hps_io_hps_io_emac1_inst_TXD0,
@@ -98,6 +99,8 @@ module soc_system (
 	pwm_pio_6_external_connection_export,
 	pwm_pio_7_external_connection_export,
 	quad_pio_0_external_connection_export,
+	quad_pio_10_external_connection_export,
+	quad_pio_11_external_connection_export,
 	quad_pio_1_external_connection_export,
 	quad_pio_2_external_connection_export,
 	quad_pio_3_external_connection_export,
@@ -105,18 +108,17 @@ module soc_system (
 	quad_pio_5_external_connection_export,
 	quad_pio_6_external_connection_export,
 	quad_pio_7_external_connection_export,
-	quad_reset_pio_external_connection_export,
-	reset_reset_n,
 	quad_pio_8_external_connection_export,
 	quad_pio_9_external_connection_export,
-	quad_pio_10_external_connection_export,
-	quad_pio_11_external_connection_export);	
+	quad_reset_pio_external_connection_export,
+	reset_reset_n);	
 
 	input	[3:0]	button_pio_external_connection_export;
 	input		clk_clk;
 	input	[3:0]	dipsw_pio_external_connection_export;
 	output	[7:0]	gpio_pio_0_external_connection_export;
 	output	[7:0]	gpio_pio_1_external_connection_export;
+	output	[31:0]	heartbeat_external_connection_export;
 	output		hps_0_h2f_reset_reset_n;
 	output		hps_0_hps_io_hps_io_emac1_inst_TX_CLK;
 	output		hps_0_hps_io_hps_io_emac1_inst_TXD0;
@@ -210,6 +212,8 @@ module soc_system (
 	output	[31:0]	pwm_pio_6_external_connection_export;
 	output	[31:0]	pwm_pio_7_external_connection_export;
 	input	[31:0]	quad_pio_0_external_connection_export;
+	input	[31:0]	quad_pio_10_external_connection_export;
+	input	[31:0]	quad_pio_11_external_connection_export;
 	input	[31:0]	quad_pio_1_external_connection_export;
 	input	[31:0]	quad_pio_2_external_connection_export;
 	input	[31:0]	quad_pio_3_external_connection_export;
@@ -217,10 +221,8 @@ module soc_system (
 	input	[31:0]	quad_pio_5_external_connection_export;
 	input	[31:0]	quad_pio_6_external_connection_export;
 	input	[31:0]	quad_pio_7_external_connection_export;
-	output	[31:0]	quad_reset_pio_external_connection_export;
-	input		reset_reset_n;
 	input	[31:0]	quad_pio_8_external_connection_export;
 	input	[31:0]	quad_pio_9_external_connection_export;
-	input	[31:0]	quad_pio_10_external_connection_export;
-	input	[31:0]	quad_pio_11_external_connection_export;
+	output	[31:0]	quad_reset_pio_external_connection_export;
+	input		reset_reset_n;
 endmodule

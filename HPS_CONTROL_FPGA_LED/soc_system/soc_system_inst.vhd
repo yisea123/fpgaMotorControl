@@ -5,6 +5,7 @@
 			dipsw_pio_external_connection_export            : in    std_logic_vector(3 downto 0)  := (others => 'X'); -- export
 			gpio_pio_0_external_connection_export           : out   std_logic_vector(7 downto 0);                     -- export
 			gpio_pio_1_external_connection_export           : out   std_logic_vector(7 downto 0);                     -- export
+			heartbeat_external_connection_export            : out   std_logic_vector(31 downto 0);                    -- export
 			hps_0_h2f_reset_reset_n                         : out   std_logic;                                        -- reset_n
 			hps_0_hps_io_hps_io_emac1_inst_TX_CLK           : out   std_logic;                                        -- hps_io_emac1_inst_TX_CLK
 			hps_0_hps_io_hps_io_emac1_inst_TXD0             : out   std_logic;                                        -- hps_io_emac1_inst_TXD0
@@ -98,6 +99,8 @@
 			pwm_pio_6_external_connection_export            : out   std_logic_vector(31 downto 0);                    -- export
 			pwm_pio_7_external_connection_export            : out   std_logic_vector(31 downto 0);                    -- export
 			quad_pio_0_external_connection_export           : in    std_logic_vector(31 downto 0) := (others => 'X'); -- export
+			quad_pio_10_external_connection_export          : in    std_logic_vector(31 downto 0) := (others => 'X'); -- export
+			quad_pio_11_external_connection_export          : in    std_logic_vector(31 downto 0) := (others => 'X'); -- export
 			quad_pio_1_external_connection_export           : in    std_logic_vector(31 downto 0) := (others => 'X'); -- export
 			quad_pio_2_external_connection_export           : in    std_logic_vector(31 downto 0) := (others => 'X'); -- export
 			quad_pio_3_external_connection_export           : in    std_logic_vector(31 downto 0) := (others => 'X'); -- export
@@ -105,12 +108,10 @@
 			quad_pio_5_external_connection_export           : in    std_logic_vector(31 downto 0) := (others => 'X'); -- export
 			quad_pio_6_external_connection_export           : in    std_logic_vector(31 downto 0) := (others => 'X'); -- export
 			quad_pio_7_external_connection_export           : in    std_logic_vector(31 downto 0) := (others => 'X'); -- export
-			quad_reset_pio_external_connection_export       : out   std_logic_vector(31 downto 0);                    -- export
-			reset_reset_n                                   : in    std_logic                     := 'X';             -- reset_n
 			quad_pio_8_external_connection_export           : in    std_logic_vector(31 downto 0) := (others => 'X'); -- export
 			quad_pio_9_external_connection_export           : in    std_logic_vector(31 downto 0) := (others => 'X'); -- export
-			quad_pio_10_external_connection_export          : in    std_logic_vector(31 downto 0) := (others => 'X'); -- export
-			quad_pio_11_external_connection_export          : in    std_logic_vector(31 downto 0) := (others => 'X')  -- export
+			quad_reset_pio_external_connection_export       : out   std_logic_vector(31 downto 0);                    -- export
+			reset_reset_n                                   : in    std_logic                     := 'X'              -- reset_n
 		);
 	end component soc_system;
 
@@ -121,6 +122,7 @@
 			dipsw_pio_external_connection_export            => CONNECTED_TO_dipsw_pio_external_connection_export,            --            dipsw_pio_external_connection.export
 			gpio_pio_0_external_connection_export           => CONNECTED_TO_gpio_pio_0_external_connection_export,           --           gpio_pio_0_external_connection.export
 			gpio_pio_1_external_connection_export           => CONNECTED_TO_gpio_pio_1_external_connection_export,           --           gpio_pio_1_external_connection.export
+			heartbeat_external_connection_export            => CONNECTED_TO_heartbeat_external_connection_export,            --            heartbeat_external_connection.export
 			hps_0_h2f_reset_reset_n                         => CONNECTED_TO_hps_0_h2f_reset_reset_n,                         --                          hps_0_h2f_reset.reset_n
 			hps_0_hps_io_hps_io_emac1_inst_TX_CLK           => CONNECTED_TO_hps_0_hps_io_hps_io_emac1_inst_TX_CLK,           --                             hps_0_hps_io.hps_io_emac1_inst_TX_CLK
 			hps_0_hps_io_hps_io_emac1_inst_TXD0             => CONNECTED_TO_hps_0_hps_io_hps_io_emac1_inst_TXD0,             --                                         .hps_io_emac1_inst_TXD0
@@ -214,6 +216,8 @@
 			pwm_pio_6_external_connection_export            => CONNECTED_TO_pwm_pio_6_external_connection_export,            --            pwm_pio_6_external_connection.export
 			pwm_pio_7_external_connection_export            => CONNECTED_TO_pwm_pio_7_external_connection_export,            --            pwm_pio_7_external_connection.export
 			quad_pio_0_external_connection_export           => CONNECTED_TO_quad_pio_0_external_connection_export,           --           quad_pio_0_external_connection.export
+			quad_pio_10_external_connection_export          => CONNECTED_TO_quad_pio_10_external_connection_export,          --          quad_pio_10_external_connection.export
+			quad_pio_11_external_connection_export          => CONNECTED_TO_quad_pio_11_external_connection_export,          --          quad_pio_11_external_connection.export
 			quad_pio_1_external_connection_export           => CONNECTED_TO_quad_pio_1_external_connection_export,           --           quad_pio_1_external_connection.export
 			quad_pio_2_external_connection_export           => CONNECTED_TO_quad_pio_2_external_connection_export,           --           quad_pio_2_external_connection.export
 			quad_pio_3_external_connection_export           => CONNECTED_TO_quad_pio_3_external_connection_export,           --           quad_pio_3_external_connection.export
@@ -221,11 +225,9 @@
 			quad_pio_5_external_connection_export           => CONNECTED_TO_quad_pio_5_external_connection_export,           --           quad_pio_5_external_connection.export
 			quad_pio_6_external_connection_export           => CONNECTED_TO_quad_pio_6_external_connection_export,           --           quad_pio_6_external_connection.export
 			quad_pio_7_external_connection_export           => CONNECTED_TO_quad_pio_7_external_connection_export,           --           quad_pio_7_external_connection.export
-			quad_reset_pio_external_connection_export       => CONNECTED_TO_quad_reset_pio_external_connection_export,       --       quad_reset_pio_external_connection.export
-			reset_reset_n                                   => CONNECTED_TO_reset_reset_n,                                   --                                    reset.reset_n
 			quad_pio_8_external_connection_export           => CONNECTED_TO_quad_pio_8_external_connection_export,           --           quad_pio_8_external_connection.export
 			quad_pio_9_external_connection_export           => CONNECTED_TO_quad_pio_9_external_connection_export,           --           quad_pio_9_external_connection.export
-			quad_pio_10_external_connection_export          => CONNECTED_TO_quad_pio_10_external_connection_export,          --          quad_pio_10_external_connection.export
-			quad_pio_11_external_connection_export          => CONNECTED_TO_quad_pio_11_external_connection_export           --          quad_pio_11_external_connection.export
+			quad_reset_pio_external_connection_export       => CONNECTED_TO_quad_reset_pio_external_connection_export,       --       quad_reset_pio_external_connection.export
+			reset_reset_n                                   => CONNECTED_TO_reset_reset_n                                    --                                    reset.reset_n
 		);
 

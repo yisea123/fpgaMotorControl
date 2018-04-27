@@ -7,8 +7,8 @@
    <irq preferredWidth="63" />
   </columns>
  </systemtable>
- <library expandedCategories="Library,Project/Other,Project" />
- <window width="1831" height="1056" x="2038" y="221" />
+ <library expandedCategories="Project,Library" />
+ <window width="1229" height="1028" x="156" y="172" />
  <hdlexample language="VERILOG" />
  <generation path="_PROJECT_NAME_" />
 </preferences>

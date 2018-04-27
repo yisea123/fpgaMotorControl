@@ -112,6 +112,22 @@
          type = "String";
       }
    }
+   element heartbeat
+   {
+      datum _sortIndex
+      {
+         value = "52";
+         type = "int";
+      }
+   }
+   element heartbeat.s1
+   {
+      datum baseAddress
+      {
+         value = "145168";
+         type = "String";
+      }
+   }
    element hps_0
    {
       datum _sortIndex
@@ -907,6 +923,11 @@
    internal="gpio_pio_1.external_connection"
    type="conduit"
    dir="end" />
+ <interface
+   name="heartbeat_external_connection"
+   internal="heartbeat.external_connection"
+   type="conduit"
+   dir="end" />
  <interface name="hps_0_f2h_cold_reset_req" internal="hps_0.f2h_cold_reset_req" />
  <interface name="hps_0_f2h_debug_reset_req" internal="hps_0.f2h_debug_reset_req" />
  <interface name="hps_0_f2h_stm_hw_events" internal="hps_0.f2h_stm_hw_events" />
@@ -1195,6 +1216,20 @@
   <parameter name="simDoTestBenchWiring" value="false" />
   <parameter name="simDrivenValue" value="0" />
   <parameter name="width" value="8" />
+ </module>
+ <module name="heartbeat" kind="altera_avalon_pio" version="17.0" enabled="1">
+  <parameter name="bitClearingEdgeCapReg" value="false" />
+  <parameter name="bitModifyingOutReg" value="false" />
+  <parameter name="captureEdge" value="false" />
+  <parameter name="clockRate" value="50000000" />
+  <parameter name="direction" value="Output" />
+  <parameter name="edgeType" value="RISING" />
+  <parameter name="generateIRQ" value="false" />
+  <parameter name="irqType" value="LEVEL" />
+  <parameter name="resetValue" value="0" />
+  <parameter name="simDoTestBenchWiring" value="false" />
+  <parameter name="simDrivenValue" value="0" />
+  <parameter name="width" value="32" />
  </module>
  <module name="hps_0" kind="altera_hps" version="17.0" enabled="1">
   <parameter name="ABSTRACT_REAL_COMPARE_TEST" value="false" />
@@ -2872,6 +2907,15 @@
  <connection
    kind="avalon"
    version="17.0"
+   start="hps_0.h2f_lw_axi_master"
+   end="heartbeat.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00023710" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="17.0"
    start="fpga_only_master.master"
    end="jtag_uart.avalon_jtag_slave">
   <parameter name="arbitrationPriority" value="1" />
@@ -3311,6 +3355,15 @@
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
+   kind="avalon"
+   version="17.0"
+   start="fpga_only_master.master"
+   end="heartbeat.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00023710" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
    kind="clock"
    version="17.0"
    start="clk_0.clk"
@@ -3438,6 +3491,7 @@
  <connection kind="clock" version="17.0" start="clk_0.clk" end="quad_pio_9.clk" />
  <connection kind="clock" version="17.0" start="clk_0.clk" end="quad_pio_10.clk" />
  <connection kind="clock" version="17.0" start="clk_0.clk" end="quad_pio_11.clk" />
+ <connection kind="clock" version="17.0" start="clk_0.clk" end="heartbeat.clk" />
  <connection
    kind="clock"
    version="17.0"
@@ -3745,6 +3799,11 @@
    version="17.0"
    start="clk_0.clk_reset"
    end="quad_pio_11.reset" />
+ <connection
+   kind="reset"
+   version="17.0"
+   start="clk_0.clk_reset"
+   end="heartbeat.reset" />
  <connection
    kind="reset"
    version="17.0"
