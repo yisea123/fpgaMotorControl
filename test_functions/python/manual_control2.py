@@ -6,6 +6,14 @@ import re
 import sys
 import select
 
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+
+PRINT_SENSORS = 1
+PRINT_LOOP_SPECS = 0
+#grab encoder counts and limit switch values
 
 class MotorInstance():
 
@@ -21,24 +29,32 @@ class MotorInstance():
 		self.motor_pos = position
 		self.step_size = step_size
 		self.degrees_count_motor = degrees_count_motor
-		self.sine_speed = 0.5
-		self.sine_travel = 5
+		self.sine_speed = 1#0.03
+		self.sine_travel = 3
 		self.motor_nums = "12345678"
+
+
+		self.encoder_positions_list = []
+		self.fig = plt.figure()
+		#self.fig.show()
+		#self.fig.canvas.draw()
+		#self.ax1 = self.fig.add_subplot(1,1,1)
 
 		#Class variables assigned in functions
 		self.client_socket = None
 
 
-	def OpenSocket(self, socket_ip = '192.168.1.10', socket_port = 1114):
+	def OpenSocket(self, socket_ip = '192.168.1.9', socket_port = 1111):
 		#Initialize socket
+		print(socket_port)
 		self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.client_socket.connect((socket_ip, socket_port))
-		self.client_socket.setblocking(0)
-		self.client_socket.settimeout(0.1)
+		self.client_socket.setblocking(1)
+		self.client_socket.settimeout(0.5) #if setblocking is 1, this is basically settimeout(None)
 
 		#Run a single command to initalize communication
 		self.command_motors(self.motor_pos)
-		time.sleep(2)
+		time.sleep(1)
 		return
 
 	def command_motors(self, pos):
@@ -53,7 +69,10 @@ class MotorInstance():
 	def read_buff(self):
 	 	encoder_positions = str(self.client_socket.recv(256))
 	 	encoders = re.split('\s', encoder_positions)
-	 	#print('Encoder positions {}'.format(encoders))
+	 	if PRINT_SENSORS:
+	 		print('Encoder positions {}'.format(encoders[1:21]))
+
+	 	self.encoder_positions_list.append(int(encoders[5]))
 	 	return
 
 	def which_motors(self):
@@ -98,14 +117,14 @@ class MotorInstance():
 					if i==0:
 						current_pos[i] = 1;
 					else:
-						current_pos_1 = (np.sin((current_time-start_time)*np.pi*self.sine_speed)/self.degrees_count_motor*360/16*self.sine_travel)
+						current_pos_1 = (np.sin((current_time-start_time)*2*np.pi*self.sine_speed)/self.degrees_count_motor*360/16*self.sine_travel)
 						current_pos[i] = start_pos[i] + current_pos_1
 
 				self.command_motors(current_pos)
 
 				counter = counter + 1
 
-				if counter%501 == 0:
+				if counter%10 == 0 and PRINT_LOOP_SPECS == 1:
 					print("Mean loop time is: {}".format(np.mean(np.asarray(time_diff))))
 					print("Loop time variance is: {}".format(np.var(np.asarray(time_diff))))
 					counter = 1
@@ -113,8 +132,16 @@ class MotorInstance():
 				if len(time_diff) > 1e4:
 					time_diff = time_diff[-10000:]
 
+				if counter%1000 == 0:
+					#self.ax1.clear()
+					plt.plot(self.encoder_positions_list)
+					#self.fig.canvas.draw()
+
+					#if counter == 50:
+					plt.show()
+
 				#print(current_pos)
-				time.sleep(self.dt)
+				#time.sleep(self.dt)
 		except KeyboardInterrupt:
 			#Gives back control to all motors
 			self.motor_nums = "12345678"
@@ -198,7 +225,7 @@ class MotorInstance():
 #**********************************************************************
 
 #Constants and initializations
-socket_ip = '192.168.1.10'
+socket_ip = '192.168.1.9'
 socket_port = 1114
 degrees_count_motor = 0.00743
 degrees_count_joint = 360/1440

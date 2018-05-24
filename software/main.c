@@ -28,6 +28,8 @@
 #include <signal.h>
 #include <unistd.h>
 
+#define RUN_SINE 0
+
 #define SAMPLE_RATE 	1000
 #define SYNC_TOLERANCE 10
 
@@ -74,7 +76,7 @@ void my_handler(int s){
 
 int freezeMain = 0;
 
-uint8_t P=20;
+uint8_t P=30;
 uint8_t I=0;
 uint8_t D=0;
 float controllerGain = 0.01;
@@ -107,6 +109,11 @@ struct axis_motor global_motor_2 = {.accGoal = 5000, .velGoal = 0, .posGoal = 0,
 struct axis_motor global_motor_3 = {.accGoal = 5000, .velGoal = 0, .posGoal = 0, .accCurrent = 100, .velCurrent = 0, .posCurrent = 0, .posGoalCurrent = 0, .dutyCyle = 0, .setpointUpdated = 0, .startupFlag = 1};
 struct axis_motor global_motor_4 = {.accGoal = 5000, .velGoal = 0, .posGoal = 0, .accCurrent = 100, .velCurrent = 0, .posCurrent = 0, .posGoalCurrent = 0, .dutyCyle = 0, .setpointUpdated = 0, .startupFlag = 1};
 
+uint64_t GetTimeStamp() {
+    struct timeval tv;
+    gettimeofday(&tv,NULL);
+    return tv.tv_sec*(uint64_t)1000000+tv.tv_usec;
+}
 
 int main(int argc, char **argv)
 {
@@ -170,6 +177,7 @@ int main(int argc, char **argv)
 	h2p_lw_pwm_values_addr[6] = virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + PWM_PIO_6_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
 	h2p_lw_pwm_values_addr[7] = virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + PWM_PIO_7_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
 
+	//Motor bank encoder counts
 	h2p_lw_quad_addr[0]=virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + QUAD_PIO_0_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
 	h2p_lw_quad_addr[1]=virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + QUAD_PIO_1_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
 	h2p_lw_quad_addr[2]=virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + QUAD_PIO_2_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
@@ -264,17 +272,26 @@ int main(int argc, char **argv)
 
 	int dir_bitmask;
 	long myCounter = 0;
-		
+	
 	struct timeval timer_usec; 
 
-  	long long int timestamp_usec; /* timestamp in microsecond */
-	
+	double tracking_error[8];
+
+	int max_val = 0;
+	int min_val = 0;
+	double sine_magnitude = 1000.0;
+
 	for(j = 0; j<8; j++){
 		position_setpoints[j] = 0;
+		tracking_error[j] = 0;
 	}
+
+	//clock_t start = clock();
+	//clock_t loop_start = clock();
+
+	uint64_t start = GetTimeStamp();
 	while(exit_flag == 0)
 	{
-
 
 		if(!freezeMain){
 		
@@ -289,23 +306,45 @@ int main(int argc, char **argv)
 			switch_states[6] = (switches&1<<5)==0;
 			switch_states[7] = (switches&1<<4)==0;
 			//j = 0;
+
+			if(RUN_SINE){
+				
+				uint64_t delta = (GetTimeStamp() - start) / 1000;
+				int sp = sin((double)(delta*(2.0*3.14))/1000*8) * sine_magnitude;
+				//int sp = 1000;
+				//printf("\n\n%lf %d\n\n", 1, sp);
+				for(j = 0; j<8; j++){
+					position_setpoints[j] = sp;
+				}
+			}
+
 			for(j = 0; j<8; j++){
 				int32_t output = alt_read_word(h2p_lw_quad_addr[j]); //& mask;
 				internal_encoders[j] = output;
+
+				if(j==7 && output > max_val)
+					max_val = output;
+
+				if(j==7 && output < min_val)
+					min_val = output;
 				
-				/*arm_encoders1 = alt_read_word(h2p_lw_quad_addr_external[0]);
-				arm_encoders2 = alt_read_word(h2p_lw_quad_addr_external[1]);
-				arm_encoders3 = alt_read_word(h2p_lw_quad_addr_external[2]);
-				arm_encoders4 = alt_read_word(h2p_lw_quad_addr_external[3]);*/
+				if(j==7){
+					arm_encoders1 = alt_read_word(h2p_lw_quad_addr_external[0]);
+					arm_encoders2 = alt_read_word(h2p_lw_quad_addr_external[1]);
+					arm_encoders3 = alt_read_word(h2p_lw_quad_addr_external[2]);
+					arm_encoders4 = alt_read_word(h2p_lw_quad_addr_external[3]);
+				}
 
 				//int32_t nativeInt = createNativeInt(output, 30);
 
 				int32_t error = output - position_setpoints[j];
+				tracking_error[j] = tracking_error[j]*0.99 + error*.01;
+
 				alt_write_word(h2p_lw_pid_input_addr[j], error);
 				int32_t check_error = (int32_t)(*h2p_lw_quad_addr[j]);// - position_setpoints[j];
 				
 				//int32_t pid_output = *(int32_t*)(h2p_lw_pid_output_addr[j]);
-				usleep(100);
+				usleep(10);
 				int32_t pid_output = (int32_t)(alt_read_word(h2p_lw_pid_output_addr[j])) * controllerGain;
 				int32_t positive_pid_output = (pid_output>=0);
 				int32_t pid_output_cutoff = fabs(pid_output)*(fabs(pid_output) <= 255) + 255*(fabs(pid_output) > 255);	
@@ -339,10 +378,17 @@ int main(int argc, char **argv)
 				sprintf(string_write, "Axis %d, Position Setpoint %d, Current count %d, Error %d, Current PID output unsigned %d\n", j, position_setpoints[j], output, error, pid_output);
 				//if(j==2)
 				//	fprintf(fp, string_write);
-				if(myCounter%100 == 0){
+				if(myCounter%100 == 0 && j == 7){
 					//printf("%d", beat);
-					printf("Axis: %d;Position Setpoint: %d; Error: %d; Current PID output, unsigned: %d; Cutoff output: %d\n", j, position_setpoints[j], error, pid_output, pid_output_cutoff);
+					printf("Axis: %d; AVG tracking error: %lf Position Setpoint: %d; Error: %d; Current PID output, unsigned: %d; Cutoff output: %d\n", j, tracking_error[j], position_setpoints[j], error, pid_output, pid_output_cutoff);
 					printf("Heartbeat: %d; Error: %d; Error read: %d; PID out: %d\n", myCounter, error, check_error, pid_output);
+					int dval = max_val - min_val;
+					printf("value range: %d\n", dval);
+
+					if (dval > sine_magnitude * 1.5){
+						max_val = 0;
+						min_val = 0;
+					}
 					// printf("External encoder counts: %d, %d, %d, %d\n", arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4);
 					// printf("%d,%d,%d,%d,%d,%d,%d,%d\n", switch_states[0],switch_states[1],switch_states[2],switch_states[3],switch_states[4],switch_states[5],switch_states[6],switch_states[7]);
 					// printf("%d,%d,%d,%d,%d,%d,%d,%d\n", position_setpoints[0],position_setpoints[1],position_setpoints[2],position_setpoints[3],position_setpoints[4],position_setpoints[5],position_setpoints[6],position_setpoints[7]);
@@ -449,7 +495,7 @@ setup socket communication
 
 	while(system_state == 1 && socket_error == 0 ){
 
-		nanosleep((const struct timespec[]){{0, 500000L}}, NULL);
+		nanosleep((const struct timespec[]){{0, 2500000L}}, NULL);
 
 		/*--------------------------------
 		read from socket
@@ -467,10 +513,12 @@ setup socket communication
 		/*--------------------------------
 		write external encoders to socket
 		--------------------------------*/
-		arm_encoders1 = alt_read_word(h2p_lw_quad_addr_external[0]);
+		/*arm_encoders1 = alt_read_word(h2p_lw_quad_addr_external[0]);
 		arm_encoders2 = alt_read_word(h2p_lw_quad_addr_external[1]);
 		arm_encoders3 = alt_read_word(h2p_lw_quad_addr_external[2]);
-		arm_encoders4 = alt_read_word(h2p_lw_quad_addr_external[3]);
+		arm_encoders4 = alt_read_word(h2p_lw_quad_addr_external[3]);*/
+
+
    // 		sprintf(write_buffer,"nn %d %d %d %d qq",arm_encoders1,arm_encoders2,arm_encoders3,arm_encoders4);
    // 		if (state==1){
 			// //n = write(newsockfd,write_buffer,256);
@@ -483,7 +531,11 @@ setup socket communication
    		/*--------------------------------
 		write switch, external encoder, internal encoder state to socket
 		--------------------------------*/
-   		sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d %d %d %d %d qq", switch_states[0], switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7], arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4);
+   		sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d qq", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
+   			internal_encoders[3], internal_encoders[4], internal_encoders[5], internal_encoders[6], internal_encoders[7], switch_states[0],\
+   			switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7],\
+   			arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4);
+
     	n = write(newsockfd,write_buffer,256);
     	if (n < 0){
     		error("ERROR writing to socket");

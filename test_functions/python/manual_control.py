@@ -10,7 +10,7 @@ import select
 client_socket = 1
 if(client_socket):
 	client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	client_socket.connect(('192.168.1.10', 1114))
+	client_socket.connect(('192.168.1.10', 1116))
 	client_socket.setblocking(0)
 	client_socket.settimeout(0.1)
 
@@ -77,7 +77,7 @@ def run_sine(x,dt = 1/50):
 				if i==0:
 					current_pos[i] = 1;
 				else:
-					current_pos_1 = (np.sin((current_time-start_time)*10)*1000)
+					current_pos_1 = (np.sin((current_time-start_time)/2)*10000)
 					current_pos[i] = start_pos[i] + current_pos_1
 			command_motors(client_socket, current_pos)
 			print(current_pos)
