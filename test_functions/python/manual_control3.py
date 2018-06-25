@@ -9,53 +9,61 @@ import select
 import numpy as np
 import matplotlib.pyplot as plt
 
-
-
-PRINT_SENSORS = 1
-PRINT_LOOP_SPECS = 0
 #grab encoder counts and limit switch values
 
-class MotorInstance():
+class tcp_communication():
+	def __init__(self, ip, port):
 
-	def __init__(self,
-				 dt,
-				 position,
-				 step_size,
-				 degrees_count_motor
-				 ):
+		self.ip = ip
+		self.port = port
+		self.client_socket = None
+
+	def open_socket(self):
+		#Initialize socket
+		print("Opening socket at ip: {} using port: {}".format(self.ip, self.port))
+		self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		self.client_socket.connect((self.ip, self.port))
+		self.client_socket.setblocking(1)
+		self.client_socket.settimeout(0.5) #if setblocking is 1, this is basically settimeout(None)
+
+		# #Run a single command to initalize communication
+		# self.command_motors(position)
+		# time.sleep(1)
+		return
+
+	def setpriority(self, pid=None, priority=5):
+	    """ Set The Priority of a Windows Process.  Priority is a value between 0-5 where
+	        2 is normal priority.  Default sets the priority of the current
+	        python process but can take any valid process ID. """
+	        
+	    import win32api,win32process,win32con
+	    
+	    priorityclasses = [win32process.IDLE_PRIORITY_CLASS,
+	                       win32process.BELOW_NORMAL_PRIORITY_CLASS,
+	                       win32process.NORMAL_PRIORITY_CLASS,
+	                       win32process.ABOVE_NORMAL_PRIORITY_CLASS,
+	                       win32process.HIGH_PRIORITY_CLASS,
+	                       win32process.REALTIME_PRIORITY_CLASS]
+	    if pid == None:
+	        pid = win32api.GetCurrentProcessId()
+	    handle = win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS, True, pid)
+	    win32process.SetPriorityClass(handle, priorityclasses[priority])
+
+class motors():
+	def __init__(self, tcp, dt, position, step_size, degrees_count_motor):
 
 		#Declaring class variables
 		self.dt = dt
 		self.motor_pos = position
 		self.step_size = step_size
 		self.degrees_count_motor = degrees_count_motor
-		self.sine_speed = 0.3#0.03
+		self.sine_speed = 0.3
 		self.sine_travel = 3
 		self.motor_nums = "12345678"
 
-
 		self.encoder_positions_list = []
-		self.fig = plt.figure()
-		#self.fig.show()
-		#self.fig.canvas.draw()
-		#self.ax1 = self.fig.add_subplot(1,1,1)
 
-		#Class variables assigned in functions
-		self.client_socket = None
-
-
-	def OpenSocket(self, socket_ip = '192.168.1.9', socket_port = 1111):
-		#Initialize socket
-		print(socket_port)
-		self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		self.client_socket.connect((socket_ip, socket_port))
-		self.client_socket.setblocking(1)
-		self.client_socket.settimeout(0.5) #if setblocking is 1, this is basically settimeout(None)
-
-		#Run a single command to initalize communication
-		self.command_motors(self.motor_pos)
-		time.sleep(1)
-		return
+		self.client_socket = tcp.client_socket
 
 	def command_motors(self, pos):
 		self.motor_pos = pos
@@ -89,6 +97,14 @@ class MotorInstance():
 		time.sleep(3)
 		return
 
+	def print_menu(self):
+		print('\n')
+		print("enter - advances forward by last step size (initial step size if no step size indicated")
+		print("m - allows to change which motors to control")
+		print("z - starts the zeroing process, needs limit switches attached")
+		print("sine - starts a sine wave pulse")
+		print("data - prints all the sensor feedback")
+		return
 
 	def run_sine(self):
 		start_pos = self.motor_pos
@@ -97,7 +113,7 @@ class MotorInstance():
 		counter = 1
 
 		print("Running sine wave, ctrl c to break:")
-		print(self.motor_pos[1])
+		print('current positions {}' .format(self.motor_pos[1:]))
 
 		time.sleep(2)
 		start_time = time.time()
@@ -133,9 +149,7 @@ class MotorInstance():
 					time_diff = time_diff[-10000:]
 
 				if counter%1000 == 0 and False:
-					#self.ax1.clear()
 					plt.plot(self.encoder_positions_list)
-					#self.fig.canvas.draw()
 
 					#if counter == 50:
 					plt.show()
@@ -151,7 +165,7 @@ class MotorInstance():
 
 	def get_direction(self):
 		while True:
-			direction = input("Enter direction +/- keys and number of counts(ex:+ 100): ")
+			direction = input("Enter command or direction +/- keys and number of counts(ex:+ 100) or 'p' to print command menu: ")
 			direction = re.split('\s',direction)
 
 			#Single string input with no spaces
@@ -169,6 +183,9 @@ class MotorInstance():
 					return self.motor_nums #Returns which motors to control
 					break
 
+				if direction[0] == 'p':
+					self.print_menu()
+
 				#z indicates to zero the motors
 				if direction[0] == "z":
 					self.zero_motors()
@@ -183,7 +200,8 @@ class MotorInstance():
 					return "sine"
 					break
 
-				print("Incorrect input, try again.")
+				print("Re-enter command now")
+				print('\n')
 				continue
 
 			#String input of two entries (ex:+ 100)
@@ -200,53 +218,37 @@ class MotorInstance():
 				break
 		return
 
-
-	def setpriority(pid=None,priority=5):
-	    """ Set The Priority of a Windows Process.  Priority is a value between 0-5 where
-	        2 is normal priority.  Default sets the priority of the current
-	        python process but can take any valid process ID. """
-	        
-	    import win32api,win32process,win32con
-	    
-	    priorityclasses = [win32process.IDLE_PRIORITY_CLASS,
-	                       win32process.BELOW_NORMAL_PRIORITY_CLASS,
-	                       win32process.NORMAL_PRIORITY_CLASS,
-	                       win32process.ABOVE_NORMAL_PRIORITY_CLASS,
-	                       win32process.HIGH_PRIORITY_CLASS,
-	                       win32process.REALTIME_PRIORITY_CLASS]
-	    if pid == None:
-	        pid = win32api.GetCurrentProcessId()
-	    handle = win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS, True, pid)
-	    win32process.SetPriorityClass(handle, priorityclasses[priority])
-
-
 #**********************************************************************
 #**************					Begin Control		 	***************
 #**********************************************************************
 
+#Flags
+PRINT_SENSORS = 1 						#Encoder positions
+PRINT_LOOP_SPECS = 0 					#Loop speeds, mean time and variance
+IsWindows = os.name == 'nt' 			#os.name is name of os, ex: linux='posix', windows='nt', mac='mac'
+ManualControl = 1						#main loop control
+
 #Constants and initializations
 socket_ip = '192.168.1.13'
 socket_port = 1115
-degrees_count_motor = 0.00743
-degrees_count_joint = 360/1440
-step_size = 100
+degrees_count_motor = 0.00743			#Motor encoder resolution
+degrees_count_joint = 360/1440			#Joint encoder resolution
+step_size = 100							#Number of encoder counts to step
 dt = 1/200
 start_time = time.time()
 counter = 0
 position = np.insert(1,1,np.zeros(8))
 
 
-#Flags
-IsWindows = 0
-ManualControl = 1
-
-
-#Class instance
-motors = MotorInstance(dt, position, step_size, degrees_count_motor)
-motors.OpenSocket(socket_ip,socket_port)
-
+#Communication class
+tcp = tcp_communication(socket_ip, socket_port)
+tcp.open_socket()
 if IsWindows:
-	motors.setpriority()
+	tcp.setpriority()
+
+#Motor class
+motors = motors(tcp, dt, position, step_size, degrees_count_motor)
+motors.command_motors(position) #initialize to zero
 
 #tells which motors to control
 motor_numbers = motors.which_motors()
