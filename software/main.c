@@ -24,6 +24,7 @@
 #include <sys/types.h> 
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <fcntl.h>
 
 #include <signal.h>
 #include <unistd.h>
@@ -57,7 +58,7 @@ volatile unsigned long *h2p_lw_pwm_values_addr[8];//=NULL;
 volatile int32_t position_setpoints[8];
 int32_t beat = 0;
 
-//FILE *fp;
+FILE *file;
 
 int exit_flag = 0;
 
@@ -68,11 +69,7 @@ void *heartbeat_func(void *arg);
 void error(const char *msg);
 void zero_motor_axis(void);
 void zero_motors(char *write_buffer,int newsockfd);
-void my_handler(int s){
-           printf("Caught signal %d\n",s);
-           exit_flag = 1; 
 
-}
 
 int freezeMain = 0;
 
@@ -115,9 +112,17 @@ uint64_t GetTimeStamp() {
     return tv.tv_sec*(uint64_t)1000000+tv.tv_usec;
 }
 
+void my_handler(int s){
+		printf("Caught signal %d\n",s);
+		printf("Storing motor encoder positions to encoder_values.txt\n");
+		fprintf(file, "%d,%d,%d,%d,%d,%d,%d,%d", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
+			internal_encoders[3], internal_encoders[4], internal_encoders[5], internal_encoders[6], internal_encoders[7]);
+		fclose(file);
+        exit_flag = 1; 
+}
+
 int main(int argc, char **argv)
 {
-	
 	/*
 	------------------------------------------
 	Generic setup below for port communication
@@ -218,7 +223,31 @@ int main(int argc, char **argv)
 	pthread_create(&pth_heartbeat,NULL,heartbeat_func,NULL);
 	pthread_create(&pth,NULL,threadFunc,NULL);
 
-	
+	char str[100];
+	char *val;
+
+	file = fopen("encoder_values.txt", "r+");
+	if (file){
+		fgets(str,100,file);
+		val = strtok(str, ",");
+
+		for(i=0;i<8;i++){
+			// printf("%s these are the file contents \n", val);
+			// printf("%d numerical value\n", atoi(val));
+			position_setpoints[i] = atoi(val);
+			val = strtok(NULL, ",");
+		}
+
+		fclose(file);
+		file = fopen("encoder_values.txt", "w+");
+	}
+	else {
+		for(i=0;i<8;i++){
+			position_setpoints[i] = 0;
+		}
+		file = fopen("encoder_values.txt", "w+");
+	}
+
 	//below resets just one counter
 	/*
 	unsigned current_count = *h2p_lw_quad_reset_addr;
@@ -450,15 +479,17 @@ setup socket communication
 --------------------------------*/
 	char * pch;
 
-	int sockfd, newsockfd, portno;
+	int sockfd, newsockfd = -1, portno;
     socklen_t clilen;
     char buffer[256];
+    char old_buffer[256];
     char write_buffer[256];
     struct sockaddr_in serv_addr, cli_addr;
     int n, j, k;
     int state=1;
 
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	//fcntl(sockfd, F_SETFL, O_NONBLOCK); //sets the socket to nonblocking, will poll and return -1 and errno will be set to EAGAIN or EWOULDBLOCK
 
 
     if (sockfd < 0){ 
@@ -479,19 +510,31 @@ setup socket communication
 
     listen(sockfd,5);
     clilen = sizeof(cli_addr);
+
+    // while (newsockfd < 0){
+	   //  newsockfd = accept(sockfd, 
+	   //              (struct sockaddr *) &cli_addr, 
+	   //              &clilen);
+	   //  sleep(1);
+    // }
+
     newsockfd = accept(sockfd, 
                 (struct sockaddr *) &cli_addr, 
                 &clilen);
+
     if (newsockfd < 0){ 
         error("ERROR on accept");
         return;
     }
 
+
     bzero(buffer,256);
+    bzero(old_buffer,256);
     bzero(write_buffer,256);
 	char *str;
 
 	str=(char*)arg;
+
 
 	while(system_state == 1 && socket_error == 0 ){
 
@@ -500,47 +543,25 @@ setup socket communication
 		/*--------------------------------
 		read from socket
 		--------------------------------*/
-		n = read(newsockfd,buffer,255);
+		
+		n = read(newsockfd,buffer,255); //blocking function, unless set with fcntl as above
+		printf("Reading DATA NOW************************************\n");
+		// if (n>0){
+		// 	memcpy(old_buffer, buffer, 256);
+		// }
+		// memcpy(buffer, old_buffer, 256);
+
+		
+		// printf("data %d\n", n);
+		// printf("string %s\n", buffer);
+		// printf("old_string %s\n", old_buffer);
+
+
    		if (n < 0){
    			error("ERROR reading from socket");
    			break;
    		}
 
-   		/*--------------------------------
-		write internal encoders to socket
-		--------------------------------*/
-
-		/*--------------------------------
-		write external encoders to socket
-		--------------------------------*/
-		/*arm_encoders1 = alt_read_word(h2p_lw_quad_addr_external[0]);
-		arm_encoders2 = alt_read_word(h2p_lw_quad_addr_external[1]);
-		arm_encoders3 = alt_read_word(h2p_lw_quad_addr_external[2]);
-		arm_encoders4 = alt_read_word(h2p_lw_quad_addr_external[3]);*/
-
-
-   // 		sprintf(write_buffer,"nn %d %d %d %d qq",arm_encoders1,arm_encoders2,arm_encoders3,arm_encoders4);
-   // 		if (state==1){
-			// //n = write(newsockfd,write_buffer,256);
-			// if (n < 0){
-   //  			error("ERROR writing to socket");
-   //  		break;
-   //  		}
-   // 		}
-
-   		/*--------------------------------
-		write switch, external encoder, internal encoder state to socket
-		--------------------------------*/
-   		sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d qq", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
-   			internal_encoders[3], internal_encoders[4], internal_encoders[5], internal_encoders[6], internal_encoders[7], switch_states[0],\
-   			switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7],\
-   			arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4);
-
-    	n = write(newsockfd,write_buffer,256);
-    	if (n < 0){
-    		error("ERROR writing to socket");
-    		break;
-    	}
 
     	/*--------------------------------
 		parse received message from socket
@@ -570,6 +591,22 @@ setup socket communication
 		if(state==0){
 			zero_motors(write_buffer,newsockfd);
 		}
+
+		/*--------------------------------
+		write switch, external encoder, internal encoder state to socket
+		--------------------------------*/
+   		sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d qq", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
+   			internal_encoders[3], internal_encoders[4], internal_encoders[5], internal_encoders[6], internal_encoders[7], switch_states[0],\
+   			switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7],\
+   			arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4);
+
+    	n = write(newsockfd,write_buffer,256);
+    	printf("PRINTING DATA NOW************************************");
+    	if (n < 0){
+    		error("ERROR writing to socket");
+    		break;
+    	}
+
 	}
 
 

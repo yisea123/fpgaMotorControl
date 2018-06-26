@@ -24,7 +24,7 @@ class tcp_communication():
 		self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.client_socket.connect((self.ip, self.port))
 		self.client_socket.setblocking(1)
-		self.client_socket.settimeout(0.5) #if setblocking is 1, this is basically settimeout(None)
+		#self.client_socket.settimeout(1) #if setblocking is 1, this is basically settimeout(None)
 
 		# #Run a single command to initalize communication
 		# self.command_motors(position)
@@ -64,6 +64,9 @@ class motors():
 		self.encoder_positions_list = []
 
 		self.client_socket = tcp.client_socket
+		self.motor_encoders_data = np.zeros(8)
+		self.joint_encoders_data = np.zeros(4)
+		self.limit_data = np.zeros(8)
 
 	def command_motors(self, pos):
 		self.motor_pos = pos
@@ -75,12 +78,18 @@ class motors():
 		return self.motor_pos
 
 	def read_buff(self):
-	 	encoder_positions = str(self.client_socket.recv(256))
-	 	encoders = re.split('\s', encoder_positions)
-	 	if PRINT_SENSORS:
-	 		print('Encoder positions {}'.format(encoders[1:21]))
+	 	data = str(self.client_socket.recv(256))
+	 	data = re.split('\s', data)
 
-	 	self.encoder_positions_list.append(int(encoders[5]))
+	 	self.motor_encoders_data = data[1:9]
+	 	self.joint_encoders_data = data[17:21]
+	 	self.limit_data = data[9:17]
+	 	if PRINT_SENSORS:
+	 		print('Motor encoder positions {}'.format(self.motor_encoders_data))
+	 		print('Joint encoder positions {}'.format(self.joint_encoders_data))
+	 		print('Limit switch values {}'.format(self.limit_data))
+
+	 	self.encoder_positions_list.append(int(data[5]))
 	 	return
 
 	def which_motors(self):
@@ -104,6 +113,19 @@ class motors():
 		print("z - starts the zeroing process, needs limit switches attached")
 		print("sine - starts a sine wave pulse")
 		print("data - prints all the sensor feedback")
+		return
+
+	def print_data(self):
+		data = str(self.client_socket.recv(256))
+		data = re.split('\s', data)
+
+		self.motor_encoders_data = data[1:9]
+		self.joint_encoders_data = data[17:21]
+		self.limit_data = data[9:17]
+		print('\n')
+		print('Current motor encoder positions {}'.format(self.motor_encoders_data))
+		print('Current joint encoder positions {}'.format(self.joint_encoders_data))
+		print('Current limit switch values {}'.format(self.limit_data))
 		return
 
 	def run_sine(self):
@@ -186,6 +208,9 @@ class motors():
 				if direction[0] == 'p':
 					self.print_menu()
 
+				if direction[0] == 'data':
+					self.print_data()
+
 				#z indicates to zero the motors
 				if direction[0] == "z":
 					self.zero_motors()
@@ -230,7 +255,7 @@ ManualControl = 1						#main loop control
 
 #Constants and initializations
 socket_ip = '192.168.1.13'
-socket_port = 1115
+socket_port = 1116
 degrees_count_motor = 0.00743			#Motor encoder resolution
 degrees_count_joint = 360/1440			#Joint encoder resolution
 step_size = 100							#Number of encoder counts to step
