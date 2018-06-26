@@ -5,31 +5,36 @@ import socket
 import re
 import sys
 import select
+import signal
 
 import numpy as np
 import matplotlib.pyplot as plt
 
 #grab encoder counts and limit switch values
 
+def signal_handler(signal, frame):
+	CLIENT_SOCKET.close()
+	print("\n\nCtrl c pressed, closing ports and exiting now\n")
+	sys.exit(0)
+
 class tcp_communication():
 	def __init__(self, ip, port):
 
 		self.ip = ip
 		self.port = port
-		self.client_socket = None
 
 	def open_socket(self):
 		#Initialize socket
 		print("Opening socket at ip: {} using port: {}".format(self.ip, self.port))
-		self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		self.client_socket.connect((self.ip, self.port))
-		self.client_socket.setblocking(1)
-		#self.client_socket.settimeout(1) #if setblocking is 1, this is basically settimeout(None)
+		CLIENT_SOCKET = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		CLIENT_SOCKET.connect((self.ip, self.port))
+		CLIENT_SOCKET.setblocking(1)
+		#CLIENT_SOCKET.settimeout(1) #if setblocking is 1, this is basically settimeout(None)
 
 		# #Run a single command to initalize communication
 		# self.command_motors(position)
 		# time.sleep(1)
-		return
+		return CLIENT_SOCKET
 
 	def setpriority(self, pid=None, priority=5):
 	    """ Set The Priority of a Windows Process.  Priority is a value between 0-5 where
@@ -50,7 +55,7 @@ class tcp_communication():
 	    win32process.SetPriorityClass(handle, priorityclasses[priority])
 
 class motors():
-	def __init__(self, tcp, dt, position, step_size, degrees_count_motor):
+	def __init__(self, CLIENT_SOCKET, dt, position, step_size, degrees_count_motor):
 
 		#Declaring class variables
 		self.dt = dt
@@ -63,10 +68,10 @@ class motors():
 
 		self.encoder_positions_list = []
 
-		self.client_socket = tcp.client_socket
 		self.motor_encoders_data = np.zeros(8)
 		self.joint_encoders_data = np.zeros(4)
 		self.limit_data = np.zeros(8)
+		self.client_socket = CLIENT_SOCKET
 
 	def command_motors(self, pos):
 		self.motor_pos = pos
@@ -78,8 +83,13 @@ class motors():
 		return self.motor_pos
 
 	def read_buff(self):
-	 	data = str(self.client_socket.recv(256))
+	 	data = str(CLIENT_SOCKET.recv(256))
 	 	data = re.split('\s', data)
+
+	 	if data[1] == 'closeports':
+	 		self.client_socket.close()
+	 		print("\n\nServer side closed. Closing ports now.\n\n")
+	 		sys.exit()
 
 	 	self.motor_encoders_data = data[1:9]
 	 	self.joint_encoders_data = data[17:21]
@@ -115,18 +125,18 @@ class motors():
 		print("data - prints all the sensor feedback")
 		return
 
-	def print_data(self):
-		data = str(self.client_socket.recv(256))
-		data = re.split('\s', data)
+	# def print_data(self):
+	# 	data = str(CLIENT_SOCKET.recv(256))
+	# 	data = re.split('\s', data)
 
-		self.motor_encoders_data = data[1:9]
-		self.joint_encoders_data = data[17:21]
-		self.limit_data = data[9:17]
-		print('\n')
-		print('Current motor encoder positions {}'.format(self.motor_encoders_data))
-		print('Current joint encoder positions {}'.format(self.joint_encoders_data))
-		print('Current limit switch values {}'.format(self.limit_data))
-		return
+	# 	self.motor_encoders_data = data[1:9]
+	# 	self.joint_encoders_data = data[17:21]
+	# 	self.limit_data = data[9:17]
+	# 	print('\n')
+	# 	print('Current motor encoder positions {}'.format(self.motor_encoders_data))
+	# 	print('Current joint encoder positions {}'.format(self.joint_encoders_data))
+	# 	print('Current limit switch values {}'.format(self.limit_data))
+	# 	return
 
 	def run_sine(self):
 		start_pos = self.motor_pos
@@ -265,14 +275,17 @@ counter = 0
 position = np.insert(1,1,np.zeros(8))
 
 
+#Signal handler
+signal.signal(signal.SIGINT, signal_handler)
+
 #Communication class
 tcp = tcp_communication(socket_ip, socket_port)
-tcp.open_socket()
+CLIENT_SOCKET = tcp.open_socket()
 if IsWindows:
 	tcp.setpriority()
 
 #Motor class
-motors = motors(tcp, dt, position, step_size, degrees_count_motor)
+motors = motors(CLIENT_SOCKET, dt, position, step_size, degrees_count_motor)
 motors.command_motors(position) #initialize to zero
 
 #tells which motors to control

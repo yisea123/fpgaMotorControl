@@ -61,6 +61,7 @@ int32_t position_offsets[8];
 int32_t beat = 0;
 
 FILE *file;
+int sockfd, newsockfd; //global socket value such that it can be called in signal catcher to close ports
 
 int exit_flag = 0;
 
@@ -115,10 +116,29 @@ uint64_t GetTimeStamp() {
 }
 
 void my_handler(int s){
+		int n;
+		char write_buffer[256];
+		bzero(write_buffer,256);
+
 		printf("Caught signal %d\n",s);
 		printf("Storing motor encoder positions to encoder_values.txt\n");
 		fprintf(file, "%d,%d,%d,%d,%d,%d,%d,%d", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
 			internal_encoders[3], internal_encoders[4], internal_encoders[5], internal_encoders[6], internal_encoders[7]);
+
+		printf("Writing back to python side, closing sockets\n");
+
+		/*--------------------------------
+		write back to python to kill sockets
+		--------------------------------*/
+   		sprintf(write_buffer,"* closeports *");
+    	n = write(newsockfd,write_buffer,256);
+    	// if (n < 0){
+    	// 	error("ERROR writing to socket upon closing ports, port");
+    	// }
+
+	    close(newsockfd);
+	    close(sockfd);
+
 		fclose(file);
         exit_flag = 1; 
 }
@@ -138,9 +158,9 @@ int main(int argc, char **argv)
 	pthread_t pth, pth_heartbeat;	// this is our thread identifier
 
 	
-	//fp = fopen("recorded_file.csv", "wb");
-
-	
+	/*--------------------------------
+	ctrl-c catcher
+	--------------------------------*/
 	struct sigaction sigIntHandler;
 	sigIntHandler.sa_handler = my_handler;
    	sigemptyset(&sigIntHandler.sa_mask);
@@ -148,6 +168,7 @@ int main(int argc, char **argv)
 
   	sigaction(SIGINT, &sigIntHandler, NULL);
 	/*
+
 	------------------------------------------
 	Setup FPGA communication
 	------------------------------------------
@@ -237,12 +258,8 @@ setup file to store setpoint on shutdown and load on boot
 
 		printf("Loaded setpoitns\n");
 		for(i=0;i<8;i++){
-			// printf("%s these are the file contents \n", val);
-			// printf("%d numerical value\n", atoi(val));
 			position_setpoints[i] = atoi(val);
 			position_offsets[i] = atoi(val);
-
-			//internal_encoders[i] = atoi(val);
 			val = strtok(NULL, ",");
 			printf("setpoints %d\n", position_setpoints[i]);
 		}
@@ -253,6 +270,7 @@ setup file to store setpoint on shutdown and load on boot
 	else {
 		for(i=0;i<8;i++){
 			position_setpoints[i] = 0;
+			position_offsets[i] = 0;
 		}
 		file = fopen("encoder_values.txt", "w+");
 	}
@@ -488,7 +506,7 @@ setup socket communication
 --------------------------------*/
 	char * pch;
 
-	int sockfd, newsockfd = -1, portno;
+	int portno;
     socklen_t clilen;
     char buffer[256];
     char old_buffer[256];
