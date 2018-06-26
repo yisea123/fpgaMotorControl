@@ -56,6 +56,8 @@ volatile unsigned long *h2p_lw_pid_output_addr[8];//=NULL;
 volatile unsigned long *h2p_lw_pwm_values_addr[8];//=NULL;
 
 volatile int32_t position_setpoints[8];
+int32_t position_offsets[8];
+
 int32_t beat = 0;
 
 FILE *file;
@@ -217,12 +219,14 @@ int main(int argc, char **argv)
 	h2p_lw_pid_output_addr[5] = virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + PID_CORRECTION_PIO_5_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
 	h2p_lw_pid_output_addr[6] = virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + PID_CORRECTION_PIO_6_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
 	h2p_lw_pid_output_addr[7] = virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + PID_CORRECTION_PIO_7_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
-
 	
 
 	pthread_create(&pth_heartbeat,NULL,heartbeat_func,NULL);
 	pthread_create(&pth,NULL,threadFunc,NULL);
 
+/*--------------------------------
+setup file to store setpoint on shutdown and load on boot
+--------------------------------*/
 	char str[100];
 	char *val;
 
@@ -231,11 +235,16 @@ int main(int argc, char **argv)
 		fgets(str,100,file);
 		val = strtok(str, ",");
 
+		printf("Loaded setpoitns\n");
 		for(i=0;i<8;i++){
 			// printf("%s these are the file contents \n", val);
 			// printf("%d numerical value\n", atoi(val));
 			position_setpoints[i] = atoi(val);
+			position_offsets[i] = atoi(val);
+
+			//internal_encoders[i] = atoi(val);
 			val = strtok(NULL, ",");
+			printf("setpoints %d\n", position_setpoints[i]);
 		}
 
 		fclose(file);
@@ -311,7 +320,7 @@ int main(int argc, char **argv)
 	double sine_magnitude = 1000.0;
 
 	for(j = 0; j<8; j++){
-		position_setpoints[j] = 0;
+		//position_setpoints[j] = 0;
 		tracking_error[j] = 0;
 	}
 
@@ -349,7 +358,7 @@ int main(int argc, char **argv)
 
 			for(j = 0; j<8; j++){
 				int32_t output = alt_read_word(h2p_lw_quad_addr[j]); //& mask;
-				internal_encoders[j] = output;
+				internal_encoders[j] = output + position_offsets[j];
 
 				if(j==7 && output > max_val)
 					max_val = output;
@@ -366,7 +375,7 @@ int main(int argc, char **argv)
 
 				//int32_t nativeInt = createNativeInt(output, 30);
 
-				int32_t error = output - position_setpoints[j];
+				int32_t error = internal_encoders[j] - position_setpoints[j];
 				tracking_error[j] = tracking_error[j]*0.99 + error*.01;
 
 				alt_write_word(h2p_lw_pid_input_addr[j], error);
@@ -404,7 +413,7 @@ int main(int argc, char **argv)
 				}
 				
 				char string_write[255];
-				sprintf(string_write, "Axis %d, Position Setpoint %d, Current count %d, Error %d, Current PID output unsigned %d\n", j, position_setpoints[j], output, error, pid_output);
+				sprintf(string_write, "Axis %d, Position Setpoint %d, Current count %d, Error %d, Current PID output unsigned %d\n", j, position_setpoints[j], internal_encoders[j], error, pid_output);
 				//if(j==2)
 				//	fprintf(fp, string_write);
 				if(myCounter%100 == 0 && j == 7){
