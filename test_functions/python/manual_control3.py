@@ -4,17 +4,20 @@ import time
 import socket
 import re
 import sys
+import getch
 import select
 import signal
-
 import numpy as np
 import matplotlib.pyplot as plt
 
 #grab encoder counts and limit switch values
 
 def signal_handler(signal, frame):
+	data = ('b'+ 'stop' +'d')
+	CLIENT_SOCKET.send(data.encode())
+	CLIENT_SOCKET.shutdown(socket.SHUT_RDWR)
 	CLIENT_SOCKET.close()
-	print("\n\nCtrl c pressed, closing ports and exiting now\n")
+	print("\n\nCtrl z pressed, closing ports and exiting now\n")
 	sys.exit(0)
 
 class tcp_communication():
@@ -85,15 +88,15 @@ class motors():
 	def read_buff(self):
 	 	data = str(CLIENT_SOCKET.recv(256))
 	 	data = re.split('\s', data)
-
+	 	print("this is the data read", data)
 	 	if data[1] == 'closeports':
 	 		self.client_socket.close()
 	 		print("\n\nServer side closed. Closing ports now.\n\n")
 	 		sys.exit()
 
-	 	self.motor_encoders_data = data[1:9]
-	 	self.joint_encoders_data = data[17:21]
-	 	self.limit_data = data[9:17]
+	 	self.motor_encoders_data = np.array(list(map(int, data[1:9])))
+	 	self.joint_encoders_data = np.array(list(map(int, data[17:21])))
+	 	self.limit_data = np.array(list(map(int, data[9:17])))
 	 	if PRINT_SENSORS:
 	 		print('Motor encoder positions {}'.format(self.motor_encoders_data))
 	 		print('Joint encoder positions {}'.format(self.joint_encoders_data))
@@ -152,6 +155,7 @@ class motors():
 		st = start_time
 
 		time.sleep(self.dt)
+
 		try:
 			while True:
 				current_time = time.time()
@@ -197,7 +201,7 @@ class motors():
 
 	def get_direction(self):
 		while True:
-			direction = input("Enter command or direction +/- keys and number of counts(ex:+ 100) or 'p' to print command menu: ")
+			direction = input("Enter command or direction +/- keys and number of counts(ex:+ 100), 'p' to print command menu or ctrl z to end: ")
 			direction = re.split('\s',direction)
 
 			#Single string input with no spaces
@@ -264,8 +268,8 @@ IsWindows = os.name == 'nt' 			#os.name is name of os, ex: linux='posix', window
 ManualControl = 1						#main loop control
 
 #Constants and initializations
-socket_ip = '192.168.1.13'
-socket_port = 1116
+socket_ip = '192.168.1.14'
+socket_port = 1114
 degrees_count_motor = 0.00743			#Motor encoder resolution
 degrees_count_joint = 360/1440			#Joint encoder resolution
 step_size = 100							#Number of encoder counts to step
@@ -276,7 +280,7 @@ position = np.insert(1,1,np.zeros(8))
 
 
 #Signal handler
-signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGTSTP, signal_handler)
 
 #Communication class
 tcp = tcp_communication(socket_ip, socket_port)
@@ -286,7 +290,9 @@ if IsWindows:
 
 #Motor class
 motors = motors(CLIENT_SOCKET, dt, position, step_size, degrees_count_motor)
-motors.command_motors(position) #initialize to zero
+motors.read_buff()
+position = position + np.insert(motors.motor_encoders_data,0,0) #Adding in offset from values stored in text file onboard the fpga
+motors.command_motors(position) #initialize to encoder positions
 
 #tells which motors to control
 motor_numbers = motors.which_motors()

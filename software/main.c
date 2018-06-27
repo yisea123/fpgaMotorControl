@@ -62,7 +62,7 @@ int32_t beat = 0;
 
 FILE *file;
 int sockfd, newsockfd; //global socket value such that it can be called in signal catcher to close ports
-
+int CONNECTED = 0;  //global flag to indicate if a connection has been made
 int exit_flag = 0;
 
 uint32_t createMask(uint32_t startBit, int num_bits);
@@ -125,19 +125,19 @@ void my_handler(int s){
 		fprintf(file, "%d,%d,%d,%d,%d,%d,%d,%d", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
 			internal_encoders[3], internal_encoders[4], internal_encoders[5], internal_encoders[6], internal_encoders[7]);
 
-		printf("Writing back to python side, closing sockets\n");
-
 		/*--------------------------------
 		write back to python to kill sockets
 		--------------------------------*/
-   		sprintf(write_buffer,"* closeports *");
-    	n = write(newsockfd,write_buffer,256);
-    	// if (n < 0){
-    	// 	error("ERROR writing to socket upon closing ports, port");
-    	// }
-
-	    close(newsockfd);
-	    close(sockfd);
+		if(CONNECTED==1){
+			printf("Writing back to python side, closing sockets\n");
+	   		sprintf(write_buffer,"* closeports *");
+	    	n = write(newsockfd,write_buffer,256);
+	    	// if (n < 0){
+	    	// 	error("ERROR writing to socket upon closing ports, port");
+	    	// }
+		    close(newsockfd);
+		    close(sockfd);
+		}
 
 		fclose(file);
         exit_flag = 1; 
@@ -505,7 +505,8 @@ void *threadFunc(void *arg)
 setup socket communication
 --------------------------------*/
 	char * pch;
-
+	char deadsok[20];
+	strcpy(deadsok, "stop");
 	int portno;
     socklen_t clilen;
     char buffer[256];
@@ -516,8 +517,6 @@ setup socket communication
     int state=1;
 
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
-	//fcntl(sockfd, F_SETFL, O_NONBLOCK); //sets the socket to nonblocking, will poll and return -1 and errno will be set to EAGAIN or EWOULDBLOCK
-
 
     if (sockfd < 0){ 
         error("ERROR opening socket");
@@ -538,16 +537,10 @@ setup socket communication
     listen(sockfd,5);
     clilen = sizeof(cli_addr);
 
-    // while (newsockfd < 0){
-	   //  newsockfd = accept(sockfd, 
-	   //              (struct sockaddr *) &cli_addr, 
-	   //              &clilen);
-	   //  sleep(1);
-    // }
-
     newsockfd = accept(sockfd, 
                 (struct sockaddr *) &cli_addr, 
                 &clilen);
+    CONNECTED = 1; //change CONNECTED to 1 if connection is made, 
 
     if (newsockfd < 0){ 
         error("ERROR on accept");
@@ -568,21 +561,25 @@ setup socket communication
 		nanosleep((const struct timespec[]){{0, 2500000L}}, NULL);
 
 		/*--------------------------------
+		write switch, external encoder, internal encoder state to socket
+		--------------------------------*/
+   		sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d qq", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
+   			internal_encoders[3], internal_encoders[4], internal_encoders[5], internal_encoders[6], internal_encoders[7], switch_states[0],\
+   			switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7],\
+   			arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4);
+
+    	n = write(newsockfd,write_buffer,256);
+    	printf("PRINTING DATA NOW************************************");
+    	if (n < 0){
+    		error("ERROR writing to socket");
+    		break;
+    	}
+
+		/*--------------------------------
 		read from socket
 		--------------------------------*/
-		
 		n = read(newsockfd,buffer,255); //blocking function, unless set with fcntl as above
 		printf("Reading DATA NOW************************************\n");
-		// if (n>0){
-		// 	memcpy(old_buffer, buffer, 256);
-		// }
-		// memcpy(buffer, old_buffer, 256);
-
-		
-		// printf("data %d\n", n);
-		// printf("string %s\n", buffer);
-		// printf("old_string %s\n", old_buffer);
-
 
    		if (n < 0){
    			error("ERROR reading from socket");
@@ -595,13 +592,35 @@ setup socket communication
 		--------------------------------*/
     	for(k = 0; k<9; k++){
     		if(k==0){
+    			//First value in the communication indicates zeroing functionality
 				pch = strtok (buffer,"bd ");
+				//check if message read indicates closed client
+				printf("this is the value in the buffer\n\n%s\n\n%s\n\n", pch,deadsok);
+				if(strncmp(pch,deadsok,4)==0){
+					printf("this is the value in the buffer\n\n%s\n\n", pch);
+					//if condition here is true we need to reset tcp connection
+					close(newsockfd);
+				    listen(sockfd,5);
+				    clilen = sizeof(cli_addr);
+
+				    newsockfd = accept(sockfd, 
+				                (struct sockaddr *) &cli_addr, 
+				                &clilen);
+				    CONNECTED = 1; //change CONNECTED to 1 if connection is made, 
+
+				    if (newsockfd < 0){ 
+				        error("ERROR on accept");
+				        return;
+				    }
+					break;
+				}
+
 				if(pch == NULL){ //found end of string early
 					error("ERROR parsing message");
 					break;
 				}
 				state = atoi(pch);
-				//position_setpoints[k] = atoi(pch);
+
 			}
 			else{
 				pch = strtok (NULL,"bd ");
@@ -618,25 +637,7 @@ setup socket communication
 		if(state==0){
 			zero_motors(write_buffer,newsockfd);
 		}
-
-		/*--------------------------------
-		write switch, external encoder, internal encoder state to socket
-		--------------------------------*/
-   		sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d qq", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
-   			internal_encoders[3], internal_encoders[4], internal_encoders[5], internal_encoders[6], internal_encoders[7], switch_states[0],\
-   			switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7],\
-   			arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4);
-
-    	n = write(newsockfd,write_buffer,256);
-    	printf("PRINTING DATA NOW************************************");
-    	if (n < 0){
-    		error("ERROR writing to socket");
-    		break;
-    	}
-
 	}
-
-
 	printf("Exited thread loop\n");
     close(newsockfd);
     close(sockfd);
@@ -648,20 +649,13 @@ void *heartbeat_func(void *arg){
 	int counter = 0;
 	while(1){
 		if(counter==0){
-			//printf("1");
 			alt_write_word(h2p_lw_heartbeat_addr, 0);
 			counter=1;
 		}
-
 		else{
-			//printf("0");
 			alt_write_word(h2p_lw_heartbeat_addr, 0xFFFFFFFF);
 			counter=0;
 		}
-		///sleep(1);
-
-		//printf("This is our first beat: %d", *h2p_lw_heartbeat_addr);
-
 		usleep(0.1*10000);//1.1 seconds
 	}
 }
