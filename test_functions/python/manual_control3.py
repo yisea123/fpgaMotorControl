@@ -9,6 +9,7 @@ import select
 import signal
 import numpy as np
 import matplotlib.pyplot as plt
+import pyformulas as pf
 
 #grab encoder counts and limit switch values
 
@@ -58,18 +59,22 @@ class tcp_communication():
 	    win32process.SetPriorityClass(handle, priorityclasses[priority])
 
 class motors():
-	def __init__(self, CLIENT_SOCKET, dt, position, step_size, degrees_count_motor):
+	def __init__(self, CLIENT_SOCKET, dt, position, step_size, degrees_count_motor, degrees_count_motor_joint):
 
 		#Declaring class variables
-		self.dt = dt
-		self.motor_pos = position
-		self.step_size = step_size
-		self.degrees_count_motor = degrees_count_motor
-		self.sine_speed = 0.3
+		self.dt = dt 													#time step
+		self.motor_pos = position 										#motor position in encoder counts
+		self.step_size = step_size										#number of encoder counts to step by
+		self.degrees_count_motor = degrees_count_motor 					#degrees of motor shaft rotation per encoder count
+		self.degrees_count_motor_joint = degrees_count_motor_joint		#degrees or joint roation per encoder count
+		self.sine_speed = 1												#frequency Hz
 		self.sine_travel = 3
-		self.motor_nums = "12345678"
+		self.motor_revolutions = 1.0									#number of rotations to make in profile, remember it'll be +- full rotations since sine
+		self.motor_nums = "12345678" 									#which motor to control on the bank, number corresponds to which motor 1-8
 
-		self.encoder_positions_list = []
+		self.profile_time = []
+		self.profile_values_sent = []
+		self.profile_values_recv = []
 
 		self.motor_encoders_data = np.zeros(8)
 		self.joint_encoders_data = np.zeros(4)
@@ -96,7 +101,7 @@ class motors():
 
 	 	if data[1] == 'err':
 	 		DISABLED = True
-	 		print("C side has an error or needs to be armed\n")
+	 		print("*** C side has an error or needs to be armed ***\n")
 
 	 	else:
 		 	self.motor_encoders_data = np.array(list(map(int, data[1:9])))
@@ -106,8 +111,6 @@ class motors():
 		 		print('Read motor encoder positions {}'.format(self.motor_encoders_data))
 		 		print('Read joint encoder positions {}'.format(self.joint_encoders_data))
 		 		print('Read limit switch values {}'.format(self.limit_data))
-
-		 	self.encoder_positions_list.append(int(data[5]))
 	 	return
 
 	def arm(self):
@@ -182,7 +185,8 @@ class motors():
 					if i==0:
 						current_pos[i] = 1;
 					else:
-						current_pos_1 = (np.sin((current_time-start_time)*2*np.pi*self.sine_speed)/self.degrees_count_motor*360/16*self.sine_travel)
+						#16 since 16 threads per inch
+						current_pos_1 = (np.sin((current_time-start_time)*2*np.pi*self.sine_speed)/self.degrees_count_motor_joint*360/16*self.sine_travel)
 						current_pos[i] = start_pos[i] + current_pos_1
 
 				self.command_motors(current_pos)
@@ -200,6 +204,75 @@ class motors():
 
 				#print(current_pos)
 				#time.sleep(self.dt)
+		except KeyboardInterrupt:
+			#Gives back control to all motors
+			self.motor_nums = "12345678"
+			self.motor_pos = current_pos
+			return self.motor_nums
+		return
+
+	def motor_profile(self): #no load
+		print("\nRunning motor profile, ctrl c to break:")
+		print('Starting position {}\n' .format(self.motor_pos[1:]))
+		start_pos = self.motor_pos
+		current_pos = np.insert(1,1,np.zeros(8))
+		counter = 1
+		time.sleep(1)
+		start_time = time.time()
+		time.sleep(self.dt)
+
+		#self.motor_encoders_data
+
+		self.profile_values_sent.append(start_pos[1])
+		self.profile_values_recv.append(start_pos[1])
+		self.profile_time.append(start_time)
+
+		profile_values_sent = np.zeros(200)
+		profile_values_recv = np.zeros(200)
+		profile_time = np.zeros(200)
+
+		fig = plt.figure()
+		#screen = pf.screen(title = 'Plot')
+
+		try:
+			while True:
+				current_time = time.time()
+				update_pos = np.sin(((current_time-start_time)*2*np.pi*self.sine_speed)) * 2000 * self.motor_revolutions
+				for i in range(len(current_pos)):
+					if i==0:
+						current_pos[i] = 1 #non zeroing state
+					else:	
+						current_pos[i] = start_pos[i] + update_pos
+
+				self.command_motors(current_pos)
+
+				self.profile_values_sent.append(current_pos[1])
+				self.profile_values_recv.append(self.motor_encoders_data[1])
+				self.profile_time.append(current_time-start_time)
+
+				profile_values_sent[counter%200] = current_pos[1]
+				profile_values_recv[counter%200] = self.motor_encoders_data[1]
+				profile_time[counter%200] = current_time-start_time
+
+				if counter % 100 == 0:
+					print("Values sent: {}".format(profile_values_sent))
+					print("Values received: {}".format(profile_values_recv))
+
+
+				# plt.xlim(profile_time[0], profile_time[0] + 200)
+				# plt.ylim(-2000 * self.motor_revolutions, 2000 * self.motor_revolutions)
+				# plt.plot(profile_time, profile_values_sent)
+				# plt.plot(profile_time, profile_values_recv)
+
+				# fig.canvas.draw()
+				# image = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
+				# image = image.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+				# screen.update(image)
+
+				counter = counter + 1
+				#print(update_pos)
+				#print(current_time-start_time)
+
 		except KeyboardInterrupt:
 			#Gives back control to all motors
 			self.motor_nums = "12345678"
@@ -255,6 +328,11 @@ class motors():
 					return "sine"
 					break
 
+				if direction[0] == "profile":
+					self.motor_profile()
+					return "sine"
+					break
+
 				print("Re-enter command now")
 				print('\n')
 				continue
@@ -287,7 +365,8 @@ ManualControl = 1						#main loop control
 #Constants and initializations
 socket_ip = '192.168.1.16'
 socket_port = 1115
-degrees_count_motor = 0.00743			#Motor encoder resolution
+degrees_count_motor_joint = 0.00743		#joint degrees a count
+degrees_count_motor = 360/2000			#Motor encoder resolution
 degrees_count_joint = 360/1440			#Joint encoder resolution
 step_size = 100							#Number of encoder counts to step
 dt = 1/200
@@ -306,7 +385,7 @@ if IsWindows:
 	tcp.setpriority()
 
 #Motor class
-motors = motors(CLIENT_SOCKET, dt, position, step_size, degrees_count_motor)
+motors = motors(CLIENT_SOCKET, dt, position, step_size, degrees_count_motor, degrees_count_motor_joint)
 motors.read_buff()
 position = position + np.insert(motors.motor_encoders_data,0,0) #Adding in offset from values stored in text file onboard the fpga
 motors.command_motors(position) #initialize to encoder positions
@@ -320,7 +399,6 @@ while(ManualControl):
 	""" Blocking function, main call for functionality.
 		Returns either a array of positions or a string 
 		indicating what action was done """
-	print(position)
 	command = motors.get_direction()
 
 	#Checks if command is an array of positions or string command
@@ -348,7 +426,7 @@ while(ManualControl):
 	 		position[int(motor_numbers[i])] = position[int(motor_numbers[i])] + command
 
 	print("motors being used: {}".format(motor_numbers))
-	print("encoder positions sent {}".format(position))
+	print("encoder positions sent {}\n".format(position))
 	motors.command_motors(position)
 	time.sleep(motors.dt)
 

@@ -36,7 +36,7 @@
 #define HW_REGS_BASE ( ALT_STM_OFST )
 #define HW_REGS_SPAN ( 0x04000000 )
 #define HW_REGS_MASK ( HW_REGS_SPAN - 1 )
-#define MAX_TRAVEL_RANGE 100000
+#define MAX_TRAVEL_RANGE 10000
 
 volatile unsigned long *h2p_lw_led_addr;//=NULL;
 volatile unsigned long *h2p_lw_gpio_addr;//=NULL;
@@ -529,7 +529,6 @@ setup socket communication
 		internal_encoders[3], internal_encoders[4], internal_encoders[5], internal_encoders[6], internal_encoders[7], switch_states[0],\
 		switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7],\
 		arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4);
-
 	n = write(newsockfd,write_buffer,256);
 
 	while(system_state == 1 && socket_error == 0 ){
@@ -540,7 +539,7 @@ setup socket communication
 		write switch, external encoder, internal encoder state to socket
 		--------------------------------*/
 		if (E_STATE==1){
-			printf("ERROR_STATE");
+			printf("ERROR_STATE\n");
 			sprintf(write_buffer,"nn err qq");
 		}
 		else{
@@ -573,17 +572,26 @@ setup socket communication
     			//First value in the communication indicates zeroing functionality
 				pch = strtok (buffer,"bd ");
 				//check if message read indicates closed client
-				printf("this is the first value in the buffer\n\n%s\n\n%s\n\n", pch,deadsok);
+				//printf("this is the first value in the buffer\n\n%s\n\n%s\n\n", pch,deadsok);
 
 				//if condition here is true we need to reset tcp connection, close established connection but continue listening on server side
 				if(strncmp(pch,deadsok,4)==0){
 					close(newsockfd);
+					E_STATE = 1;
+					ERR_RESET = 1;
 				    listen(sockfd,5);
 				    clilen = sizeof(cli_addr);
 
 				    newsockfd = accept(sockfd, 
 				                (struct sockaddr *) &cli_addr, 
 				                &clilen);
+
+					sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d qq", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
+						internal_encoders[3], internal_encoders[4], internal_encoders[5], internal_encoders[6], internal_encoders[7], switch_states[0],\
+						switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7],\
+						arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4);
+					n = write(newsockfd,write_buffer,256);
+
 				    CONNECTED = 1; //change CONNECTED to 1 if connection is made, 
 
 				    if (newsockfd < 0){ 
