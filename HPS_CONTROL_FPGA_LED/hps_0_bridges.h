@@ -82,7 +82,7 @@
 #define SYSID_QSYS_SPAN 8
 #define SYSID_QSYS_END 0x10007
 #define SYSID_QSYS_ID 2899645186
-#define SYSID_QSYS_TIMESTAMP 1524175863
+#define SYSID_QSYS_TIMESTAMP 1530303748
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'
@@ -1178,6 +1178,30 @@
 #define HEARTBEAT_HAS_TRI 0
 #define HEARTBEAT_IRQ_TYPE NONE
 #define HEARTBEAT_RESET_VALUE 0
+
+/*
+ * Macros for device 'e_stop', class 'altera_avalon_pio'
+ * The macros are prefixed with 'E_STOP_'.
+ * The prefix is the slave descriptor.
+ */
+#define E_STOP_COMPONENT_TYPE altera_avalon_pio
+#define E_STOP_COMPONENT_NAME e_stop
+#define E_STOP_BASE 0x23810
+#define E_STOP_SPAN 16
+#define E_STOP_END 0x2381f
+#define E_STOP_BIT_CLEARING_EDGE_REGISTER 0
+#define E_STOP_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define E_STOP_CAPTURE 0
+#define E_STOP_DATA_WIDTH 1
+#define E_STOP_DO_TEST_BENCH_WIRING 0
+#define E_STOP_DRIVEN_SIM_VALUE 0
+#define E_STOP_EDGE_TYPE NONE
+#define E_STOP_FREQ 50000000
+#define E_STOP_HAS_IN 1
+#define E_STOP_HAS_OUT 0
+#define E_STOP_HAS_TRI 0
+#define E_STOP_IRQ_TYPE NONE
+#define E_STOP_RESET_VALUE 0
 
 /*
  * Macros for device 'hps_0_gmac0', class 'stmmac'

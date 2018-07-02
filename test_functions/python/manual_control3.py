@@ -88,22 +88,35 @@ class motors():
 	def read_buff(self):
 	 	data = str(CLIENT_SOCKET.recv(256))
 	 	data = re.split('\s', data)
-	 	print("this is the data read", data)
+	 	global DISABLED
 	 	if data[1] == 'closeports':
 	 		self.client_socket.close()
 	 		print("\n\nServer side closed. Closing ports now.\n\n")
 	 		sys.exit()
 
-	 	self.motor_encoders_data = np.array(list(map(int, data[1:9])))
-	 	self.joint_encoders_data = np.array(list(map(int, data[17:21])))
-	 	self.limit_data = np.array(list(map(int, data[9:17])))
-	 	if PRINT_SENSORS:
-	 		print('Motor encoder positions {}'.format(self.motor_encoders_data))
-	 		print('Joint encoder positions {}'.format(self.joint_encoders_data))
-	 		print('Limit switch values {}'.format(self.limit_data))
+	 	if data[1] == 'err':
+	 		DISABLED = True
+	 		print("C side has an error or needs to be armed\n")
 
-	 	self.encoder_positions_list.append(int(data[5]))
+	 	else:
+		 	self.motor_encoders_data = np.array(list(map(int, data[1:9])))
+		 	self.joint_encoders_data = np.array(list(map(int, data[17:21])))
+		 	self.limit_data = np.array(list(map(int, data[9:17])))
+		 	if PRINT_SENSORS:
+		 		print('Read motor encoder positions {}'.format(self.motor_encoders_data))
+		 		print('Read joint encoder positions {}'.format(self.joint_encoders_data))
+		 		print('Read limit switch values {}'.format(self.limit_data))
+
+		 	self.encoder_positions_list.append(int(data[5]))
 	 	return
+
+	def arm(self):
+		data = ('b' + 'arm' + 'd')
+		global DISABLED
+		DISABLED = 0
+		self.client_socket.send(data.encode())
+		self.read_buff()
+		return
 
 	def which_motors(self):
 		""" Returns a string of numbers which represents which motors to control. """
@@ -177,18 +190,13 @@ class motors():
 				counter = counter + 1
 
 				if counter%10 == 0 and PRINT_LOOP_SPECS == 1:
-					print("Mean loop time is: {}".format(np.mean(np.asarray(time_diff))))
-					print("Loop time variance is: {}".format(np.var(np.asarray(time_diff))))
+
+					#print("Mean loop time is: {}".format(np.mean(np.asarray(time_diff))))
+					#print("Loop time variance is: {}".format(np.var(np.asarray(time_diff))))
 					counter = 1
 
 				if len(time_diff) > 1e4:
 					time_diff = time_diff[-10000:]
-
-				if counter%1000 == 0 and False:
-					plt.plot(self.encoder_positions_list)
-
-					#if counter == 50:
-					plt.show()
 
 				#print(current_pos)
 				#time.sleep(self.dt)
@@ -201,7 +209,7 @@ class motors():
 
 	def get_direction(self):
 		while True:
-			direction = input("Enter command or direction +/- keys and number of counts(ex:+ 100), 'p' to print command menu or ctrl z to end: ")
+			direction = input("Enter direction and counts (ex:+ 100), 'p' to print command menu, ctrl z to end and 'a' to arm: ")
 			direction = re.split('\s',direction)
 
 			#Single string input with no spaces
@@ -210,6 +218,14 @@ class motors():
 				#If no number is given uses most recent step_size to update position
 				if direction[0] == '':
 					return self.step_size
+					break
+
+				if direction[0] == 'a':
+					self.arm()
+					global DISABLED
+					DISABLED = 0
+					#want same behavior as return from sine when returning control
+					return "sine"
 					break
 
 				#m indicates that the user would like to change which motors to control
@@ -262,14 +278,15 @@ class motors():
 #**********************************************************************
 
 #Flags
-PRINT_SENSORS = 1 						#Encoder positions
-PRINT_LOOP_SPECS = 0 					#Loop speeds, mean time and variance
+PRINT_SENSORS = 0						#Encoder positions
+PRINT_LOOP_SPECS = 1 					#Loop speeds, mean time and variance
+DISABLED = True							#Motor controller disabled on start
 IsWindows = os.name == 'nt' 			#os.name is name of os, ex: linux='posix', windows='nt', mac='mac'
 ManualControl = 1						#main loop control
 
 #Constants and initializations
-socket_ip = '192.168.1.14'
-socket_port = 1114
+socket_ip = '192.168.1.16'
+socket_port = 1115
 degrees_count_motor = 0.00743			#Motor encoder resolution
 degrees_count_joint = 360/1440			#Joint encoder resolution
 step_size = 100							#Number of encoder counts to step
@@ -303,6 +320,7 @@ while(ManualControl):
 	""" Blocking function, main call for functionality.
 		Returns either a array of positions or a string 
 		indicating what action was done """
+	print(position)
 	command = motors.get_direction()
 
 	#Checks if command is an array of positions or string command
@@ -324,11 +342,13 @@ while(ManualControl):
 			motor_numbers = command
 			command = 0
 
-	for i in range(len(motor_numbers)):
- 		position[int(motor_numbers[i])] = position[int(motor_numbers[i])] + command
+	#Updating position
+	if DISABLED == 0:
+		for i in range(len(motor_numbers)):
+	 		position[int(motor_numbers[i])] = position[int(motor_numbers[i])] + command
 
-	print(motor_numbers)
-	print(position)
+	print("motors being used: {}".format(motor_numbers))
+	print("encoder positions sent {}".format(position))
 	motors.command_motors(position)
 	time.sleep(motors.dt)
 

@@ -3,6 +3,7 @@
 			button_pio_external_connection_export           : in    std_logic_vector(3 downto 0)  := (others => 'X'); -- export
 			clk_clk                                         : in    std_logic                     := 'X';             -- clk
 			dipsw_pio_external_connection_export            : in    std_logic_vector(3 downto 0)  := (others => 'X'); -- export
+			e_stop_external_connection_export               : in    std_logic                     := 'X';             -- export
 			gpio_pio_0_external_connection_export           : out   std_logic_vector(7 downto 0);                     -- export
 			gpio_pio_1_external_connection_export           : out   std_logic_vector(7 downto 0);                     -- export
 			heartbeat_external_connection_export            : out   std_logic_vector(31 downto 0);                    -- export
@@ -120,6 +121,7 @@
 			button_pio_external_connection_export           => CONNECTED_TO_button_pio_external_connection_export,           --           button_pio_external_connection.export
 			clk_clk                                         => CONNECTED_TO_clk_clk,                                         --                                      clk.clk
 			dipsw_pio_external_connection_export            => CONNECTED_TO_dipsw_pio_external_connection_export,            --            dipsw_pio_external_connection.export
+			e_stop_external_connection_export               => CONNECTED_TO_e_stop_external_connection_export,               --               e_stop_external_connection.export
 			gpio_pio_0_external_connection_export           => CONNECTED_TO_gpio_pio_0_external_connection_export,           --           gpio_pio_0_external_connection.export
 			gpio_pio_1_external_connection_export           => CONNECTED_TO_gpio_pio_1_external_connection_export,           --           gpio_pio_1_external_connection.export
 			heartbeat_external_connection_export            => CONNECTED_TO_heartbeat_external_connection_export,            --            heartbeat_external_connection.export

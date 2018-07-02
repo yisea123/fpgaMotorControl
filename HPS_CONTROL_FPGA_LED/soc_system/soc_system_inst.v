@@ -2,6 +2,7 @@
 		.button_pio_external_connection_export           (<connected-to-button_pio_external_connection_export>),           //           button_pio_external_connection.export
 		.clk_clk                                         (<connected-to-clk_clk>),                                         //                                      clk.clk
 		.dipsw_pio_external_connection_export            (<connected-to-dipsw_pio_external_connection_export>),            //            dipsw_pio_external_connection.export
+		.e_stop_external_connection_export               (<connected-to-e_stop_external_connection_export>),               //               e_stop_external_connection.export
 		.gpio_pio_0_external_connection_export           (<connected-to-gpio_pio_0_external_connection_export>),           //           gpio_pio_0_external_connection.export
 		.gpio_pio_1_external_connection_export           (<connected-to-gpio_pio_1_external_connection_export>),           //           gpio_pio_1_external_connection.export
 		.heartbeat_external_connection_export            (<connected-to-heartbeat_external_connection_export>),            //            heartbeat_external_connection.export

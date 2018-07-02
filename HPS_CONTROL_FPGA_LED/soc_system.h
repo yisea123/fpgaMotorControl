@@ -60,7 +60,7 @@
 #define FPGA_ONLY_MASTER_SYSID_QSYS_SPAN 8
 #define FPGA_ONLY_MASTER_SYSID_QSYS_END 0x10007
 #define FPGA_ONLY_MASTER_SYSID_QSYS_ID 2899645186
-#define FPGA_ONLY_MASTER_SYSID_QSYS_TIMESTAMP 1524175863
+#define FPGA_ONLY_MASTER_SYSID_QSYS_TIMESTAMP 1530303748
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'
@@ -1204,6 +1204,31 @@
 #define FPGA_ONLY_MASTER_HEARTBEAT_RESET_VALUE 0
 
 /*
+ * Macros for device 'e_stop', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'fpga_only_master'.
+ * The macros are prefixed with 'FPGA_ONLY_MASTER_E_STOP_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define FPGA_ONLY_MASTER_E_STOP_COMPONENT_TYPE altera_avalon_pio
+#define FPGA_ONLY_MASTER_E_STOP_COMPONENT_NAME e_stop
+#define FPGA_ONLY_MASTER_E_STOP_BASE 0x23810
+#define FPGA_ONLY_MASTER_E_STOP_SPAN 16
+#define FPGA_ONLY_MASTER_E_STOP_END 0x2381f
+#define FPGA_ONLY_MASTER_E_STOP_BIT_CLEARING_EDGE_REGISTER 0
+#define FPGA_ONLY_MASTER_E_STOP_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define FPGA_ONLY_MASTER_E_STOP_CAPTURE 0
+#define FPGA_ONLY_MASTER_E_STOP_DATA_WIDTH 1
+#define FPGA_ONLY_MASTER_E_STOP_DO_TEST_BENCH_WIRING 0
+#define FPGA_ONLY_MASTER_E_STOP_DRIVEN_SIM_VALUE 0
+#define FPGA_ONLY_MASTER_E_STOP_EDGE_TYPE NONE
+#define FPGA_ONLY_MASTER_E_STOP_FREQ 50000000
+#define FPGA_ONLY_MASTER_E_STOP_HAS_IN 1
+#define FPGA_ONLY_MASTER_E_STOP_HAS_OUT 0
+#define FPGA_ONLY_MASTER_E_STOP_HAS_TRI 0
+#define FPGA_ONLY_MASTER_E_STOP_IRQ_TYPE NONE
+#define FPGA_ONLY_MASTER_E_STOP_RESET_VALUE 0
+
+/*
  * Macros for device 'intr_capturer_0', class 'intr_capturer'
  * Path to the device is from the master group 'fpga_only_master'.
  * The macros are prefixed with 'FPGA_ONLY_MASTER_INTR_CAPTURER_0_'.
@@ -1261,7 +1286,7 @@
 #define HPS_0_SYSID_QSYS_SPAN 8
 #define HPS_0_SYSID_QSYS_END 0x10007
 #define HPS_0_SYSID_QSYS_ID 2899645186
-#define HPS_0_SYSID_QSYS_TIMESTAMP 1524175863
+#define HPS_0_SYSID_QSYS_TIMESTAMP 1530303748
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'
@@ -2408,6 +2433,31 @@
 #define HPS_0_HEARTBEAT_RESET_VALUE 0
 
 /*
+ * Macros for device 'e_stop', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'hps_0'.
+ * The macros are prefixed with 'HPS_0_E_STOP_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_E_STOP_COMPONENT_TYPE altera_avalon_pio
+#define HPS_0_E_STOP_COMPONENT_NAME e_stop
+#define HPS_0_E_STOP_BASE 0x23810
+#define HPS_0_E_STOP_SPAN 16
+#define HPS_0_E_STOP_END 0x2381f
+#define HPS_0_E_STOP_BIT_CLEARING_EDGE_REGISTER 0
+#define HPS_0_E_STOP_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define HPS_0_E_STOP_CAPTURE 0
+#define HPS_0_E_STOP_DATA_WIDTH 1
+#define HPS_0_E_STOP_DO_TEST_BENCH_WIRING 0
+#define HPS_0_E_STOP_DRIVEN_SIM_VALUE 0
+#define HPS_0_E_STOP_EDGE_TYPE NONE
+#define HPS_0_E_STOP_FREQ 50000000
+#define HPS_0_E_STOP_HAS_IN 1
+#define HPS_0_E_STOP_HAS_OUT 0
+#define HPS_0_E_STOP_HAS_TRI 0
+#define HPS_0_E_STOP_IRQ_TYPE NONE
+#define HPS_0_E_STOP_RESET_VALUE 0
+
+/*
  * Macros for device 'hps_0_axi_sdram', class 'axi_sdram'
  * Path to the device is from the master group 'hps_0_bridges'.
  * The macros are prefixed with 'HPS_0_BRIDGES_HPS_0_AXI_SDRAM_'.
@@ -2471,7 +2521,7 @@
 #define HPS_0_BRIDGES_SYSID_QSYS_SPAN 8
 #define HPS_0_BRIDGES_SYSID_QSYS_END 0x10007
 #define HPS_0_BRIDGES_SYSID_QSYS_ID 2899645186
-#define HPS_0_BRIDGES_SYSID_QSYS_TIMESTAMP 1524175863
+#define HPS_0_BRIDGES_SYSID_QSYS_TIMESTAMP 1530303748
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'
@@ -3615,6 +3665,31 @@
 #define HPS_0_BRIDGES_HEARTBEAT_RESET_VALUE 0
 
 /*
+ * Macros for device 'e_stop', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'hps_0_bridges'.
+ * The macros are prefixed with 'HPS_0_BRIDGES_E_STOP_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_BRIDGES_E_STOP_COMPONENT_TYPE altera_avalon_pio
+#define HPS_0_BRIDGES_E_STOP_COMPONENT_NAME e_stop
+#define HPS_0_BRIDGES_E_STOP_BASE 0x23810
+#define HPS_0_BRIDGES_E_STOP_SPAN 16
+#define HPS_0_BRIDGES_E_STOP_END 0x2381f
+#define HPS_0_BRIDGES_E_STOP_BIT_CLEARING_EDGE_REGISTER 0
+#define HPS_0_BRIDGES_E_STOP_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define HPS_0_BRIDGES_E_STOP_CAPTURE 0
+#define HPS_0_BRIDGES_E_STOP_DATA_WIDTH 1
+#define HPS_0_BRIDGES_E_STOP_DO_TEST_BENCH_WIRING 0
+#define HPS_0_BRIDGES_E_STOP_DRIVEN_SIM_VALUE 0
+#define HPS_0_BRIDGES_E_STOP_EDGE_TYPE NONE
+#define HPS_0_BRIDGES_E_STOP_FREQ 50000000
+#define HPS_0_BRIDGES_E_STOP_HAS_IN 1
+#define HPS_0_BRIDGES_E_STOP_HAS_OUT 0
+#define HPS_0_BRIDGES_E_STOP_HAS_TRI 0
+#define HPS_0_BRIDGES_E_STOP_IRQ_TYPE NONE
+#define HPS_0_BRIDGES_E_STOP_RESET_VALUE 0
+
+/*
  * Macros for device 'hps_0_gmac0', class 'stmmac'
  * Path to the device is from the master group 'hps_0_bridges'.
  * The macros are prefixed with 'HPS_0_BRIDGES_HPS_0_GMAC0_'.
@@ -4114,7 +4189,7 @@
 #define HPS_0_ARM_A9_0_SYSID_QSYS_SPAN 8
 #define HPS_0_ARM_A9_0_SYSID_QSYS_END 0xff210007
 #define HPS_0_ARM_A9_0_SYSID_QSYS_ID 2899645186
-#define HPS_0_ARM_A9_0_SYSID_QSYS_TIMESTAMP 1524175863
+#define HPS_0_ARM_A9_0_SYSID_QSYS_TIMESTAMP 1530303748
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'
@@ -5258,6 +5333,31 @@
 #define HPS_0_ARM_A9_0_HEARTBEAT_RESET_VALUE 0
 
 /*
+ * Macros for device 'e_stop', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'hps_0_arm_a9_0'.
+ * The macros are prefixed with 'HPS_0_ARM_A9_0_E_STOP_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_ARM_A9_0_E_STOP_COMPONENT_TYPE altera_avalon_pio
+#define HPS_0_ARM_A9_0_E_STOP_COMPONENT_NAME e_stop
+#define HPS_0_ARM_A9_0_E_STOP_BASE 0xff223810
+#define HPS_0_ARM_A9_0_E_STOP_SPAN 16
+#define HPS_0_ARM_A9_0_E_STOP_END 0xff22381f
+#define HPS_0_ARM_A9_0_E_STOP_BIT_CLEARING_EDGE_REGISTER 0
+#define HPS_0_ARM_A9_0_E_STOP_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define HPS_0_ARM_A9_0_E_STOP_CAPTURE 0
+#define HPS_0_ARM_A9_0_E_STOP_DATA_WIDTH 1
+#define HPS_0_ARM_A9_0_E_STOP_DO_TEST_BENCH_WIRING 0
+#define HPS_0_ARM_A9_0_E_STOP_DRIVEN_SIM_VALUE 0
+#define HPS_0_ARM_A9_0_E_STOP_EDGE_TYPE NONE
+#define HPS_0_ARM_A9_0_E_STOP_FREQ 50000000
+#define HPS_0_ARM_A9_0_E_STOP_HAS_IN 1
+#define HPS_0_ARM_A9_0_E_STOP_HAS_OUT 0
+#define HPS_0_ARM_A9_0_E_STOP_HAS_TRI 0
+#define HPS_0_ARM_A9_0_E_STOP_IRQ_TYPE NONE
+#define HPS_0_ARM_A9_0_E_STOP_RESET_VALUE 0
+
+/*
  * Macros for device 'hps_0_gmac0', class 'stmmac'
  * Path to the device is from the master group 'hps_0_arm_a9_0'.
  * The macros are prefixed with 'HPS_0_ARM_A9_0_HPS_0_GMAC0_'.
@@ -5793,7 +5893,7 @@
 #define HPS_0_ARM_A9_1_SYSID_QSYS_SPAN 8
 #define HPS_0_ARM_A9_1_SYSID_QSYS_END 0xff210007
 #define HPS_0_ARM_A9_1_SYSID_QSYS_ID 2899645186
-#define HPS_0_ARM_A9_1_SYSID_QSYS_TIMESTAMP 1524175863
+#define HPS_0_ARM_A9_1_SYSID_QSYS_TIMESTAMP 1530303748
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'
@@ -6935,6 +7035,31 @@
 #define HPS_0_ARM_A9_1_HEARTBEAT_HAS_TRI 0
 #define HPS_0_ARM_A9_1_HEARTBEAT_IRQ_TYPE NONE
 #define HPS_0_ARM_A9_1_HEARTBEAT_RESET_VALUE 0
+
+/*
+ * Macros for device 'e_stop', class 'altera_avalon_pio'
+ * Path to the device is from the master group 'hps_0_arm_a9_1'.
+ * The macros are prefixed with 'HPS_0_ARM_A9_1_E_STOP_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_ARM_A9_1_E_STOP_COMPONENT_TYPE altera_avalon_pio
+#define HPS_0_ARM_A9_1_E_STOP_COMPONENT_NAME e_stop
+#define HPS_0_ARM_A9_1_E_STOP_BASE 0xff223810
+#define HPS_0_ARM_A9_1_E_STOP_SPAN 16
+#define HPS_0_ARM_A9_1_E_STOP_END 0xff22381f
+#define HPS_0_ARM_A9_1_E_STOP_BIT_CLEARING_EDGE_REGISTER 0
+#define HPS_0_ARM_A9_1_E_STOP_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define HPS_0_ARM_A9_1_E_STOP_CAPTURE 0
+#define HPS_0_ARM_A9_1_E_STOP_DATA_WIDTH 1
+#define HPS_0_ARM_A9_1_E_STOP_DO_TEST_BENCH_WIRING 0
+#define HPS_0_ARM_A9_1_E_STOP_DRIVEN_SIM_VALUE 0
+#define HPS_0_ARM_A9_1_E_STOP_EDGE_TYPE NONE
+#define HPS_0_ARM_A9_1_E_STOP_FREQ 50000000
+#define HPS_0_ARM_A9_1_E_STOP_HAS_IN 1
+#define HPS_0_ARM_A9_1_E_STOP_HAS_OUT 0
+#define HPS_0_ARM_A9_1_E_STOP_HAS_TRI 0
+#define HPS_0_ARM_A9_1_E_STOP_IRQ_TYPE NONE
+#define HPS_0_ARM_A9_1_E_STOP_RESET_VALUE 0
 
 /*
  * Macros for device 'hps_0_gmac0', class 'stmmac'

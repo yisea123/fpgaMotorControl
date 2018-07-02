@@ -3,6 +3,7 @@ module soc_system (
 	button_pio_external_connection_export,
 	clk_clk,
 	dipsw_pio_external_connection_export,
+	e_stop_external_connection_export,
 	gpio_pio_0_external_connection_export,
 	gpio_pio_1_external_connection_export,
 	heartbeat_external_connection_export,
@@ -116,6 +117,7 @@ module soc_system (
 	input	[3:0]	button_pio_external_connection_export;
 	input		clk_clk;
 	input	[3:0]	dipsw_pio_external_connection_export;
+	input		e_stop_external_connection_export;
 	output	[7:0]	gpio_pio_0_external_connection_export;
 	output	[7:0]	gpio_pio_1_external_connection_export;
 	output	[31:0]	heartbeat_external_connection_export;

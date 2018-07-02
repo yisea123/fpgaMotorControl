@@ -11,7 +11,6 @@
 #include "hps_0.h"
 #include "led.h"
 #include <stdbool.h>
-
 #include <math.h>
 #include <time.h>       /* time_t, time (for timestamp in second) */
 #include <sys/timeb.h>  /* ftime, timeb (for timestamp in millisecond) */
@@ -25,22 +24,19 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <fcntl.h>
-
 #include <signal.h>
 #include <unistd.h>
 
 #define RUN_SINE 0
-
-#define SAMPLE_RATE 	1000
+#define SAMPLE_RATE 1000
 #define SYNC_TOLERANCE 10
-
 #define dt (1.0/(float)SAMPLE_RATE)
 #define interval_time_us ((int)(dt * 1000000))
 #define update_dt 0.01
-
 #define HW_REGS_BASE ( ALT_STM_OFST )
 #define HW_REGS_SPAN ( 0x04000000 )
 #define HW_REGS_MASK ( HW_REGS_SPAN - 1 )
+#define MAX_TRAVEL_RANGE 100000
 
 volatile unsigned long *h2p_lw_led_addr;//=NULL;
 volatile unsigned long *h2p_lw_gpio_addr;//=NULL;
@@ -48,7 +44,7 @@ volatile unsigned long *h2p_lw_heartbeat_addr;//=NULL;
 volatile unsigned long *h2p_lw_pid_values_addr;//=NULL;
 volatile unsigned long *h2p_lw_quad_reset_addr;//=NULL;
 volatile unsigned long *h2p_lw_limit_switch_addr;//=NULL;
-
+volatile unsigned long *h2p_lw_pid_e_stop;
 volatile unsigned long *h2p_lw_quad_addr[8];//=NULL;
 volatile unsigned long *h2p_lw_quad_addr_external[4];//=NULL
 volatile unsigned long *h2p_lw_pid_input_addr[8];//=NULL;
@@ -56,14 +52,28 @@ volatile unsigned long *h2p_lw_pid_output_addr[8];//=NULL;
 volatile unsigned long *h2p_lw_pwm_values_addr[8];//=NULL;
 
 volatile int32_t position_setpoints[8];
-int32_t position_offsets[8];
-
-int32_t beat = 0;
 
 FILE *file;
-int sockfd, newsockfd; //global socket value such that it can be called in signal catcher to close ports
+
+int E_STATE = 0;
+int ERR_RESET = 1;
 int CONNECTED = 0;  //global flag to indicate if a connection has been made
+int32_t beat = 0;
+int32_t position_offsets[8];
+uint8_t switch_states[8];
+int32_t internal_encoders[8];
+int32_t arm_encoders1=0,arm_encoders2=0,arm_encoders3=0,arm_encoders4=0;
 int exit_flag = 0;
+
+uint8_t P=30;
+uint8_t I=0;
+uint8_t D=0;
+float controllerGain = 0.01;
+
+int portnumber_global;
+int socket_error = 0;
+int system_state = 1;
+int sockfd, newsockfd; //global socket value such that it can be called in signal catcher to close ports
 
 uint32_t createMask(uint32_t startBit, int num_bits);
 uint32_t createNativeInt(uint32_t input, int size);
@@ -72,24 +82,6 @@ void *heartbeat_func(void *arg);
 void error(const char *msg);
 void zero_motor_axis(void);
 void zero_motors(char *write_buffer,int newsockfd);
-
-
-int freezeMain = 0;
-
-uint8_t P=30;
-uint8_t I=0;
-uint8_t D=0;
-float controllerGain = 0.01;
-
-
-int portnumber_global;
-int socket_error = 0;
-int system_state = 1;
-
-uint8_t switch_states[8];
-int32_t internal_encoders[8];
-
-int32_t arm_encoders1=0,arm_encoders2=0,arm_encoders3=0,arm_encoders4=0;
 
 struct axis_motor{
 		double accGoal;
@@ -145,11 +137,9 @@ void my_handler(int s){
 
 int main(int argc, char **argv)
 {
-	/*
-	------------------------------------------
+	/*------------------------------------------
 	Generic setup below for port communication
-	------------------------------------------
-	*/
+	-----------------------------------------*/
     if (argc < 2) {
         fprintf(stderr,"ERROR, no port provided\n");
         exit(1);
@@ -157,7 +147,6 @@ int main(int argc, char **argv)
    	portnumber_global = atoi(argv[1]);
 	pthread_t pth, pth_heartbeat;	// this is our thread identifier
 
-	
 	/*--------------------------------
 	ctrl-c catcher
 	--------------------------------*/
@@ -165,7 +154,6 @@ int main(int argc, char **argv)
 	sigIntHandler.sa_handler = my_handler;
    	sigemptyset(&sigIntHandler.sa_mask);
   	sigIntHandler.sa_flags = 0;
-
   	sigaction(SIGINT, &sigIntHandler, NULL);
 	/*
 
@@ -195,6 +183,7 @@ int main(int argc, char **argv)
 	h2p_lw_quad_reset_addr = virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + QUAD_RESET_PIO_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
 	h2p_lw_pid_values_addr = virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + PID_VALUES_PIO_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
 	h2p_lw_limit_switch_addr = virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + LIMIT_PIO_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
+	h2p_lw_pid_e_stop = virtual_base + ( ( unsigned long )(ALT_LWFPGASLVS_OFST + E_STOP_BASE) & ( unsigned long)( HW_REGS_MASK ) );
 
 	h2p_lw_pwm_values_addr[0] = virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + PWM_PIO_0_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
 	h2p_lw_pwm_values_addr[1] = virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + PWM_PIO_1_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
@@ -245,9 +234,9 @@ int main(int argc, char **argv)
 	pthread_create(&pth_heartbeat,NULL,heartbeat_func,NULL);
 	pthread_create(&pth,NULL,threadFunc,NULL);
 
-/*--------------------------------
-setup file to store setpoint on shutdown and load on boot
---------------------------------*/
+	/*--------------------------------
+	setup file to store setpoint on shutdown and load on boot
+	--------------------------------*/
 	char str[100];
 	char *val;
 
@@ -275,38 +264,11 @@ setup file to store setpoint on shutdown and load on boot
 		file = fopen("encoder_values.txt", "w+");
 	}
 
-	//below resets just one counter
-	/*
-	unsigned current_count = *h2p_lw_quad_reset_addr;
-	printf("before change: %d\n", *(uint32_t*)h2p_lw_quad_reset_addr);
-	current_count = current_count | (1 << 0);
-	alt_write_word(h2p_lw_quad_reset_addr, current_count);
-	printf("number to write: %d, after change: %d\n", current_count, *(uint32_t*)h2p_lw_quad_reset_addr);
-	usleep(1000*50);
-	current_count = *h2p_lw_quad_reset_addr;
-	current_count = current_count & ~(1 << 0);
-	alt_write_word(h2p_lw_quad_reset_addr, current_count);
-	*/
-	
-
-	//zero_motor_axis();
-	//usleep(1000*15000);
-	//below resets all counters, PID controllers
-
-	/*alt_write_word(h2p_lw_quad_reset_addr, 0xFFFFFFFF);
-	usleep(1000*1000);
-	alt_write_word(h2p_lw_quad_reset_addr, 0);
-	usleep(1000*1000);
-
-	*/
-
 	//set PWM values to zero
 	for(j=0;j<8;j++){
 		alt_write_word(h2p_lw_pwm_values_addr[j], 0);
 	}
-	
-	//alt_write_word(h2p_lw_pwm_values_addr[7], 150);
-	
+		
 	//calculate PID values
 	uint32_t PID_values = 0;
 	PID_values = PID_values | (P+I+D);
@@ -328,6 +290,7 @@ setup file to store setpoint on shutdown and load on boot
 
 	int dir_bitmask;
 	long myCounter = 0;
+	int32_t e_stop=0;
 	
 	struct timeval timer_usec; 
 
@@ -338,73 +301,80 @@ setup file to store setpoint on shutdown and load on boot
 	double sine_magnitude = 1000.0;
 
 	for(j = 0; j<8; j++){
-		//position_setpoints[j] = 0;
 		tracking_error[j] = 0;
 	}
-
-	//clock_t start = clock();
-	//clock_t loop_start = clock();
 
 	uint64_t start = GetTimeStamp();
 	while(exit_flag == 0)
 	{
+		uint32_t switches = alt_read_word(h2p_lw_limit_switch_addr);
+		switch_states[0] = (switches&1<<0)==0;
+		switch_states[1] = (switches&1<<3)==0;
+		switch_states[2] = (switches&1<<2)==0;
+		switch_states[3] = (switches&1<<1)==0;
+		switch_states[4] = (switches&1<<7)==0;
+		switch_states[5] = (switches&1<<6)==0;
+		switch_states[6] = (switches&1<<5)==0;
+		switch_states[7] = (switches&1<<4)==0;
 
-		if(!freezeMain){
-		
-			//uint32_t mask = createMask(0,30);
-			uint32_t switches = alt_read_word(h2p_lw_limit_switch_addr);
-			switch_states[0] = (switches&1<<0)==0;
-			switch_states[1] = (switches&1<<3)==0;
-			switch_states[2] = (switches&1<<2)==0;
-			switch_states[3] = (switches&1<<1)==0;
-			switch_states[4] = (switches&1<<7)==0;
-			switch_states[5] = (switches&1<<6)==0;
-			switch_states[6] = (switches&1<<5)==0;
-			switch_states[7] = (switches&1<<4)==0;
-			//j = 0;
+		if(RUN_SINE){
+			
+			uint64_t delta = (GetTimeStamp() - start) / 1000;
+			int sp = sin((double)(delta*(2.0*3.14))/1000*8) * sine_magnitude;
+			//int sp = 1000;
+			//printf("\n\n%lf %d\n\n", 1, sp);
+			for(j = 0; j<8; j++){
+				position_setpoints[j] = sp;
+			}
+		}
 
-			if(RUN_SINE){
-				
-				uint64_t delta = (GetTimeStamp() - start) / 1000;
-				int sp = sin((double)(delta*(2.0*3.14))/1000*8) * sine_magnitude;
-				//int sp = 1000;
-				//printf("\n\n%lf %d\n\n", 1, sp);
-				for(j = 0; j<8; j++){
-					position_setpoints[j] = sp;
-				}
+		//Read encoder positions and add offset from file
+		for(j = 0; j<8; j++){
+			int32_t output = alt_read_word(h2p_lw_quad_addr[j]); //& mask;
+			internal_encoders[j] = output + position_offsets[j];
+
+			if(j==7 && output > max_val)
+				max_val = output;
+
+			if(j==7 && output < min_val)
+				min_val = output;
+			
+			//read external joint encoders
+			if(j==7){
+				arm_encoders1 = alt_read_word(h2p_lw_quad_addr_external[0]);
+				arm_encoders2 = alt_read_word(h2p_lw_quad_addr_external[1]);
+				arm_encoders3 = alt_read_word(h2p_lw_quad_addr_external[2]);
+				arm_encoders4 = alt_read_word(h2p_lw_quad_addr_external[3]);
 			}
 
-			for(j = 0; j<8; j++){
-				int32_t output = alt_read_word(h2p_lw_quad_addr[j]); //& mask;
-				internal_encoders[j] = output + position_offsets[j];
+			e_stop = alt_read_word(h2p_lw_pid_e_stop);
+			//printf("e_stop value %d", e_stop);
+			//E stop state checking
+			if (abs(internal_encoders[j]) > MAX_TRAVEL_RANGE || abs(position_setpoints[j]) > MAX_TRAVEL_RANGE || ERR_RESET || e_stop){
+				E_STATE = 1;
+				ERR_RESET = 1;
+				//printf("e_stop value: %d\n", e_stop);
+				//Reset pwm and pid loops, [0:7] and [20:27]
+				int32_t reset_mask = 255 | 255<<20;
+				alt_write_word(h2p_lw_quad_reset_addr, reset_mask);
+			}
 
-				if(j==7 && output > max_val)
-					max_val = output;
 
-				if(j==7 && output < min_val)
-					min_val = output;
-				
-				if(j==7){
-					arm_encoders1 = alt_read_word(h2p_lw_quad_addr_external[0]);
-					arm_encoders2 = alt_read_word(h2p_lw_quad_addr_external[1]);
-					arm_encoders3 = alt_read_word(h2p_lw_quad_addr_external[2]);
-					arm_encoders4 = alt_read_word(h2p_lw_quad_addr_external[3]);
-				}
-
-				//int32_t nativeInt = createNativeInt(output, 30);
-
+			//normal operation
+			else{
+				alt_write_word(h2p_lw_quad_reset_addr, 0);
 				int32_t error = internal_encoders[j] - position_setpoints[j];
-				tracking_error[j] = tracking_error[j]*0.99 + error*.01;
+				tracking_error[j] = tracking_error[j]*0.99 + error*.01; //only used in printout
 
 				alt_write_word(h2p_lw_pid_input_addr[j], error);
 				int32_t check_error = (int32_t)(*h2p_lw_quad_addr[j]);// - position_setpoints[j];
 				
-				//int32_t pid_output = *(int32_t*)(h2p_lw_pid_output_addr[j]);
 				usleep(10);
 				int32_t pid_output = (int32_t)(alt_read_word(h2p_lw_pid_output_addr[j])) * controllerGain;
 				int32_t positive_pid_output = (pid_output>=0);
 				int32_t pid_output_cutoff = fabs(pid_output)*(fabs(pid_output) <= 255) + 255*(fabs(pid_output) > 255);	
 				
+				//For direction
 				if(j < 4 ){
 					alt_write_word(h2p_lw_pwm_values_addr[j], (pid_output_cutoff));
 					
@@ -430,12 +400,15 @@ setup file to store setpoint on shutdown and load on boot
 					}
 				}
 				
-				char string_write[255];
-				sprintf(string_write, "Axis %d, Position Setpoint %d, Current count %d, Error %d, Current PID output unsigned %d\n", j, position_setpoints[j], internal_encoders[j], error, pid_output);
-				//if(j==2)
-				//	fprintf(fp, string_write);
+
 				if(myCounter%100 == 0 && j == 7){
-					//printf("%d", beat);
+					//file writing
+					char string_write[255];
+					sprintf(string_write, "Axis %d, Position Setpoint %d, Current count %d, Error %d, Current PID output unsigned %d\n", j, position_setpoints[j], internal_encoders[j], error, pid_output);
+					//if(j==2)
+					//	fprintf(fp, string_write);
+
+					//terminal printing
 					printf("Axis: %d; AVG tracking error: %lf Position Setpoint: %d; Error: %d; Current PID output, unsigned: %d; Cutoff output: %d\n", j, tracking_error[j], position_setpoints[j], error, pid_output, pid_output_cutoff);
 					printf("Heartbeat: %d; Error: %d; Error read: %d; PID out: %d\n", myCounter, error, check_error, pid_output);
 					int dval = max_val - min_val;
@@ -452,15 +425,10 @@ setup file to store setpoint on shutdown and load on boot
 					// 	printf("\n\n");
 				}
 			}
-			//if(myCounter%100 == 0)
-			//	printf("\n\n");
-			/*LEDR_AllOn();
-			usleep(1000*50);
-			LEDR_AllOff();
-			usleep(1000*50);
-			*/
-			myCounter++;
 		}
+
+
+		myCounter++;
 		usleep(1000);
 
 	}
@@ -505,8 +473,9 @@ void *threadFunc(void *arg)
 setup socket communication
 --------------------------------*/
 	char * pch;
-	char deadsok[20];
+	char deadsok[20], arm_state[20];;
 	strcpy(deadsok, "stop");
+	strcpy(arm_state, "arm");
 	int portno;
     socklen_t clilen;
     char buffer[256];
@@ -555,6 +524,13 @@ setup socket communication
 
 	str=(char*)arg;
 
+	//initialize python side with position
+	sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d qq", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
+		internal_encoders[3], internal_encoders[4], internal_encoders[5], internal_encoders[6], internal_encoders[7], switch_states[0],\
+		switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7],\
+		arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4);
+
+	n = write(newsockfd,write_buffer,256);
 
 	while(system_state == 1 && socket_error == 0 ){
 
@@ -563,13 +539,18 @@ setup socket communication
 		/*--------------------------------
 		write switch, external encoder, internal encoder state to socket
 		--------------------------------*/
-   		sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d qq", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
-   			internal_encoders[3], internal_encoders[4], internal_encoders[5], internal_encoders[6], internal_encoders[7], switch_states[0],\
-   			switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7],\
-   			arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4);
+		if (E_STATE==1){
+			printf("ERROR_STATE");
+			sprintf(write_buffer,"nn err qq");
+		}
+		else{
+	   		sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d qq", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
+	   			internal_encoders[3], internal_encoders[4], internal_encoders[5], internal_encoders[6], internal_encoders[7], switch_states[0],\
+	   			switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7],\
+	   			arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4);
+	   	}
 
     	n = write(newsockfd,write_buffer,256);
-    	printf("PRINTING DATA NOW************************************");
     	if (n < 0){
     		error("ERROR writing to socket");
     		break;
@@ -579,13 +560,10 @@ setup socket communication
 		read from socket
 		--------------------------------*/
 		n = read(newsockfd,buffer,255); //blocking function, unless set with fcntl as above
-		printf("Reading DATA NOW************************************\n");
-
    		if (n < 0){
    			error("ERROR reading from socket");
    			break;
    		}
-
 
     	/*--------------------------------
 		parse received message from socket
@@ -595,10 +573,10 @@ setup socket communication
     			//First value in the communication indicates zeroing functionality
 				pch = strtok (buffer,"bd ");
 				//check if message read indicates closed client
-				printf("this is the value in the buffer\n\n%s\n\n%s\n\n", pch,deadsok);
+				printf("this is the first value in the buffer\n\n%s\n\n%s\n\n", pch,deadsok);
+
+				//if condition here is true we need to reset tcp connection, close established connection but continue listening on server side
 				if(strncmp(pch,deadsok,4)==0){
-					printf("this is the value in the buffer\n\n%s\n\n", pch);
-					//if condition here is true we need to reset tcp connection
 					close(newsockfd);
 				    listen(sockfd,5);
 				    clilen = sizeof(cli_addr);
@@ -612,6 +590,14 @@ setup socket communication
 				        error("ERROR on accept");
 				        return;
 				    }
+					break;
+				}
+
+				//If arm signal was sent from python side restablish command
+				if(strncmp(pch,arm_state,3)==0){
+					printf("System armed");
+					E_STATE = 0;
+					ERR_RESET = 0;
 					break;
 				}
 
@@ -754,38 +740,16 @@ void zero_motors(char *write_buffer,int newsockfd){
 			*/
 			usleep(10000);
 		}
+		printf("Zeroing here**********************************");
 	}
 
 	//Need to pass write_buffer and newsockfd
 	done=1;
 	sprintf(write_buffer,"nn %d %d qq",done,rate);
-	//n = write(newsockfd,write_buffer,256);
-	//if (n < 0){
-	//	error("ERROR writing to socket");
-	//	//break;
-	//}
-
-	//want to move back from limit switches
-	// for(i=1; i<10; i++){
-	// 	for(k=0; k<8; k++){
-	// 		position_setpoints[k] = position_setpoints[k] - 100;
-	// 	}
-	// 	usleep(10000);
-	// }
-
-
-	/*printf("**Done zeroing**\n");
-
-	//set PWM values to zero
-	for(j=0;j<8;j++){
-		alt_write_word(h2p_lw_pwm_values_addr[j], 255);
+	n = write(newsockfd,write_buffer,256);
+	if (n < 0){
+		error("ERROR writing to socket");
+		//break;
 	}
-
-	//below resets all counters, PID controllers
-	alt_write_word(h2p_lw_quad_reset_addr, 0xFFFFFFFF);
-	usleep(1000*1000);
-	alt_write_word(h2p_lw_quad_reset_addr, 0);
-	usleep(1000*1000);
-	//freezeMain = 0;*/
 	
 }

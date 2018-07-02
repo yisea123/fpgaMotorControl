@@ -67,6 +67,22 @@
          type = "String";
       }
    }
+   element e_stop
+   {
+      datum _sortIndex
+      {
+         value = "53";
+         type = "int";
+      }
+   }
+   element e_stop.s1
+   {
+      datum baseAddress
+      {
+         value = "145424";
+         type = "String";
+      }
+   }
    element fpga_only_master
    {
       datum _sortIndex
@@ -914,6 +930,11 @@
    type="conduit"
    dir="end" />
  <interface
+   name="e_stop_external_connection"
+   internal="e_stop.external_connection"
+   type="conduit"
+   dir="end" />
+ <interface
    name="gpio_pio_0_external_connection"
    internal="gpio_pio_0.external_connection"
    type="conduit"
@@ -1174,6 +1195,20 @@
   <parameter name="simDoTestBenchWiring" value="false" />
   <parameter name="simDrivenValue" value="0" />
   <parameter name="width" value="4" />
+ </module>
+ <module name="e_stop" kind="altera_avalon_pio" version="17.0" enabled="1">
+  <parameter name="bitClearingEdgeCapReg" value="false" />
+  <parameter name="bitModifyingOutReg" value="false" />
+  <parameter name="captureEdge" value="false" />
+  <parameter name="clockRate" value="50000000" />
+  <parameter name="direction" value="Input" />
+  <parameter name="edgeType" value="RISING" />
+  <parameter name="generateIRQ" value="false" />
+  <parameter name="irqType" value="LEVEL" />
+  <parameter name="resetValue" value="0" />
+  <parameter name="simDoTestBenchWiring" value="false" />
+  <parameter name="simDrivenValue" value="0" />
+  <parameter name="width" value="1" />
  </module>
  <module
    name="fpga_only_master"
@@ -2916,6 +2951,15 @@
  <connection
    kind="avalon"
    version="17.0"
+   start="hps_0.h2f_lw_axi_master"
+   end="e_stop.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00023810" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="17.0"
    start="fpga_only_master.master"
    end="jtag_uart.avalon_jtag_slave">
   <parameter name="arbitrationPriority" value="1" />
@@ -3364,6 +3408,15 @@
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
+   kind="avalon"
+   version="17.0"
+   start="fpga_only_master.master"
+   end="e_stop.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00023810" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
    kind="clock"
    version="17.0"
    start="clk_0.clk"
@@ -3492,6 +3545,7 @@
  <connection kind="clock" version="17.0" start="clk_0.clk" end="quad_pio_10.clk" />
  <connection kind="clock" version="17.0" start="clk_0.clk" end="quad_pio_11.clk" />
  <connection kind="clock" version="17.0" start="clk_0.clk" end="heartbeat.clk" />
+ <connection kind="clock" version="17.0" start="clk_0.clk" end="e_stop.clk" />
  <connection
    kind="clock"
    version="17.0"
@@ -3804,6 +3858,11 @@
    version="17.0"
    start="clk_0.clk_reset"
    end="heartbeat.reset" />
+ <connection
+   kind="reset"
+   version="17.0"
+   start="clk_0.clk_reset"
+   end="e_stop.reset" />
  <connection
    kind="reset"
    version="17.0"

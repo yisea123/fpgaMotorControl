@@ -4,7 +4,8 @@ input clk_50Mhz,
 input [31:0] rst,
 output gpio_out100hz,
 output hbeat_out,
-input [31:0] beat
+input [31:0] beat,
+input e_stop
 );
 
 	// generate 100 Hz from 50 MHz, bit flip at 200hz is equivalent to 100hz clock(square wave)
@@ -13,8 +14,6 @@ input [31:0] beat
 	
 	//Declarations for heartbeat
 	reg beat_last = 0; 
-	//initial beat_last = beat[0];
-
 	reg initial_loop = 1;
 	reg beat_check = 0;
 	reg [7:0] counter = 150;
@@ -22,7 +21,6 @@ input [31:0] beat
 
 	assign output_reset = temp_rst;
 	assign gpio_out100hz = out_100hz;
-	//assign hbeat_out = beat_last;
 	assign hbeat_out = beat_check;
 
 	
@@ -34,55 +32,31 @@ input [31:0] beat
 		end 
 		else begin
 			count_reg <= 0;
-			//gpio_out100hz <= ~gpio_out100hz;
 			out_100hz <= ~out_100hz;//this is now 10000hz
 		end
 	end
 	
-	
-	
-	
-//	//Heartbeat
-//	always @(posedge out_100hz) 
-//	begin
-//		if (beat_last != rst[0]) begin
-//			counter <= 0;
-//			temp_rst <= 0;
-//		end
-//		else begin
-//			counter <= counter + 1;
-//		end
-//		
-//		if (counter >= 150) begin
-//			temp_rst <= 32'hFFFFFFFF;
-//			counter <= 150;
-//		end
-//		beat_last <= rst[0];
-//	end
-	
+
 	//Heartbeat
 	always @(posedge out_100hz) 
 	begin
 		if ((beat_last != beat[0]) && (initial_loop == 0)) begin
 			counter <= 0;
 			beat_check <= !beat_check;
-			//hbeat_out <= !hbeat_out;
-			//output_reset <= 0;
-			temp_rst <= 0;
-			//temp_rst <= 0|rst; //bitwise or
+			//temp_rst <= 0;
+			if (e_stop == 1)
+				temp_rst <= 32'hFFFFFFFF;
+			else
+				temp_rst <= 0|rst; //bitwise or
 		end
 		else begin
 			counter <= counter + 1;
-			
 			if (counter >= 150) begin
 				temp_rst <= 32'hFFFFFFFF;
 				counter <= 8'h96; //150 decimal
 				initial_loop <= 0;
 			end
-			
 		end
-		
-		
 		beat_last <= beat[0];
 	end
 	
