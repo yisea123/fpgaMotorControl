@@ -36,7 +36,7 @@
 #define HW_REGS_BASE ( ALT_STM_OFST )
 #define HW_REGS_SPAN ( 0x04000000 )
 #define HW_REGS_MASK ( HW_REGS_SPAN - 1 )
-#define MAX_TRAVEL_RANGE 10000
+#define MAX_TRAVEL_RANGE 50000
 
 volatile unsigned long *h2p_lw_led_addr;//=NULL;
 volatile unsigned long *h2p_lw_gpio_addr;//=NULL;
@@ -473,9 +473,10 @@ void *threadFunc(void *arg)
 setup socket communication
 --------------------------------*/
 	char * pch;
-	char deadsok[20], arm_state[20];;
+	char deadsok[20], arm_state[20], zero_state[20];
 	strcpy(deadsok, "stop");
 	strcpy(arm_state, "arm");
+	strcpy(zero_state, "zero");
 	int portno;
     socklen_t clilen;
     char buffer[256];
@@ -567,69 +568,52 @@ setup socket communication
     	/*--------------------------------
 		parse received message from socket
 		--------------------------------*/
-    	for(k = 0; k<9; k++){
-    		if(k==0){
-    			//First value in the communication indicates zeroing functionality
-				pch = strtok (buffer,"bd ");
-				//check if message read indicates closed client
-				//printf("this is the first value in the buffer\n\n%s\n\n%s\n\n", pch,deadsok);
+   		pch = strtok (buffer,"bd ");
+    	for(k = 0; k<8; k++){
+			if(strncmp(pch,deadsok,4)==0){
+				close(newsockfd);
+				E_STATE = 1;
+				ERR_RESET = 1;
+			    listen(sockfd,5);
+			    clilen = sizeof(cli_addr);
 
-				//if condition here is true we need to reset tcp connection, close established connection but continue listening on server side
-				if(strncmp(pch,deadsok,4)==0){
-					close(newsockfd);
-					E_STATE = 1;
-					ERR_RESET = 1;
-				    listen(sockfd,5);
-				    clilen = sizeof(cli_addr);
+			    newsockfd = accept(sockfd, 
+			                (struct sockaddr *) &cli_addr, 
+			                &clilen);
 
-				    newsockfd = accept(sockfd, 
-				                (struct sockaddr *) &cli_addr, 
-				                &clilen);
+				sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d qq", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
+					internal_encoders[3], internal_encoders[4], internal_encoders[5], internal_encoders[6], internal_encoders[7], switch_states[0],\
+					switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7],\
+					arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4);
+				n = write(newsockfd,write_buffer,256);
 
-					sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d qq", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
-						internal_encoders[3], internal_encoders[4], internal_encoders[5], internal_encoders[6], internal_encoders[7], switch_states[0],\
-						switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7],\
-						arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4);
-					n = write(newsockfd,write_buffer,256);
+			    CONNECTED = 1; //change CONNECTED to 1 if connection is made, 
 
-				    CONNECTED = 1; //change CONNECTED to 1 if connection is made, 
-
-				    if (newsockfd < 0){ 
-				        error("ERROR on accept");
-				        return;
-				    }
-					break;
-				}
-
-				//If arm signal was sent from python side restablish command
-				if(strncmp(pch,arm_state,3)==0){
-					printf("System armed");
-					E_STATE = 0;
-					ERR_RESET = 0;
-					break;
-				}
-
-				if(pch == NULL){ //found end of string early
-					error("ERROR parsing message");
-					break;
-				}
-				state = atoi(pch);
-
+			    if (newsockfd < 0){ 
+			        error("ERROR on accept");
+			        return;
+			    }
+				break;
 			}
+			else if(strncmp(pch,arm_state,3)==0){
+				printf("System armed");
+				E_STATE = 0;
+				ERR_RESET = 0;
+				break;
+			}
+			else if(strncmp(pch,zero_state,4)==0){
+				zero_motors(write_buffer,newsockfd);
+				break;
+			}
+			else if(pch == NULL){
+				error("ERROR parsing message");
+				break;
+			}
+
 			else{
-				pch = strtok (NULL,"bd ");
-				if(pch == NULL){ //found end of string early
-					error("ERROR parsing message");
-					break;
-				}
-				if(state){
-					position_setpoints[k-1] = atoi(pch);
-				}
+				position_setpoints[k] = atoi(pch);
 			}
-		}
-		//When state == 0, we are zeroing
-		if(state==0){
-			zero_motors(write_buffer,newsockfd);
+			pch = strtok (NULL,"bd ");
 		}
 	}
 	printf("Exited thread loop\n");

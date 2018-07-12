@@ -9,7 +9,6 @@ import select
 import signal
 import numpy as np
 import matplotlib.pyplot as plt
-import pyformulas as pf
 
 #grab encoder counts and limit switch values
 
@@ -59,11 +58,11 @@ class tcp_communication():
 	    win32process.SetPriorityClass(handle, priorityclasses[priority])
 
 class motors():
-	def __init__(self, CLIENT_SOCKET, dt, position, step_size, degrees_count_motor, degrees_count_motor_joint):
+	def __init__(self, CLIENT_SOCKET, dt, step_size, degrees_count_motor, degrees_count_motor_joint, results_dir):
 
 		#Declaring class variables
 		self.dt = dt 													#time step
-		self.motor_pos = position 										#motor position in encoder counts
+		self.motor_pos = np.zeros(8) 									#motor position in encoder counts, 9 element since 1st value is zeroing flag
 		self.step_size = step_size										#number of encoder counts to step by
 		self.degrees_count_motor = degrees_count_motor 					#degrees of motor shaft rotation per encoder count
 		self.degrees_count_motor_joint = degrees_count_motor_joint		#degrees or joint roation per encoder count
@@ -71,6 +70,7 @@ class motors():
 		self.sine_travel = 3
 		self.motor_revolutions = 1.0									#number of rotations to make in profile, remember it'll be +- full rotations since sine
 		self.motor_nums = "12345678" 									#which motor to control on the bank, number corresponds to which motor 1-8
+		self.results_dir = results_dir									#Directory to where motor data is stored
 
 		self.profile_time = []
 		self.profile_values_sent = []
@@ -81,11 +81,11 @@ class motors():
 		self.limit_data = np.zeros(8)
 		self.client_socket = CLIENT_SOCKET
 
-	def command_motors(self, pos):
-		self.motor_pos = pos
+	def command_motors(self, pos): #sends new positions to controller and updates local position with encoder reads
+		#self.motor_pos = pos
 		data = ('b'+ str(int(pos[0])) + ' ' + str(int(pos[1])) + ' ' + str(int(pos[2])) + ' ' +
 					 str(int(pos[3])) + ' ' + str(int(pos[4])) + ' ' + str(int(pos[5])) + ' ' +
-					 str(int(pos[6])) + ' ' + str(int(pos[7])) +  ' ' + str(int(pos[8])) + 'd')
+					 str(int(pos[6])) + ' ' + str(int(pos[7])) + 'd')
 		self.client_socket.send(data.encode())
 		self.read_buff()
 		return self.motor_pos
@@ -104,6 +104,7 @@ class motors():
 	 		print("*** C side has an error or needs to be armed ***\n")
 
 	 	else:
+	 		self.motor_pos = np.array(list(map(int, data[1:9])))
 		 	self.motor_encoders_data = np.array(list(map(int, data[1:9])))
 		 	self.joint_encoders_data = np.array(list(map(int, data[17:21])))
 		 	self.limit_data = np.array(list(map(int, data[9:17])))
@@ -114,8 +115,8 @@ class motors():
 	 	return
 
 	def arm(self):
-		data = ('b' + 'arm' + 'd')
 		global DISABLED
+		data = ('b' + 'arm' + 'd')
 		DISABLED = 0
 		self.client_socket.send(data.encode())
 		self.read_buff()
@@ -129,8 +130,11 @@ class motors():
 		return self.motor_nums
 
 	def zero_motors(self):
-		zero_pos = np.zeros((9,1)).astype(int)
-		self.command_motors(zero_pos)
+		data = ('b' + 'zero' + 'd')
+		self.client_socket.send(data.encode())
+		self.read_buff()
+		#zero_pos = np.zeros((9,1)).astype(int)
+		#self.command_motors(zero_pos)
 		print("System zeroing wait until motors stop moving...")
 		time.sleep(3)
 		return
@@ -159,7 +163,8 @@ class motors():
 
 	def run_sine(self):
 		start_pos = self.motor_pos
-		current_pos = np.insert(1,1,np.zeros(8))
+		#current_pos = np.insert(1,1,np.zeros(8))
+		current_pos = np.zeros(8)
 		time_diff = []
 		counter = 1
 
@@ -175,30 +180,20 @@ class motors():
 		try:
 			while True:
 				current_time = time.time()
-
 				ct = time.time()
 				dt = ct - st
 				time_diff.append(dt)
 				st = ct
-
 				for i in range(len(current_pos)):
-					if i==0:
-						current_pos[i] = 1;
-					else:
-						#16 since 16 threads per inch
-						current_pos_1 = (np.sin((current_time-start_time)*2*np.pi*self.sine_speed)/self.degrees_count_motor_joint*360/16*self.sine_travel)
-						current_pos[i] = start_pos[i] + current_pos_1
-
+					#16 since 16 threads per inch
+					current_pos_1 = (np.sin((current_time-start_time)*2*np.pi*self.sine_speed)/self.degrees_count_motor_joint*360/16*self.sine_travel)
+					current_pos[i] = start_pos[i] + current_pos_1
 				self.command_motors(current_pos)
-
 				counter = counter + 1
-
 				if counter%10 == 0 and PRINT_LOOP_SPECS == 1:
-
 					#print("Mean loop time is: {}".format(np.mean(np.asarray(time_diff))))
 					#print("Loop time variance is: {}".format(np.var(np.asarray(time_diff))))
 					counter = 1
-
 				if len(time_diff) > 1e4:
 					time_diff = time_diff[-10000:]
 
@@ -207,7 +202,7 @@ class motors():
 		except KeyboardInterrupt:
 			#Gives back control to all motors
 			self.motor_nums = "12345678"
-			self.motor_pos = current_pos
+			#self.motor_pos = current_pos
 			return self.motor_nums
 		return
 
@@ -215,68 +210,36 @@ class motors():
 		print("\nRunning motor profile, ctrl c to break:")
 		print('Starting position {}\n' .format(self.motor_pos[1:]))
 		start_pos = self.motor_pos
-		current_pos = np.insert(1,1,np.zeros(8))
+		#current_pos = np.insert(1,1,np.zeros(8))
+		current_pos = np.zeros(8)
 		counter = 1
 		time.sleep(1)
 		start_time = time.time()
 		time.sleep(self.dt)
 
-		#self.motor_encoders_data
-
 		self.profile_values_sent.append(start_pos[1])
 		self.profile_values_recv.append(start_pos[1])
 		self.profile_time.append(start_time)
-
-		profile_values_sent = np.zeros(200)
-		profile_values_recv = np.zeros(200)
-		profile_time = np.zeros(200)
-
-		fig = plt.figure()
-		#screen = pf.screen(title = 'Plot')
 
 		try:
 			while True:
 				current_time = time.time()
 				update_pos = np.sin(((current_time-start_time)*2*np.pi*self.sine_speed)) * 2000 * self.motor_revolutions
 				for i in range(len(current_pos)):
-					if i==0:
-						current_pos[i] = 1 #non zeroing state
-					else:	
 						current_pos[i] = start_pos[i] + update_pos
 
 				self.command_motors(current_pos)
-
 				self.profile_values_sent.append(current_pos[1])
 				self.profile_values_recv.append(self.motor_encoders_data[1])
 				self.profile_time.append(current_time-start_time)
-
-				profile_values_sent[counter%200] = current_pos[1]
-				profile_values_recv[counter%200] = self.motor_encoders_data[1]
-				profile_time[counter%200] = current_time-start_time
-
-				if counter % 100 == 0:
-					print("Values sent: {}".format(profile_values_sent))
-					print("Values received: {}".format(profile_values_recv))
-
-
-				# plt.xlim(profile_time[0], profile_time[0] + 200)
-				# plt.ylim(-2000 * self.motor_revolutions, 2000 * self.motor_revolutions)
-				# plt.plot(profile_time, profile_values_sent)
-				# plt.plot(profile_time, profile_values_recv)
-
-				# fig.canvas.draw()
-				# image = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
-				# image = image.reshape(fig.canvas.get_width_height()[::-1] + (3,))
-				# screen.update(image)
-
 				counter = counter + 1
-				#print(update_pos)
-				#print(current_time-start_time)
 
 		except KeyboardInterrupt:
 			#Gives back control to all motors
+			#print(self.profile_values_sent)
+			np.savez(self.results_dir, np.array(self.profile_values_sent), np.array(self.profile_values_recv), np.array(self.profile_time))
 			self.motor_nums = "12345678"
-			self.motor_pos = current_pos
+			#self.motor_pos = current_pos
 			return self.motor_nums
 		return
 
@@ -294,9 +257,13 @@ class motors():
 					break
 
 				if direction[0] == 'a':
-					self.arm()
 					global DISABLED
-					DISABLED = 0
+					if DISABLED:
+						print("Arming now")
+						self.arm()
+						DISABLED = 0
+					else:
+						print("Already armed")
 					#want same behavior as return from sine when returning control
 					return "sine"
 					break
@@ -372,8 +339,13 @@ step_size = 100							#Number of encoder counts to step
 dt = 1/200
 start_time = time.time()
 counter = 0
-position = np.insert(1,1,np.zeros(8))
 
+#Saving directory for profiling
+script_dir = os.getcwd()
+results_dir = os.path.join(script_dir, 'motor_data' + '/')
+if not os.path.isdir(results_dir):
+    os.mkdir(results_dir)
+print("Data stored to {}" .format(results_dir))
 
 #Signal handler
 signal.signal(signal.SIGTSTP, signal_handler)
@@ -385,9 +357,9 @@ if IsWindows:
 	tcp.setpriority()
 
 #Motor class
-motors = motors(CLIENT_SOCKET, dt, position, step_size, degrees_count_motor, degrees_count_motor_joint)
+motors = motors(CLIENT_SOCKET, dt, step_size, degrees_count_motor, degrees_count_motor_joint, results_dir)
 motors.read_buff()
-position = position + np.insert(motors.motor_encoders_data,0,0) #Adding in offset from values stored in text file onboard the fpga
+position = motors.motor_pos
 motors.command_motors(position) #initialize to encoder positions
 
 #tells which motors to control
@@ -405,7 +377,8 @@ while(ManualControl):
 	if isinstance(command, str):
 		#Does nothing to motors here -> control stuff is done in functions
 		if command == "z":
-			position = np.insert(1,1,np.zeros(8))
+			#position = np.insert(1,1,np.zeros(8))
+			position = np.zeros(8)
 			#Gives motors length 0
 			motor_numbers = ""
 			command = 0
@@ -423,10 +396,11 @@ while(ManualControl):
 	#Updating position
 	if DISABLED == 0:
 		for i in range(len(motor_numbers)):
-	 		position[int(motor_numbers[i])] = position[int(motor_numbers[i])] + command
+	 		position[int(motor_numbers[i])-1] = position[int(motor_numbers[i])-1] + command
 
 	print("motors being used: {}".format(motor_numbers))
 	print("encoder positions sent {}\n".format(position))
+	print(motors.motor_pos)
 	motors.command_motors(position)
 	time.sleep(motors.dt)
 
@@ -434,8 +408,9 @@ while(ManualControl):
 #**************					End Control		 	    ***************
 #**********************************************************************
 
-
-
+#rightn now motor position is old and when i come back here it jumps backto the older one i need to keep track of the setpoint being used
+#motor_pos lags position by like 300 if updating by 100 -> 300 comapred to 0
+#something in command motors with the commented line
 
 
 
