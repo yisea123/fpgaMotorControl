@@ -62,7 +62,7 @@ class motors():
 
 		#Declaring class variables
 		self.dt = dt 													#time step
-		self.motor_pos = np.zeros(8) 									#motor position in encoder counts, 9 element since 1st value is zeroing flag
+		self.motor_pos = np.zeros(8) 									#motor position in encoder counts, values sent
 		self.step_size = step_size										#number of encoder counts to step by
 		self.degrees_count_motor = degrees_count_motor 					#degrees of motor shaft rotation per encoder count
 		self.degrees_count_motor_joint = degrees_count_motor_joint		#degrees or joint roation per encoder count
@@ -91,28 +91,27 @@ class motors():
 		return self.motor_pos
 
 	def read_buff(self):
-	 	data = str(CLIENT_SOCKET.recv(256))
-	 	data = re.split('\s', data)
-	 	global DISABLED
-	 	if data[1] == 'closeports':
-	 		self.client_socket.close()
-	 		print("\n\nServer side closed. Closing ports now.\n\n")
-	 		sys.exit()
+		global DISABLED
+		data = str(CLIENT_SOCKET.recv(256))
+		data = re.split('\s', data)
+		if data[1] == 'closeports':
+			self.client_socket.close()
+			print("\n\nServer side closed. Closing ports now.\n\n")
+			sys.exit()
 
-	 	if data[1] == 'err':
-	 		DISABLED = True
-	 		print("*** C side has an error or needs to be armed ***\n")
+		if data[1] == 'err':
+			DISABLED = True
+			print("*** C side has an error or needs to be armed ***\n")
 
-	 	else:
-	 		self.motor_pos = np.array(list(map(int, data[1:9])))
-		 	self.motor_encoders_data = np.array(list(map(int, data[1:9])))
-		 	self.joint_encoders_data = np.array(list(map(int, data[17:21])))
-		 	self.limit_data = np.array(list(map(int, data[9:17])))
-		 	if PRINT_SENSORS:
-		 		print('Read motor encoder positions {}'.format(self.motor_encoders_data))
-		 		print('Read joint encoder positions {}'.format(self.joint_encoders_data))
-		 		print('Read limit switch values {}'.format(self.limit_data))
-	 	return
+		else:
+			self.motor_encoders_data = np.array(list(map(int, data[1:9])))
+			self.joint_encoders_data = np.array(list(map(int, data[17:21])))
+			self.limit_data = np.array(list(map(int, data[9:17])))
+			if PRINT_SENSORS:
+				print('Read motor encoder positions {}'.format(self.motor_encoders_data))
+				print('Read joint encoder positions {}'.format(self.joint_encoders_data))
+				print('Read limit switch values {}'.format(self.limit_data))
+		return
 
 	def arm(self):
 		global DISABLED
@@ -162,15 +161,12 @@ class motors():
 	# 	return
 
 	def run_sine(self):
-		start_pos = self.motor_pos
-		#current_pos = np.insert(1,1,np.zeros(8))
-		current_pos = np.zeros(8)
-		time_diff = []
-		counter = 1
-
 		print("Running sine wave, ctrl c to break:")
 		print('current positions {}' .format(self.motor_pos[1:]))
-
+		time_diff = []
+		counter = 1
+		start_pos = self.motor_pos
+		commanded = np.zeros(8)
 		time.sleep(2)
 		start_time = time.time()
 		st = start_time
@@ -184,11 +180,11 @@ class motors():
 				dt = ct - st
 				time_diff.append(dt)
 				st = ct
-				for i in range(len(current_pos)):
-					#16 since 16 threads per inch
-					current_pos_1 = (np.sin((current_time-start_time)*2*np.pi*self.sine_speed)/self.degrees_count_motor_joint*360/16*self.sine_travel)
-					current_pos[i] = start_pos[i] + current_pos_1
-				self.command_motors(current_pos)
+				#16 since 16 threads per inch
+				current_pos_1 = (np.sin((current_time-start_time)*2*np.pi*self.sine_speed)/self.degrees_count_motor_joint*360/16*self.sine_travel)
+				for i in range(len(commanded)):
+					commanded = start_pos + int(current_pos_1)
+				self.command_motors(commanded)
 				counter = counter + 1
 				if counter%10 == 0 and PRINT_LOOP_SPECS == 1:
 					#print("Mean loop time is: {}".format(np.mean(np.asarray(time_diff))))
@@ -196,13 +192,12 @@ class motors():
 					counter = 1
 				if len(time_diff) > 1e4:
 					time_diff = time_diff[-10000:]
-
-				#print(current_pos)
 				#time.sleep(self.dt)
+
 		except KeyboardInterrupt:
 			#Gives back control to all motors
+			self.motor_pos = commanded
 			self.motor_nums = "12345678"
-			#self.motor_pos = current_pos
 			return self.motor_nums
 		return
 
@@ -210,26 +205,24 @@ class motors():
 		print("\nRunning motor profile, ctrl c to break:")
 		print('Starting position {}\n' .format(self.motor_pos[1:]))
 		start_pos = self.motor_pos
-		#current_pos = np.insert(1,1,np.zeros(8))
-		current_pos = np.zeros(8)
+		commanded = np.zeros(8)
 		counter = 1
 		time.sleep(1)
 		start_time = time.time()
 		time.sleep(self.dt)
-
-		self.profile_values_sent.append(start_pos[1])
-		self.profile_values_recv.append(start_pos[1])
+		self.profile_values_sent.append(self.motor_pos[1])
+		self.profile_values_recv.append(self.motor_pos[1])
 		self.profile_time.append(start_time)
 
 		try:
 			while True:
 				current_time = time.time()
 				update_pos = np.sin(((current_time-start_time)*2*np.pi*self.sine_speed)) * 2000 * self.motor_revolutions
-				for i in range(len(current_pos)):
-						current_pos[i] = start_pos[i] + update_pos
+				for i in range(len(start_pos)):
+						commanded[i] = start_pos[i] + int(update_pos)
 
-				self.command_motors(current_pos)
-				self.profile_values_sent.append(current_pos[1])
+				self.command_motors(commanded)
+				self.profile_values_sent.append(self.motor_pos[1])
 				self.profile_values_recv.append(self.motor_encoders_data[1])
 				self.profile_time.append(current_time-start_time)
 				counter = counter + 1
@@ -237,9 +230,9 @@ class motors():
 		except KeyboardInterrupt:
 			#Gives back control to all motors
 			#print(self.profile_values_sent)
+			self.motor_pos = commanded
 			np.savez(self.results_dir, np.array(self.profile_values_sent), np.array(self.profile_values_recv), np.array(self.profile_time))
 			self.motor_nums = "12345678"
-			#self.motor_pos = current_pos
 			return self.motor_nums
 		return
 
@@ -330,7 +323,7 @@ IsWindows = os.name == 'nt' 			#os.name is name of os, ex: linux='posix', window
 ManualControl = 1						#main loop control
 
 #Constants and initializations
-socket_ip = '192.168.1.16'
+socket_ip = '192.168.1.21'
 socket_port = 1115
 degrees_count_motor_joint = 0.00743		#joint degrees a count
 degrees_count_motor = 360/2000			#Motor encoder resolution
@@ -358,9 +351,12 @@ if IsWindows:
 
 #Motor class
 motors = motors(CLIENT_SOCKET, dt, step_size, degrees_count_motor, degrees_count_motor_joint, results_dir)
+motors.read_buff() 						#c side sends out initial stored encoder positions, grabs them
+time.sleep(1)
 motors.read_buff()
-position = motors.motor_pos
-motors.command_motors(position) #initialize to encoder positions
+print("initializing motors to {}".format(motors.motor_encoders_data))
+motors.motor_pos = motors.motor_encoders_data 	#initialize to stored encoder positions
+motors.command_motors(motors.motor_pos)			#echo read value, values arent used since c side is in err mode
 
 #tells which motors to control
 motor_numbers = motors.which_motors()
@@ -377,15 +373,13 @@ while(ManualControl):
 	if isinstance(command, str):
 		#Does nothing to motors here -> control stuff is done in functions
 		if command == "z":
-			#position = np.insert(1,1,np.zeros(8))
-			position = np.zeros(8)
+			motors.motor_pos = np.zeros(8)
 			#Gives motors length 0
 			motor_numbers = ""
 			command = 0
 			continue
 
 		elif command == "sine":
-			position = motors.motor_pos
 			motor_numbers = motors.motor_nums
 			command = 0
 
@@ -396,12 +390,12 @@ while(ManualControl):
 	#Updating position
 	if DISABLED == 0:
 		for i in range(len(motor_numbers)):
-	 		position[int(motor_numbers[i])-1] = position[int(motor_numbers[i])-1] + command
+	 		motors.motor_pos[int(motor_numbers[i])-1] = motors.motor_pos[int(motor_numbers[i])-1] + command
 
+	motors.command_motors(motors.motor_pos)
 	print("motors being used: {}".format(motor_numbers))
-	print("encoder positions sent {}\n".format(position))
-	print(motors.motor_pos)
-	motors.command_motors(position)
+	print("encoder positions sent: {}".format(motors.motor_pos))
+	print("current motor positions: {}\n".format(motors.motor_encoders_data))
 	time.sleep(motors.dt)
 
 #**********************************************************************

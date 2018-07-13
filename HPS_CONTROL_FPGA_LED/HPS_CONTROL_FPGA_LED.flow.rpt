@@ -1,5 +1,5 @@
 Flow report for HPS_CONTROL_FPGA_LED
-Fri Jun 29 13:40:01 2018
+Fri Jul 13 00:49:12 2018
 Quartus Prime Version 17.0.0 Build 595 04/25/2017 SJ Lite Edition
 
 
@@ -41,15 +41,15 @@ agreement for further details.
 +-------------------------------------------------------------------------------+
 ; Flow Summary                                                                  ;
 +---------------------------------+---------------------------------------------+
-; Flow Status                     ; Successful - Fri Jun 29 13:38:44 2018       ;
+; Flow Status                     ; Successful - Fri Jul 13 00:47:55 2018       ;
 ; Quartus Prime Version           ; 17.0.0 Build 595 04/25/2017 SJ Lite Edition ;
 ; Revision Name                   ; HPS_CONTROL_FPGA_LED                        ;
 ; Top-level Entity Name           ; HPS_CONTROL_FPGA_LED                        ;
 ; Family                          ; Cyclone V                                   ;
 ; Device                          ; 5CSEMA4U23C6                                ;
 ; Timing Models                   ; Final                                       ;
-; Logic utilization (in ALMs)     ; 12,079 / 15,880 ( 76 % )                    ;
-; Total registers                 ; 17587                                       ;
+; Logic utilization (in ALMs)     ; 12,375 / 15,880 ( 78 % )                    ;
+; Total registers                 ; 18041                                       ;
 ; Total pins                      ; 230 / 314 ( 73 % )                          ;
 ; Total virtual pins              ; 0                                           ;
 ; Total block memory bits         ; 526,336 / 2,764,800 ( 19 % )                ;
@@ -68,7 +68,7 @@ agreement for further details.
 +-------------------+----------------------+
 ; Option            ; Setting              ;
 +-------------------+----------------------+
-; Start date & time ; 06/29/2018 13:26:18  ;
+; Start date & time ; 07/13/2018 00:35:25  ;
 ; Main task         ; Compilation          ;
 ; Revision Name     ; HPS_CONTROL_FPGA_LED ;
 +-------------------+----------------------+
@@ -79,7 +79,7 @@ agreement for further details.
 +--------------------------------------------+--------------------------------------------------------------------------+---------------+--------------------------------+------------+
 ; Assignment Name                            ; Value                                                                    ; Default Value ; Entity Name                    ; Section Id ;
 +--------------------------------------------+--------------------------------------------------------------------------+---------------+--------------------------------+------------+
-; COMPILER_SIGNATURE_ID                      ; 176694098530594.153030397510836                                          ; --            ; --                             ; --         ;
+; COMPILER_SIGNATURE_ID                      ; 176694098530594.153146732130143                                          ; --            ; --                             ; --         ;
 ; ECO_REGENERATE_REPORT                      ; On                                                                       ; Off           ; --                             ; --         ;
 ; FINAL_PLACEMENT_OPTIMIZATION               ; Never                                                                    ; Automatically ; --                             ; --         ;
 ; FITTER_AGGRESSIVE_ROUTABILITY_OPTIMIZATION ; Always                                                                   ; Automatically ; --                             ; --         ;
@@ -123,7 +123,7 @@ agreement for further details.
 ; POWER_PRESET_COOLING_SOLUTION              ; 23 MM HEAT SINK WITH 200 LFPM AIRFLOW                                    ; --            ; --                             ; --         ;
 ; SLD_FILE                                   ; soc_system/synthesis/soc_system.regmap                                   ; --            ; --                             ; --         ;
 ; SLD_FILE                                   ; soc_system/synthesis/soc_system.debuginfo                                ; --            ; --                             ; --         ;
-; SLD_INFO                                   ; QSYS_NAME soc_system HAS_SOPCINFO 1 GENERATION_ID 1530303748             ; --            ; soc_system                     ; --         ;
+; SLD_INFO                                   ; QSYS_NAME soc_system HAS_SOPCINFO 1 GENERATION_ID 1531462858             ; --            ; soc_system                     ; --         ;
 ; SOPCINFO_FILE                              ; soc_system/synthesis/../../soc_system.sopcinfo                           ; --            ; --                             ; --         ;
 ; SYNTHESIS_ONLY_QIP                         ; On                                                                       ; --            ; --                             ; --         ;
 ; USE_DLL_FREQUENCY_FOR_DQS_DELAY_CHAIN      ; On                                                                       ; Off           ; --                             ; --         ;
@@ -135,11 +135,11 @@ agreement for further details.
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name               ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis      ; 00:02:18     ; 1.5                     ; 2099 MB             ; 00:03:53                           ;
-; Fitter                    ; 00:06:25     ; 1.2                     ; 3170 MB             ; 00:15:34                           ;
-; Assembler                 ; 00:00:15     ; 1.0                     ; 1210 MB             ; 00:00:15                           ;
-; TimeQuest Timing Analyzer ; 00:01:15     ; 1.9                     ; 2015 MB             ; 00:02:19                           ;
-; Total                     ; 00:10:13     ; --                      ; --                  ; 00:22:01                           ;
+; Analysis & Synthesis      ; 00:02:14     ; 1.5                     ; 1985 MB             ; 00:03:51                           ;
+; Fitter                    ; 00:06:30     ; 1.2                     ; 3163 MB             ; 00:15:58                           ;
+; Assembler                 ; 00:00:16     ; 1.0                     ; 1207 MB             ; 00:00:16                           ;
+; TimeQuest Timing Analyzer ; 00:01:15     ; 1.9                     ; 2023 MB             ; 00:02:19                           ;
+; Total                     ; 00:10:15     ; --                      ; --                  ; 00:22:24                           ;
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 

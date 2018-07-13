@@ -60,7 +60,7 @@
 #define FPGA_ONLY_MASTER_SYSID_QSYS_SPAN 8
 #define FPGA_ONLY_MASTER_SYSID_QSYS_END 0x10007
 #define FPGA_ONLY_MASTER_SYSID_QSYS_ID 2899645186
-#define FPGA_ONLY_MASTER_SYSID_QSYS_TIMESTAMP 1530303748
+#define FPGA_ONLY_MASTER_SYSID_QSYS_TIMESTAMP 1531462858
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'
@@ -1229,6 +1229,18 @@
 #define FPGA_ONLY_MASTER_E_STOP_RESET_VALUE 0
 
 /*
+ * Macros for device 'adc_0', class 'altera_up_avalon_adc'
+ * Path to the device is from the master group 'fpga_only_master'.
+ * The macros are prefixed with 'FPGA_ONLY_MASTER_ADC_0_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define FPGA_ONLY_MASTER_ADC_0_COMPONENT_TYPE altera_up_avalon_adc
+#define FPGA_ONLY_MASTER_ADC_0_COMPONENT_NAME adc_0
+#define FPGA_ONLY_MASTER_ADC_0_BASE 0x23900
+#define FPGA_ONLY_MASTER_ADC_0_SPAN 32
+#define FPGA_ONLY_MASTER_ADC_0_END 0x2391f
+
+/*
  * Macros for device 'intr_capturer_0', class 'intr_capturer'
  * Path to the device is from the master group 'fpga_only_master'.
  * The macros are prefixed with 'FPGA_ONLY_MASTER_INTR_CAPTURER_0_'.
@@ -1286,7 +1298,7 @@
 #define HPS_0_SYSID_QSYS_SPAN 8
 #define HPS_0_SYSID_QSYS_END 0x10007
 #define HPS_0_SYSID_QSYS_ID 2899645186
-#define HPS_0_SYSID_QSYS_TIMESTAMP 1530303748
+#define HPS_0_SYSID_QSYS_TIMESTAMP 1531462858
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'
@@ -2458,6 +2470,18 @@
 #define HPS_0_E_STOP_RESET_VALUE 0
 
 /*
+ * Macros for device 'adc_0', class 'altera_up_avalon_adc'
+ * Path to the device is from the master group 'hps_0'.
+ * The macros are prefixed with 'HPS_0_ADC_0_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_ADC_0_COMPONENT_TYPE altera_up_avalon_adc
+#define HPS_0_ADC_0_COMPONENT_NAME adc_0
+#define HPS_0_ADC_0_BASE 0x23900
+#define HPS_0_ADC_0_SPAN 32
+#define HPS_0_ADC_0_END 0x2391f
+
+/*
  * Macros for device 'hps_0_axi_sdram', class 'axi_sdram'
  * Path to the device is from the master group 'hps_0_bridges'.
  * The macros are prefixed with 'HPS_0_BRIDGES_HPS_0_AXI_SDRAM_'.
@@ -2521,7 +2545,7 @@
 #define HPS_0_BRIDGES_SYSID_QSYS_SPAN 8
 #define HPS_0_BRIDGES_SYSID_QSYS_END 0x10007
 #define HPS_0_BRIDGES_SYSID_QSYS_ID 2899645186
-#define HPS_0_BRIDGES_SYSID_QSYS_TIMESTAMP 1530303748
+#define HPS_0_BRIDGES_SYSID_QSYS_TIMESTAMP 1531462858
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'
@@ -3690,6 +3714,18 @@
 #define HPS_0_BRIDGES_E_STOP_RESET_VALUE 0
 
 /*
+ * Macros for device 'adc_0', class 'altera_up_avalon_adc'
+ * Path to the device is from the master group 'hps_0_bridges'.
+ * The macros are prefixed with 'HPS_0_BRIDGES_ADC_0_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_BRIDGES_ADC_0_COMPONENT_TYPE altera_up_avalon_adc
+#define HPS_0_BRIDGES_ADC_0_COMPONENT_NAME adc_0
+#define HPS_0_BRIDGES_ADC_0_BASE 0x23900
+#define HPS_0_BRIDGES_ADC_0_SPAN 32
+#define HPS_0_BRIDGES_ADC_0_END 0x2391f
+
+/*
  * Macros for device 'hps_0_gmac0', class 'stmmac'
  * Path to the device is from the master group 'hps_0_bridges'.
  * The macros are prefixed with 'HPS_0_BRIDGES_HPS_0_GMAC0_'.
@@ -4189,7 +4225,7 @@
 #define HPS_0_ARM_A9_0_SYSID_QSYS_SPAN 8
 #define HPS_0_ARM_A9_0_SYSID_QSYS_END 0xff210007
 #define HPS_0_ARM_A9_0_SYSID_QSYS_ID 2899645186
-#define HPS_0_ARM_A9_0_SYSID_QSYS_TIMESTAMP 1530303748
+#define HPS_0_ARM_A9_0_SYSID_QSYS_TIMESTAMP 1531462858
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'
@@ -5358,6 +5394,18 @@
 #define HPS_0_ARM_A9_0_E_STOP_RESET_VALUE 0
 
 /*
+ * Macros for device 'adc_0', class 'altera_up_avalon_adc'
+ * Path to the device is from the master group 'hps_0_arm_a9_0'.
+ * The macros are prefixed with 'HPS_0_ARM_A9_0_ADC_0_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_ARM_A9_0_ADC_0_COMPONENT_TYPE altera_up_avalon_adc
+#define HPS_0_ARM_A9_0_ADC_0_COMPONENT_NAME adc_0
+#define HPS_0_ARM_A9_0_ADC_0_BASE 0xff223900
+#define HPS_0_ARM_A9_0_ADC_0_SPAN 32
+#define HPS_0_ARM_A9_0_ADC_0_END 0xff22391f
+
+/*
  * Macros for device 'hps_0_gmac0', class 'stmmac'
  * Path to the device is from the master group 'hps_0_arm_a9_0'.
  * The macros are prefixed with 'HPS_0_ARM_A9_0_HPS_0_GMAC0_'.
@@ -5893,7 +5941,7 @@
 #define HPS_0_ARM_A9_1_SYSID_QSYS_SPAN 8
 #define HPS_0_ARM_A9_1_SYSID_QSYS_END 0xff210007
 #define HPS_0_ARM_A9_1_SYSID_QSYS_ID 2899645186
-#define HPS_0_ARM_A9_1_SYSID_QSYS_TIMESTAMP 1530303748
+#define HPS_0_ARM_A9_1_SYSID_QSYS_TIMESTAMP 1531462858
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'
@@ -7060,6 +7108,18 @@
 #define HPS_0_ARM_A9_1_E_STOP_HAS_TRI 0
 #define HPS_0_ARM_A9_1_E_STOP_IRQ_TYPE NONE
 #define HPS_0_ARM_A9_1_E_STOP_RESET_VALUE 0
+
+/*
+ * Macros for device 'adc_0', class 'altera_up_avalon_adc'
+ * Path to the device is from the master group 'hps_0_arm_a9_1'.
+ * The macros are prefixed with 'HPS_0_ARM_A9_1_ADC_0_'.
+ * The prefix is the master group descriptor and the slave descriptor.
+ */
+#define HPS_0_ARM_A9_1_ADC_0_COMPONENT_TYPE altera_up_avalon_adc
+#define HPS_0_ARM_A9_1_ADC_0_COMPONENT_NAME adc_0
+#define HPS_0_ARM_A9_1_ADC_0_BASE 0xff223900
+#define HPS_0_ARM_A9_1_ADC_0_SPAN 32
+#define HPS_0_ARM_A9_1_ADC_0_END 0xff22391f
 
 /*
  * Macros for device 'hps_0_gmac0', class 'stmmac'

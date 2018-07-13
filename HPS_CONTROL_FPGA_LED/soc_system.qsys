@@ -9,6 +9,27 @@
    categories="System" />
  <parameter name="bonusData"><![CDATA[bonusData 
 {
+   element adc_0
+   {
+      datum _sortIndex
+      {
+         value = "54";
+         type = "int";
+      }
+      datum sopceditor_expanded
+      {
+         value = "1";
+         type = "boolean";
+      }
+   }
+   element adc_0.adc_slave
+   {
+      datum baseAddress
+      {
+         value = "145664";
+         type = "String";
+      }
+   }
    element button_pio
    {
       datum _sortIndex
@@ -919,6 +940,11 @@
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface
+   name="adc_0_external_interface"
+   internal="adc_0.external_interface"
+   type="conduit"
+   dir="end" />
+ <interface
    name="button_pio_external_connection"
    internal="button_pio.external_connection"
    type="conduit"
@@ -1162,6 +1188,14 @@
    type="conduit"
    dir="end" />
  <interface name="reset" internal="clk_0.clk_in_reset" type="reset" dir="end" />
+ <module name="adc_0" kind="altera_up_avalon_adc" version="17.0" enabled="1">
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="50000000" />
+  <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
+  <parameter name="board" value="DE0-Nano-SoC" />
+  <parameter name="board_rev" value="Autodetect" />
+  <parameter name="numch_" value="8" />
+  <parameter name="sclk_freq" value="12.5" />
+ </module>
  <module name="button_pio" kind="altera_avalon_pio" version="17.0" enabled="1">
   <parameter name="bitClearingEdgeCapReg" value="true" />
   <parameter name="bitModifyingOutReg" value="false" />
@@ -2529,6 +2563,15 @@
    kind="avalon"
    version="17.0"
    start="hps_0.h2f_lw_axi_master"
+   end="adc_0.adc_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00023900" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="17.0"
+   start="hps_0.h2f_lw_axi_master"
    end="jtag_uart.avalon_jtag_slave">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x00020000" />
@@ -2955,6 +2998,15 @@
    end="e_stop.s1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x00023810" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="17.0"
+   start="fpga_only_master.master"
+   end="adc_0.adc_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00023900" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -3546,6 +3598,7 @@
  <connection kind="clock" version="17.0" start="clk_0.clk" end="quad_pio_11.clk" />
  <connection kind="clock" version="17.0" start="clk_0.clk" end="heartbeat.clk" />
  <connection kind="clock" version="17.0" start="clk_0.clk" end="e_stop.clk" />
+ <connection kind="clock" version="17.0" start="clk_0.clk" end="adc_0.clk" />
  <connection
    kind="clock"
    version="17.0"
@@ -3863,6 +3916,7 @@
    version="17.0"
    start="clk_0.clk_reset"
    end="e_stop.reset" />
+ <connection kind="reset" version="17.0" start="clk_0.clk_reset" end="adc_0.reset" />
  <connection
    kind="reset"
    version="17.0"

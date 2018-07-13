@@ -27,7 +27,6 @@
 #include <signal.h>
 #include <unistd.h>
 
-#define RUN_SINE 0
 #define SAMPLE_RATE 1000
 #define SYNC_TOLERANCE 10
 #define dt (1.0/(float)SAMPLE_RATE)
@@ -50,6 +49,7 @@ volatile unsigned long *h2p_lw_quad_addr_external[4];//=NULL
 volatile unsigned long *h2p_lw_pid_input_addr[8];//=NULL;
 volatile unsigned long *h2p_lw_pid_output_addr[8];//=NULL;
 volatile unsigned long *h2p_lw_pwm_values_addr[8];//=NULL;
+volatile unsigned long *h2p_lw_adc;
 
 volatile int32_t position_setpoints[8];
 
@@ -230,6 +230,7 @@ int main(int argc, char **argv)
 	h2p_lw_pid_output_addr[6] = virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + PID_CORRECTION_PIO_6_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
 	h2p_lw_pid_output_addr[7] = virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + PID_CORRECTION_PIO_7_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
 	
+	h2p_lw_adc = virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + ADC_0_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
 
 	pthread_create(&pth_heartbeat,NULL,heartbeat_func,NULL);
 	pthread_create(&pth,NULL,threadFunc,NULL);
@@ -244,7 +245,6 @@ int main(int argc, char **argv)
 	if (file){
 		fgets(str,100,file);
 		val = strtok(str, ",");
-
 		printf("Loaded setpoitns\n");
 		for(i=0;i<8;i++){
 			position_setpoints[i] = atoi(val);
@@ -252,7 +252,6 @@ int main(int argc, char **argv)
 			val = strtok(NULL, ",");
 			printf("setpoints %d\n", position_setpoints[i]);
 		}
-
 		fclose(file);
 		file = fopen("encoder_values.txt", "w+");
 	}
@@ -263,6 +262,9 @@ int main(int argc, char **argv)
 		}
 		file = fopen("encoder_values.txt", "w+");
 	}
+	/*--------------------------------
+	initial pwm and pid values -> check how pid values are set
+	--------------------------------*/
 
 	//set PWM values to zero
 	for(j=0;j<8;j++){
@@ -287,24 +289,17 @@ int main(int argc, char **argv)
 	Run controller
 	------------------------------------------
 	*/
-
 	int dir_bitmask;
 	long myCounter = 0;
 	int32_t e_stop=0;
-	
-	struct timeval timer_usec; 
-
-	double tracking_error[8];
-
+	struct timeval timer_usec;
 	int max_val = 0;
 	int min_val = 0;
-	double sine_magnitude = 1000.0;
-
+	double tracking_error[8];
 	for(j = 0; j<8; j++){
 		tracking_error[j] = 0;
 	}
 
-	uint64_t start = GetTimeStamp();
 	while(exit_flag == 0)
 	{
 		uint32_t switches = alt_read_word(h2p_lw_limit_switch_addr);
@@ -317,20 +312,9 @@ int main(int argc, char **argv)
 		switch_states[6] = (switches&1<<5)==0;
 		switch_states[7] = (switches&1<<4)==0;
 
-		if(RUN_SINE){
-			
-			uint64_t delta = (GetTimeStamp() - start) / 1000;
-			int sp = sin((double)(delta*(2.0*3.14))/1000*8) * sine_magnitude;
-			//int sp = 1000;
-			//printf("\n\n%lf %d\n\n", 1, sp);
-			for(j = 0; j<8; j++){
-				position_setpoints[j] = sp;
-			}
-		}
-
 		//Read encoder positions and add offset from file
 		for(j = 0; j<8; j++){
-			int32_t output = alt_read_word(h2p_lw_quad_addr[j]); //& mask;
+			int32_t output = alt_read_word(h2p_lw_quad_addr[j]);
 			internal_encoders[j] = output + position_offsets[j];
 
 			if(j==7 && output > max_val)
@@ -402,27 +386,21 @@ int main(int argc, char **argv)
 				
 
 				if(myCounter%100 == 0 && j == 7){
-					//file writing
-					char string_write[255];
-					sprintf(string_write, "Axis %d, Position Setpoint %d, Current count %d, Error %d, Current PID output unsigned %d\n", j, position_setpoints[j], internal_encoders[j], error, pid_output);
-					//if(j==2)
-					//	fprintf(fp, string_write);
+					// //ADC STUFF
+					// unsigned int data;
+					// *(h2p_lw_adc) = 0;
+					// data = *(h2p_lw_adc);
+					// printf("Value read from the ADC is : %d\n", data);
 
 					//terminal printing
+					int dval = max_val - min_val;
 					printf("Axis: %d; AVG tracking error: %lf Position Setpoint: %d; Error: %d; Current PID output, unsigned: %d; Cutoff output: %d\n", j, tracking_error[j], position_setpoints[j], error, pid_output, pid_output_cutoff);
 					printf("Heartbeat: %d; Error: %d; Error read: %d; PID out: %d\n", myCounter, error, check_error, pid_output);
-					int dval = max_val - min_val;
 					printf("value range: %d\n", dval);
 
-					if (dval > sine_magnitude * 1.5){
-						max_val = 0;
-						min_val = 0;
-					}
 					// printf("External encoder counts: %d, %d, %d, %d\n", arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4);
 					// printf("%d,%d,%d,%d,%d,%d,%d,%d\n", switch_states[0],switch_states[1],switch_states[2],switch_states[3],switch_states[4],switch_states[5],switch_states[6],switch_states[7]);
 					// printf("%d,%d,%d,%d,%d,%d,%d,%d\n", position_setpoints[0],position_setpoints[1],position_setpoints[2],position_setpoints[3],position_setpoints[4],position_setpoints[5],position_setpoints[6],position_setpoints[7]);
-					// if(j==7)
-					// 	printf("\n\n");
 				}
 			}
 		}
@@ -436,9 +414,7 @@ int main(int argc, char **argv)
 		printf( "ERROR: munmap() failed...\n" );
 		close( fd );
 		return( 1 );
-
 	}
-
 	printf("\n\n Exiting safely \n\n");
 	close( fd );
 	//fclose(fp);
@@ -559,7 +535,7 @@ setup socket communication
 		/*--------------------------------
 		read from socket
 		--------------------------------*/
-		n = read(newsockfd,buffer,255); //blocking function, unless set with fcntl as above
+		n = read(newsockfd,buffer,255); //blocking function, unless set with fcntl or something
    		if (n < 0){
    			error("ERROR reading from socket");
    			break;

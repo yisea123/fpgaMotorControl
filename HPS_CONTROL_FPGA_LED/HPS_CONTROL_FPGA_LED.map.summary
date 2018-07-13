@@ -1,10 +1,10 @@
-Analysis & Synthesis Status : Successful - Fri Jun 29 13:31:52 2018
+Analysis & Synthesis Status : Successful - Fri Jul 13 00:40:57 2018
 Quartus Prime Version : 17.0.0 Build 595 04/25/2017 SJ Lite Edition
 Revision Name : HPS_CONTROL_FPGA_LED
 Top-level Entity Name : HPS_CONTROL_FPGA_LED
 Family : Cyclone V
 Logic utilization (in ALMs) : N/A
-Total registers : 17381
+Total registers : 17825
 Total pins : 230
 Total virtual pins : 0
 Total block memory bits : 526,336

@@ -286,8 +286,12 @@ assign fpga_clk_50=FPGA_CLK1_50;
 		.pwm_pio_7_external_connection_export(	pwm_values[7][31:0]	),
 	  
 	  	.heartbeat_external_connection_export( hbeat[31:0] ),
-		.e_stop_external_connection_export(GPIO_1[33])
-		
+		.e_stop_external_connection_export(GPIO_1[33]),
+				
+		.adc_0_external_interface_sclk (ADC_SCK),
+		.adc_0_external_interface_cs_n (ADC_CONVST),
+		.adc_0_external_interface_dout (ADC_SDO),
+		.adc_0_external_interface_din  (ADC_SDI)
  );
 
 pwm pwm0(
@@ -540,6 +544,5 @@ heartbeat hbt(
 	.beat					(hbeat[31:0]),
 	.e_stop				(GPIO_1[33])
 );
-
 
 endmodule

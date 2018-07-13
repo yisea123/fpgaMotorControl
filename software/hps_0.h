@@ -64,7 +64,7 @@
 #define SYSID_QSYS_SPAN 8
 #define SYSID_QSYS_END 0x10007
 #define SYSID_QSYS_ID 2899645186
-#define SYSID_QSYS_TIMESTAMP 1530303748
+#define SYSID_QSYS_TIMESTAMP 1531462858
 
 /*
  * Macros for device 'led_pio', class 'altera_avalon_pio'
@@ -1187,6 +1187,17 @@
 #define E_STOP_HAS_TRI 0
 #define E_STOP_IRQ_TYPE NONE
 #define E_STOP_RESET_VALUE 0
+
+/*
+ * Macros for device 'adc_0', class 'altera_up_avalon_adc'
+ * The macros are prefixed with 'ADC_0_'.
+ * The prefix is the slave descriptor.
+ */
+#define ADC_0_COMPONENT_TYPE altera_up_avalon_adc
+#define ADC_0_COMPONENT_NAME adc_0
+#define ADC_0_BASE 0x23900
+#define ADC_0_SPAN 32
+#define ADC_0_END 0x2391f
 
 
 #endif /* _ALTERA_HPS_0_H_ */

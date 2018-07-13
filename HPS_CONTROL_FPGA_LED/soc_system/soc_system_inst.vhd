@@ -1,5 +1,9 @@
 	component soc_system is
 		port (
+			adc_0_external_interface_sclk                   : out   std_logic;                                        -- sclk
+			adc_0_external_interface_cs_n                   : out   std_logic;                                        -- cs_n
+			adc_0_external_interface_dout                   : in    std_logic                     := 'X';             -- dout
+			adc_0_external_interface_din                    : out   std_logic;                                        -- din
 			button_pio_external_connection_export           : in    std_logic_vector(3 downto 0)  := (others => 'X'); -- export
 			clk_clk                                         : in    std_logic                     := 'X';             -- clk
 			dipsw_pio_external_connection_export            : in    std_logic_vector(3 downto 0)  := (others => 'X'); -- export
@@ -118,6 +122,10 @@
 
 	u0 : component soc_system
 		port map (
+			adc_0_external_interface_sclk                   => CONNECTED_TO_adc_0_external_interface_sclk,                   --                 adc_0_external_interface.sclk
+			adc_0_external_interface_cs_n                   => CONNECTED_TO_adc_0_external_interface_cs_n,                   --                                         .cs_n
+			adc_0_external_interface_dout                   => CONNECTED_TO_adc_0_external_interface_dout,                   --                                         .dout
+			adc_0_external_interface_din                    => CONNECTED_TO_adc_0_external_interface_din,                    --                                         .din
 			button_pio_external_connection_export           => CONNECTED_TO_button_pio_external_connection_export,           --           button_pio_external_connection.export
 			clk_clk                                         => CONNECTED_TO_clk_clk,                                         --                                      clk.clk
 			dipsw_pio_external_connection_export            => CONNECTED_TO_dipsw_pio_external_connection_export,            --            dipsw_pio_external_connection.export

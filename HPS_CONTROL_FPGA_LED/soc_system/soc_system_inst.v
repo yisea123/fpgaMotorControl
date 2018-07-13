@@ -1,4 +1,8 @@
 	soc_system u0 (
+		.adc_0_external_interface_sclk                   (<connected-to-adc_0_external_interface_sclk>),                   //                 adc_0_external_interface.sclk
+		.adc_0_external_interface_cs_n                   (<connected-to-adc_0_external_interface_cs_n>),                   //                                         .cs_n
+		.adc_0_external_interface_dout                   (<connected-to-adc_0_external_interface_dout>),                   //                                         .dout
+		.adc_0_external_interface_din                    (<connected-to-adc_0_external_interface_din>),                    //                                         .din
 		.button_pio_external_connection_export           (<connected-to-button_pio_external_connection_export>),           //           button_pio_external_connection.export
 		.clk_clk                                         (<connected-to-clk_clk>),                                         //                                      clk.clk
 		.dipsw_pio_external_connection_export            (<connected-to-dipsw_pio_external_connection_export>),            //            dipsw_pio_external_connection.export

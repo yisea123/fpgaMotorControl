@@ -4,6 +4,10 @@
 
 `timescale 1 ps / 1 ps
 module soc_system (
+		output wire        adc_0_external_interface_sclk,                   //                 adc_0_external_interface.sclk
+		output wire        adc_0_external_interface_cs_n,                   //                                         .cs_n
+		input  wire        adc_0_external_interface_dout,                   //                                         .dout
+		output wire        adc_0_external_interface_din,                    //                                         .din
 		input  wire [3:0]  button_pio_external_connection_export,           //           button_pio_external_connection.export
 		input  wire        clk_clk,                                         //                                      clk.clk
 		input  wire [3:0]  dipsw_pio_external_connection_export,            //            dipsw_pio_external_connection.export
@@ -206,6 +210,12 @@ module soc_system (
 	wire          mm_interconnect_0_onchip_memory2_0_s1_write;               // mm_interconnect_0:onchip_memory2_0_s1_write -> onchip_memory2_0:write
 	wire   [63:0] mm_interconnect_0_onchip_memory2_0_s1_writedata;           // mm_interconnect_0:onchip_memory2_0_s1_writedata -> onchip_memory2_0:writedata
 	wire          mm_interconnect_0_onchip_memory2_0_s1_clken;               // mm_interconnect_0:onchip_memory2_0_s1_clken -> onchip_memory2_0:clken
+	wire   [31:0] mm_interconnect_0_adc_0_adc_slave_readdata;                // adc_0:readdata -> mm_interconnect_0:adc_0_adc_slave_readdata
+	wire          mm_interconnect_0_adc_0_adc_slave_waitrequest;             // adc_0:waitrequest -> mm_interconnect_0:adc_0_adc_slave_waitrequest
+	wire    [2:0] mm_interconnect_0_adc_0_adc_slave_address;                 // mm_interconnect_0:adc_0_adc_slave_address -> adc_0:address
+	wire          mm_interconnect_0_adc_0_adc_slave_read;                    // mm_interconnect_0:adc_0_adc_slave_read -> adc_0:read
+	wire          mm_interconnect_0_adc_0_adc_slave_write;                   // mm_interconnect_0:adc_0_adc_slave_write -> adc_0:write
+	wire   [31:0] mm_interconnect_0_adc_0_adc_slave_writedata;               // mm_interconnect_0:adc_0_adc_slave_writedata -> adc_0:writedata
 	wire          mm_interconnect_0_jtag_uart_avalon_jtag_slave_chipselect;  // mm_interconnect_0:jtag_uart_avalon_jtag_slave_chipselect -> jtag_uart:av_chipselect
 	wire   [31:0] mm_interconnect_0_jtag_uart_avalon_jtag_slave_readdata;    // jtag_uart:av_readdata -> mm_interconnect_0:jtag_uart_avalon_jtag_slave_readdata
 	wire          mm_interconnect_0_jtag_uart_avalon_jtag_slave_waitrequest; // jtag_uart:av_waitrequest -> mm_interconnect_0:jtag_uart_avalon_jtag_slave_waitrequest
@@ -434,9 +444,31 @@ module soc_system (
 	wire          irq_mapper_receiver1_irq;                                  // button_pio:irq -> [irq_mapper:receiver1_irq, irq_mapper_002:receiver1_irq]
 	wire          irq_mapper_receiver2_irq;                                  // dipsw_pio:irq -> [irq_mapper:receiver2_irq, irq_mapper_002:receiver2_irq]
 	wire          irq_mapper_receiver0_irq;                                  // jtag_uart:av_irq -> [irq_mapper:receiver0_irq, irq_mapper_002:receiver0_irq]
-	wire          rst_controller_reset_out_reset;                            // rst_controller:reset_out -> [button_pio:reset_n, dipsw_pio:reset_n, e_stop:reset_n, gpio_pio_0:reset_n, gpio_pio_1:reset_n, heartbeat:reset_n, intr_capturer_0:rst_n, irq_mapper_002:reset, jtag_uart:rst_n, led_pio:reset_n, limit_pio:reset_n, mm_interconnect_0:fpga_only_master_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_0:onchip_memory2_0_reset1_reset_bridge_in_reset_reset, mm_interconnect_1:hps_only_master_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_1:hps_only_master_master_translator_reset_reset_bridge_in_reset_reset, onchip_memory2_0:reset, pid_correction_pio_0:reset_n, pid_correction_pio_1:reset_n, pid_correction_pio_2:reset_n, pid_correction_pio_3:reset_n, pid_correction_pio_4:reset_n, pid_correction_pio_5:reset_n, pid_correction_pio_6:reset_n, pid_correction_pio_7:reset_n, pid_error_pio_0:reset_n, pid_error_pio_1:reset_n, pid_error_pio_2:reset_n, pid_error_pio_3:reset_n, pid_error_pio_4:reset_n, pid_error_pio_5:reset_n, pid_error_pio_6:reset_n, pid_error_pio_7:reset_n, pid_values_pio:reset_n, pwm_pio_0:reset_n, pwm_pio_1:reset_n, pwm_pio_2:reset_n, pwm_pio_3:reset_n, pwm_pio_4:reset_n, pwm_pio_5:reset_n, pwm_pio_6:reset_n, pwm_pio_7:reset_n, quad_pio_0:reset_n, quad_pio_10:reset_n, quad_pio_11:reset_n, quad_pio_1:reset_n, quad_pio_2:reset_n, quad_pio_3:reset_n, quad_pio_4:reset_n, quad_pio_5:reset_n, quad_pio_6:reset_n, quad_pio_7:reset_n, quad_pio_8:reset_n, quad_pio_9:reset_n, quad_reset_pio:reset_n, rst_translator:in_reset, sysid_qsys:reset_n]
+	wire          rst_controller_reset_out_reset;                            // rst_controller:reset_out -> [adc_0:reset, button_pio:reset_n, dipsw_pio:reset_n, e_stop:reset_n, gpio_pio_0:reset_n, gpio_pio_1:reset_n, heartbeat:reset_n, intr_capturer_0:rst_n, irq_mapper_002:reset, jtag_uart:rst_n, led_pio:reset_n, limit_pio:reset_n, mm_interconnect_0:fpga_only_master_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_0:onchip_memory2_0_reset1_reset_bridge_in_reset_reset, mm_interconnect_1:hps_only_master_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_1:hps_only_master_master_translator_reset_reset_bridge_in_reset_reset, onchip_memory2_0:reset, pid_correction_pio_0:reset_n, pid_correction_pio_1:reset_n, pid_correction_pio_2:reset_n, pid_correction_pio_3:reset_n, pid_correction_pio_4:reset_n, pid_correction_pio_5:reset_n, pid_correction_pio_6:reset_n, pid_correction_pio_7:reset_n, pid_error_pio_0:reset_n, pid_error_pio_1:reset_n, pid_error_pio_2:reset_n, pid_error_pio_3:reset_n, pid_error_pio_4:reset_n, pid_error_pio_5:reset_n, pid_error_pio_6:reset_n, pid_error_pio_7:reset_n, pid_values_pio:reset_n, pwm_pio_0:reset_n, pwm_pio_1:reset_n, pwm_pio_2:reset_n, pwm_pio_3:reset_n, pwm_pio_4:reset_n, pwm_pio_5:reset_n, pwm_pio_6:reset_n, pwm_pio_7:reset_n, quad_pio_0:reset_n, quad_pio_10:reset_n, quad_pio_11:reset_n, quad_pio_1:reset_n, quad_pio_2:reset_n, quad_pio_3:reset_n, quad_pio_4:reset_n, quad_pio_5:reset_n, quad_pio_6:reset_n, quad_pio_7:reset_n, quad_pio_8:reset_n, quad_pio_9:reset_n, quad_reset_pio:reset_n, rst_translator:in_reset, sysid_qsys:reset_n]
 	wire          rst_controller_reset_out_reset_req;                        // rst_controller:reset_req -> [onchip_memory2_0:reset_req, rst_translator:reset_req_in]
 	wire          rst_controller_001_reset_out_reset;                        // rst_controller_001:reset_out -> [mm_interconnect_0:hps_0_h2f_axi_master_agent_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_1:hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge_in_reset_reset]
+
+	soc_system_adc_0 #(
+		.board          ("DE0-Nano-SoC"),
+		.board_rev      ("Autodetect"),
+		.tsclk          (4),
+		.numch          (7),
+		.max10pllmultby (1),
+		.max10plldivby  (1)
+	) adc_0 (
+		.clock       (clk_clk),                                       //                clk.clk
+		.reset       (rst_controller_reset_out_reset),                //              reset.reset
+		.write       (mm_interconnect_0_adc_0_adc_slave_write),       //          adc_slave.write
+		.readdata    (mm_interconnect_0_adc_0_adc_slave_readdata),    //                   .readdata
+		.writedata   (mm_interconnect_0_adc_0_adc_slave_writedata),   //                   .writedata
+		.address     (mm_interconnect_0_adc_0_adc_slave_address),     //                   .address
+		.waitrequest (mm_interconnect_0_adc_0_adc_slave_waitrequest), //                   .waitrequest
+		.read        (mm_interconnect_0_adc_0_adc_slave_read),        //                   .read
+		.adc_sclk    (adc_0_external_interface_sclk),                 // external_interface.export
+		.adc_cs_n    (adc_0_external_interface_cs_n),                 //                   .export
+		.adc_dout    (adc_0_external_interface_dout),                 //                   .export
+		.adc_din     (adc_0_external_interface_din)                   //                   .export
+	);
 
 	soc_system_button_pio button_pio (
 		.clk        (clk_clk),                                    //                 clk.clk
@@ -1232,6 +1264,12 @@ module soc_system (
 		.fpga_only_master_master_readdatavalid                            (fpga_only_master_master_readdatavalid),                     //                                                           .readdatavalid
 		.fpga_only_master_master_write                                    (fpga_only_master_master_write),                             //                                                           .write
 		.fpga_only_master_master_writedata                                (fpga_only_master_master_writedata),                         //                                                           .writedata
+		.adc_0_adc_slave_address                                          (mm_interconnect_0_adc_0_adc_slave_address),                 //                                            adc_0_adc_slave.address
+		.adc_0_adc_slave_write                                            (mm_interconnect_0_adc_0_adc_slave_write),                   //                                                           .write
+		.adc_0_adc_slave_read                                             (mm_interconnect_0_adc_0_adc_slave_read),                    //                                                           .read
+		.adc_0_adc_slave_readdata                                         (mm_interconnect_0_adc_0_adc_slave_readdata),                //                                                           .readdata
+		.adc_0_adc_slave_writedata                                        (mm_interconnect_0_adc_0_adc_slave_writedata),               //                                                           .writedata
+		.adc_0_adc_slave_waitrequest                                      (mm_interconnect_0_adc_0_adc_slave_waitrequest),             //                                                           .waitrequest
 		.button_pio_s1_address                                            (mm_interconnect_0_button_pio_s1_address),                   //                                              button_pio_s1.address
 		.button_pio_s1_write                                              (mm_interconnect_0_button_pio_s1_write),                     //                                                           .write
 		.button_pio_s1_readdata                                           (mm_interconnect_0_button_pio_s1_readdata),                  //                                                           .readdata

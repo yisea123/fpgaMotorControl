@@ -1,5 +1,9 @@
 
 module soc_system (
+	adc_0_external_interface_sclk,
+	adc_0_external_interface_cs_n,
+	adc_0_external_interface_dout,
+	adc_0_external_interface_din,
 	button_pio_external_connection_export,
 	clk_clk,
 	dipsw_pio_external_connection_export,
@@ -114,6 +118,10 @@ module soc_system (
 	quad_reset_pio_external_connection_export,
 	reset_reset_n);	
 
+	output		adc_0_external_interface_sclk;
+	output		adc_0_external_interface_cs_n;
+	input		adc_0_external_interface_dout;
+	output		adc_0_external_interface_din;
 	input	[3:0]	button_pio_external_connection_export;
 	input		clk_clk;
 	input	[3:0]	dipsw_pio_external_connection_export;
