@@ -395,7 +395,7 @@ int main(int argc, char **argv)
 					float current = data * 0.001;
 					printf("Current value is: %f\n", current);
 
-					//External encoder stuff
+					//External encoder stuff -> this is currently the linear encoder on stage
 					printf("Linear encoder counts is: %d\n", arm_encoders1);
 					float inches = M_PI*1.141*arm_encoders1*0.15/360*1.029; //1.029 is a calibration constant
 					printf("Linear encoder value in inches is: %f\n", inches);

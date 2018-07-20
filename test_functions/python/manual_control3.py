@@ -9,6 +9,7 @@ import select
 import signal
 import numpy as np
 import matplotlib.pyplot as plt
+from copy import deepcopy
 
 #grab encoder counts and limit switch values
 
@@ -66,11 +67,17 @@ class motors():
 		self.step_size = step_size										#number of encoder counts to step by
 		self.degrees_count_motor = degrees_count_motor 					#degrees of motor shaft rotation per encoder count
 		self.degrees_count_motor_joint = degrees_count_motor_joint		#degrees or joint roation per encoder count
-		self.sine_speed = 0.5												#frequency Hz
+		self.sine_speed = 0.05												#frequency Hz
 		self.sine_travel = 15
 		self.motor_revolutions = 1.0									#number of rotations to make in profile, remember it'll be +- full rotations since sine
 		self.motor_nums = "12345678" 									#which motor to control on the bank, number corresponds to which motor 1-8
 		self.results_dir = results_dir									#Directory to where motor data is stored
+
+		#Linear encoder controller parameters
+		self.setpoint = 0
+		self.p_gain = 10
+		self.i_gain = -0.25
+		self.d_gain = 0
 
 		self.profile_time = []
 		self.profile_values_sent = []
@@ -238,6 +245,52 @@ class motors():
 			return self.motor_nums
 		return
 
+	def run_controller(self):
+		print("\n Starting linear position control, ctrl c to break:")
+		#running control on this guy -> self.joint_encoders_data[0]
+		self.setpoint = self.joint_encoders_data[0]
+		print(self.setpoint)
+
+		start_pos = deepcopy(self.motor_pos)
+		command = deepcopy(self.motor_pos)
+		error = 0
+		counter = 0
+		prev_time = 0
+		error_cum = 0
+		
+
+		counter = 1
+		time.sleep(1)
+
+		start_time = time.time()
+		try:
+			while True:
+				current_time = time.time()
+				error = self.setpoint - self.joint_encoders_data[0]
+				error_cum += error
+				command[7] = start_pos[7] + self.p_gain * error + self.i_gain * error_cum
+				self.command_motors(command)
+
+				if counter%100 == 0:
+					print("starting position is: {}".format(start_pos[7]))
+					print("time difference is: {}".format(current_time-prev_time))
+					print("linear encoder error is {}".format(error))
+					print("command sent: {}".format(command[7]))
+
+				prev_time = current_time
+				counter = counter + 1
+				time.sleep(0.01)
+
+
+
+
+		except KeyboardInterrupt:
+			self.motor_pos = command
+			self.motor_nums = "12345678"
+			time.sleep(self.dt)
+			return self.motor_nums
+
+
 	def get_direction(self):
 		while True:
 			direction = input("Enter direction and counts (ex:+ 100), 'p' to print command menu, ctrl z to end and 'a' to arm: ")
@@ -292,6 +345,12 @@ class motors():
 
 				if direction[0] == "profile":
 					self.motor_profile()
+					return "sine"
+					break
+
+				#Linear control using mounted linear encoder
+				if direction[0] == "ctrl":
+					self.run_controller()
 					return "sine"
 					break
 
