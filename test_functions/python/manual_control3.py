@@ -66,8 +66,8 @@ class motors():
 		self.step_size = step_size										#number of encoder counts to step by
 		self.degrees_count_motor = degrees_count_motor 					#degrees of motor shaft rotation per encoder count
 		self.degrees_count_motor_joint = degrees_count_motor_joint		#degrees or joint roation per encoder count
-		self.sine_speed = 1												#frequency Hz
-		self.sine_travel = 3
+		self.sine_speed = 0.5												#frequency Hz
+		self.sine_travel = 15
 		self.motor_revolutions = 1.0									#number of rotations to make in profile, remember it'll be +- full rotations since sine
 		self.motor_nums = "12345678" 									#which motor to control on the bank, number corresponds to which motor 1-8
 		self.results_dir = results_dir									#Directory to where motor data is stored
@@ -198,6 +198,7 @@ class motors():
 			#Gives back control to all motors
 			self.motor_pos = commanded
 			self.motor_nums = "12345678"
+			time.sleep(self.dt)
 			return self.motor_nums
 		return
 
@@ -233,6 +234,7 @@ class motors():
 			self.motor_pos = commanded
 			np.savez(self.results_dir, np.array(self.profile_values_sent), np.array(self.profile_values_recv), np.array(self.profile_time))
 			self.motor_nums = "12345678"
+			time.sleep(self.dt)
 			return self.motor_nums
 		return
 
@@ -323,8 +325,8 @@ IsWindows = os.name == 'nt' 			#os.name is name of os, ex: linux='posix', window
 ManualControl = 1						#main loop control
 
 #Constants and initializations
-socket_ip = '192.168.1.21'
-socket_port = 1115
+socket_ip = '192.168.1.25'
+socket_port = 1116
 degrees_count_motor_joint = 0.00743		#joint degrees a count
 degrees_count_motor = 360/2000			#Motor encoder resolution
 degrees_count_joint = 360/1440			#Joint encoder resolution

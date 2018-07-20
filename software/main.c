@@ -35,7 +35,7 @@
 #define HW_REGS_BASE ( ALT_STM_OFST )
 #define HW_REGS_SPAN ( 0x04000000 )
 #define HW_REGS_MASK ( HW_REGS_SPAN - 1 )
-#define MAX_TRAVEL_RANGE 50000
+#define MAX_TRAVEL_RANGE 500000
 
 volatile unsigned long *h2p_lw_led_addr;//=NULL;
 volatile unsigned long *h2p_lw_gpio_addr;//=NULL;
@@ -65,7 +65,7 @@ int32_t internal_encoders[8];
 int32_t arm_encoders1=0,arm_encoders2=0,arm_encoders3=0,arm_encoders4=0;
 int exit_flag = 0;
 
-uint8_t P=30;
+uint8_t P=10;
 uint8_t I=0;
 uint8_t D=0;
 float controllerGain = 0.01;
@@ -302,6 +302,7 @@ int main(int argc, char **argv)
 
 	while(exit_flag == 0)
 	{
+		//On motor bank limit switches
 		uint32_t switches = alt_read_word(h2p_lw_limit_switch_addr);
 		switch_states[0] = (switches&1<<0)==0;
 		switch_states[1] = (switches&1<<3)==0;
@@ -387,24 +388,33 @@ int main(int argc, char **argv)
 
 				if(myCounter%100 == 0 && j == 7){
 					// //ADC STUFF
-					// unsigned int data;
-					// *(h2p_lw_adc) = 0;
-					// data = *(h2p_lw_adc);
-					// printf("Value read from the ADC is : %d\n", data);
+					unsigned int data;
+					*(h2p_lw_adc) = 0;
+					data = *(h2p_lw_adc);
+					printf("Raw value read from the ADC is : %d\n", data);
+					float current = data * 0.001;
+					printf("Current value is: %f\n", current);
 
-					//terminal printing
-					int dval = max_val - min_val;
-					printf("Axis: %d; AVG tracking error: %lf Position Setpoint: %d; Error: %d; Current PID output, unsigned: %d; Cutoff output: %d\n", j, tracking_error[j], position_setpoints[j], error, pid_output, pid_output_cutoff);
-					printf("Heartbeat: %d; Error: %d; Error read: %d; PID out: %d\n", myCounter, error, check_error, pid_output);
-					printf("value range: %d\n", dval);
+					//External encoder stuff
+					printf("Linear encoder counts is: %d\n", arm_encoders1);
+					float inches = M_PI*1.141*arm_encoders1*0.15/360*1.029; //1.029 is a calibration constant
+					printf("Linear encoder value in inches is: %f\n", inches);
 
+					// int dval = max_val - min_val;
+					// printf("Axis: %d; AVG tracking error: %lf Position Setpoint: %d; Error: %d; Current PID output, unsigned: %d; Cutoff output: %d\n", j, tracking_error[j], position_setpoints[j], error, pid_output, pid_output_cutoff);
+					// printf("Heartbeat: %d; Error: %d; Error read: %d; PID out: %d\n", myCounter, error, check_error, pid_output);
+					// printf("value range: %d\n", dval);
+
+					printf("Motor encoder counts: %d,%d,%d,%d,%d,%d,%d,%d\n", internal_encoders[0], internal_encoders[1], internal_encoders[2], internal_encoders[3], internal_encoders[4], internal_encoders[5], internal_encoders[6], internal_encoders[7]);
+					
 					// printf("External encoder counts: %d, %d, %d, %d\n", arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4);
 					// printf("%d,%d,%d,%d,%d,%d,%d,%d\n", switch_states[0],switch_states[1],switch_states[2],switch_states[3],switch_states[4],switch_states[5],switch_states[6],switch_states[7]);
 					// printf("%d,%d,%d,%d,%d,%d,%d,%d\n", position_setpoints[0],position_setpoints[1],position_setpoints[2],position_setpoints[3],position_setpoints[4],position_setpoints[5],position_setpoints[6],position_setpoints[7]);
+
+					printf("\n\n");
 				}
 			}
 		}
-
 
 		myCounter++;
 		usleep(1000);
@@ -417,34 +427,12 @@ int main(int argc, char **argv)
 	}
 	printf("\n\n Exiting safely \n\n");
 	close( fd );
-	//fclose(fp);
 	return 0;
 }
 
-uint32_t createMask(uint32_t startBit, int num_bits)
-{
-   uint32_t  mask;
-	mask = ((1 << num_bits) - 1) << startBit;
-   return mask;
-}
-
-uint32_t createNativeInt(uint32_t input, int size)
-{
-	int32_t nativeInt;
-	const int negative = ((input & (1 << (size - 1))) != 0);
-	
-	if (negative)
-		  nativeInt = input | ~((1 << size) - 1);
-	else 
-		  nativeInt = input;
-		
-	return nativeInt;
-}
 
 void *threadFunc(void *arg)
 {
-
-
 /*--------------------------------
 setup socket communication
 --------------------------------*/
@@ -719,5 +707,22 @@ void zero_motors(char *write_buffer,int newsockfd){
 		error("ERROR writing to socket");
 		//break;
 	}
-	
+}
+
+uint32_t createMask(uint32_t startBit, int num_bits)
+{
+   uint32_t  mask;
+	mask = ((1 << num_bits) - 1) << startBit;
+   return mask;
+}
+
+uint32_t createNativeInt(uint32_t input, int size)
+{
+	int32_t nativeInt;
+	const int negative = ((input & (1 << (size - 1))) != 0);
+	if (negative)
+		  nativeInt = input | ~((1 << size) - 1);
+	else 
+		  nativeInt = input;	
+	return nativeInt;
 }
