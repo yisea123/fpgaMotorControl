@@ -12,7 +12,6 @@
 #include "led.h"
 #include <stdbool.h>
 #include <math.h>
-#include <time.h>       /* time_t, time (for timestamp in second) */
 #include <sys/timeb.h>  /* ftime, timeb (for timestamp in millisecond) */
 #include <sys/time.h>   /* gettimeofday, timeval (for timestamp in microsecond) */
 #include <pthread.h>
@@ -36,6 +35,7 @@
 #define HW_REGS_SPAN ( 0x04000000 )
 #define HW_REGS_MASK ( HW_REGS_SPAN - 1 )
 #define MAX_TRAVEL_RANGE 500000
+#define MAX_CURRENT 0.5 //1 amp
 
 volatile unsigned long *h2p_lw_led_addr;//=NULL;
 volatile unsigned long *h2p_lw_gpio_addr;//=NULL;
@@ -65,6 +65,11 @@ int32_t internal_encoders[8];
 int32_t arm_encoders1=0,arm_encoders2=0,arm_encoders3=0,arm_encoders4=0;
 int exit_flag = 0;
 
+int CURRENT_FLAG = 0;
+int TRAVEL_FLAG = 0;
+int ETSOP_FLAG = 0;
+
+
 uint8_t P=10;
 uint8_t I=0;
 uint8_t D=0;
@@ -77,6 +82,8 @@ int sockfd, newsockfd; //global socket value such that it can be called in signa
 
 uint32_t createMask(uint32_t startBit, int num_bits);
 uint32_t createNativeInt(uint32_t input, int size);
+uint64_t GetTimeStamp();
+int calc_current_offset(volatile unsigned long *h2p_lw_adc);
 void *threadFunc(void *arg);
 void *heartbeat_func(void *arg);
 void error(const char *msg);
@@ -100,12 +107,6 @@ struct axis_motor global_motor_1 = {.accGoal = 5000, .velGoal = 0, .posGoal = 0,
 struct axis_motor global_motor_2 = {.accGoal = 5000, .velGoal = 0, .posGoal = 0, .accCurrent = 100, .velCurrent = 0, .posCurrent = 0, .posGoalCurrent = 0, .dutyCyle = 0, .setpointUpdated = 0, .startupFlag = 1};
 struct axis_motor global_motor_3 = {.accGoal = 5000, .velGoal = 0, .posGoal = 0, .accCurrent = 100, .velCurrent = 0, .posCurrent = 0, .posGoalCurrent = 0, .dutyCyle = 0, .setpointUpdated = 0, .startupFlag = 1};
 struct axis_motor global_motor_4 = {.accGoal = 5000, .velGoal = 0, .posGoal = 0, .accCurrent = 100, .velCurrent = 0, .posCurrent = 0, .posGoalCurrent = 0, .dutyCyle = 0, .setpointUpdated = 0, .startupFlag = 1};
-
-uint64_t GetTimeStamp() {
-    struct timeval tv;
-    gettimeofday(&tv,NULL);
-    return tv.tv_sec*(uint64_t)1000000+tv.tv_usec;
-}
 
 void my_handler(int s){
 		int n;
@@ -280,10 +281,18 @@ int main(int argc, char **argv)
 	PID_values = PID_values | (D << 16);
 	alt_write_word(h2p_lw_pid_values_addr, PID_values);
 	uint32_t pid_values_read = *(uint32_t*)h2p_lw_pid_values_addr;
-	printf("Sent: P: %d, I: %d, D: %d\n\n", P, I, D);
+	printf("\nSent: P: %d, I: %d, D: %d\n", P, I, D);
 	printf("Received: P: %d, I: %d, D: %d\n\n", (uint8_t)(pid_values_read & (0x000000FF)), (uint8_t)((pid_values_read & (0x0000FF00))>>8), (uint8_t)((pid_values_read & (0x00FF0000))>>16));
 	
-	
+
+	/*--------------------------------
+	calibrate current sense
+	--------------------------------*/
+	int current_offset;
+	printf("Calculating current offset please wait...\n");
+	current_offset = calc_current_offset(h2p_lw_adc);
+	printf("Current offset is: %d\n", current_offset);
+
 	/*
 	------------------------------------------
 	Run controller
@@ -296,6 +305,10 @@ int main(int argc, char **argv)
 	int max_val = 0;
 	int min_val = 0;
 	double tracking_error[8];
+
+	int adc_data;
+	float current, avg_current = 0;
+
 	for(j = 0; j<8; j++){
 		tracking_error[j] = 0;
 	}
@@ -315,6 +328,13 @@ int main(int argc, char **argv)
 
 		//Read encoder positions and add offset from file
 		for(j = 0; j<8; j++){
+			//ADC read
+			*(h2p_lw_adc) = 0; //write starts adc read
+			adc_data = *(h2p_lw_adc); //read
+			current = (adc_data - current_offset) * 0.001;
+			avg_current = 0.1 * current + 0.9 * avg_current;
+
+
 			int32_t output = alt_read_word(h2p_lw_quad_addr[j]);
 			internal_encoders[j] = output + position_offsets[j];
 
@@ -332,19 +352,28 @@ int main(int argc, char **argv)
 				arm_encoders4 = alt_read_word(h2p_lw_quad_addr_external[3]);
 			}
 
+
 			e_stop = alt_read_word(h2p_lw_pid_e_stop);
 			//printf("e_stop value %d", e_stop);
 			//E stop state checking
-			if (abs(internal_encoders[j]) > MAX_TRAVEL_RANGE || abs(position_setpoints[j]) > MAX_TRAVEL_RANGE || ERR_RESET || e_stop){
+			if (abs(internal_encoders[j]) > MAX_TRAVEL_RANGE || abs(position_setpoints[j]) > MAX_TRAVEL_RANGE || ERR_RESET || e_stop || avg_current > MAX_CURRENT){
 				E_STATE = 1;
 				ERR_RESET = 1;
 				//printf("e_stop value: %d\n", e_stop);
 				//Reset pwm and pid loops, [0:7] and [20:27]
 				int32_t reset_mask = 255 | 255<<20;
 				alt_write_word(h2p_lw_quad_reset_addr, reset_mask);
+
+				if(avg_current > MAX_CURRENT){
+					CURRENT_FLAG = 1;
+				}
+				if(abs(internal_encoders[j]) > MAX_TRAVEL_RANGE){
+					TRAVEL_FLAG = 1;
+				}
+				if(e_stop){
+					ETSOP_FLAG = 1;
+				}
 			}
-
-
 			//normal operation
 			else{
 				alt_write_word(h2p_lw_quad_reset_addr, 0);
@@ -387,13 +416,8 @@ int main(int argc, char **argv)
 				
 
 				if(myCounter%100 == 0 && j == 7){
-					// //ADC STUFF
-					unsigned int data;
-					*(h2p_lw_adc) = 0;
-					data = *(h2p_lw_adc);
-					printf("Raw value read from the ADC is : %d\n", data);
-					float current = data * 0.001;
-					printf("Current value is: %f\n", current);
+					printf("Raw value read from the ADC is : %d\n", adc_data);
+					printf("Average current value is: %f\n", avg_current);
 
 					//External encoder stuff -> this is currently the linear encoder on stage
 					printf("Linear encoder counts is: %d\n", arm_encoders1);
@@ -504,8 +528,18 @@ setup socket communication
 		write switch, external encoder, internal encoder state to socket
 		--------------------------------*/
 		if (E_STATE==1){
-			printf("ERROR_STATE\n");
+			printf("ERROR_STATE...\n");
 			sprintf(write_buffer,"nn err qq");
+			if (CURRENT_FLAG){
+				printf("Current limit hit\n");
+			}
+			if (TRAVEL_FLAG){
+				printf("Travel limit hit\n");
+			}
+			if (ETSOP_FLAG){
+				printf("ESTOP pressed\n");
+			}
+
 		}
 		else{
 	   		sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d qq", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
@@ -561,8 +595,12 @@ setup socket communication
 			}
 			else if(strncmp(pch,arm_state,3)==0){
 				printf("System armed");
+				//Reset flags
 				E_STATE = 0;
 				ERR_RESET = 0;
+				CURRENT_FLAG = 0;
+				TRAVEL_FLAG = 0;
+				ETSOP_FLAG = 0;
 				break;
 			}
 			else if(strncmp(pch,zero_state,4)==0){
@@ -725,4 +763,28 @@ uint32_t createNativeInt(uint32_t input, int size)
 	else 
 		  nativeInt = input;	
 	return nativeInt;
+}
+
+
+uint64_t GetTimeStamp() {
+    struct timeval tv;
+    gettimeofday(&tv,NULL);
+    return tv.tv_sec*(uint64_t)1000000+tv.tv_usec;
+}
+
+int calc_current_offset(volatile unsigned long *h2p_lw_adc){
+	int counter = 300, offset;
+	double adc_sum = 0;
+
+	//sample at 100hz for 3 seconds
+	while(counter > 0){
+		*(h2p_lw_adc) = 0; //write starts adc read
+		adc_sum = *(h2p_lw_adc) + adc_sum; //read
+		// printf("Counter: %d\n", counter);
+		counter = counter - 1;
+		usleep(10000);
+	}
+	
+	offset = (int)(adc_sum/400);
+	return offset;
 }

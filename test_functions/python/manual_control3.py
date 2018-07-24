@@ -68,7 +68,7 @@ class motors():
 		self.degrees_count_motor = degrees_count_motor 					#degrees of motor shaft rotation per encoder count
 		self.degrees_count_motor_joint = degrees_count_motor_joint		#degrees or joint roation per encoder count
 		self.sine_speed = 0.05												#frequency Hz
-		self.sine_travel = 15
+		self.sine_travel = 45
 		self.motor_revolutions = 1.0									#number of rotations to make in profile, remember it'll be +- full rotations since sine
 		self.motor_nums = "12345678" 									#which motor to control on the bank, number corresponds to which motor 1-8
 		self.results_dir = results_dir									#Directory to where motor data is stored
