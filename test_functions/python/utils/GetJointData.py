@@ -22,21 +22,28 @@ class data():
 			self.position = None
 			self.orientation = None
 
+"""
+Need to use globals for passing back values from another thread, if using a large number of threads then a solutiong
+is to use Queues -> I think this would be very very large number of trheads, out of scope of this work
+"""
+class NatNetFuncs():
+	def __init__(self):
+		self.frame = 0
+		self.joint_data = 0
 
-def receiveNewFrame( frameNumber, markerSetCount, unlabeledMarkersCount, rigidBodyCount, skeletonCount,
-	labeledMarkerCount, timecode, timecodeSub, timestamp, isRecording, trackedModelsChanged):
+	def receiveNewFrame(self, frameNumber, markerSetCount, unlabeledMarkersCount, rigidBodyCount, skeletonCount,
+		labeledMarkerCount, timecode, timecodeSub, timestamp, isRecording, trackedModelsChanged):
+		#global frame
+		self.frame = frameNumber
+		#print( "Received frame", frameNumber)
+		#print("Number of rigid bodies", rigidBodyCount)
+		#print("Timestamp", timestamp)
 
-	global frame
-	frame = frameNumber
-	#print( "Received frame", frameNumber)
-	#print("Number of rigid bodies", rigidBodyCount)
-	#print("Timestamp", timestamp)
 
+	def receiveRigidBodyFrame(self, id, position, rotation ): #this function is looped in the system call with an offset to change the id
+		#print("id: {}, position: {}, rotation: {}" .format(id,position,rotation))
+		pass
 
-def receiveRigidBodyFrame( id, position, rotation ): #this function is looped in the system call with an offset to change the id
-	#print("id: {}, position: {}, rotation: {}" .format(id,position,rotation))
-	pass
-
-def receiveRigidBodyFrameList(rigid_body_list, timestamp): #receives all the information at once
-	global joint_data
-	joint_data = [rigid_body_list, timestamp]
+	def receiveRigidBodyFrameList(self, rigid_body_list, timestamp): #receives all the information at once
+		#global joint_data
+		self.joint_data = [rigid_body_list, timestamp]

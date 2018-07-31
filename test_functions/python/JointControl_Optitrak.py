@@ -2,8 +2,10 @@ import numpy as np
 import time
 import signal
 import os
+import socket
+import sys
 
-from utils.GetJointData import data, receiveNewFrame, receiveRigidBodyFrameList
+from utils.GetJointData import data, NatNetFuncs#receiveNewFrame, receiveRigidBodyFrameList
 from utils.NatNetClient2 import NatNetClient
 from utils.motor_class import motors
 from utils.tcp_class import tcp_communication
@@ -55,9 +57,12 @@ signal.signal(signal.SIGINT, signal_handler)
 
 #Tracking class
 print("Starting streaming client now...")
-streamingClient = NatNetClient(server_ip, multicastAddress, verbose = print_data)
-streamingClient.newFrameListener = receiveNewFrame
-streamingClient.rigidBodyListListener = receiveRigidBodyFrameList
+streamingClient = NatNetClient(server_ip, multicastAddress, verbose = print_trak_data)
+NatNet = NatNetFuncs()
+streamingClient.newFrameListener = NatNet.receiveNewFrame
+streamingClient.rigidBodyListListener = NatNet.receiveRigidBodyFrameList
+
+prev_frame = 0
 
 time.sleep(0.5)
 streamingClient.run()
@@ -86,3 +91,19 @@ motors.command_motors(motors.motor_pos)			#echo read value, values arent used si
 print("Arming motors now...")
 motors.arm()
 time.sleep(1)
+
+
+while True:
+	if NatNet.frame > prev_frame:
+		track_data.parse_data(NatNet.joint_data)
+		print("frame is: ", NatNet.frame)
+		print("joint data is:", NatNet.joint_data)
+		print("timestamps", track_data.timestamp)
+		for i in range(len(NatNet.joint_data[0])):
+			print(track_data.bodies[i].name)
+			print(track_data.bodies[i].id)
+			print(track_data.bodies[i].position)
+			print(track_data.bodies[i].orientation)
+
+		print("\n")
+		prev_frame = NatNet.frame
