@@ -35,7 +35,7 @@
 #define HW_REGS_SPAN ( 0x04000000 )
 #define HW_REGS_MASK ( HW_REGS_SPAN - 1 )
 #define MAX_TRAVEL_RANGE 500000
-#define MAX_CURRENT 0.5 //1 amp
+#define MAX_CURRENT 2 //1 amp
 
 volatile unsigned long *h2p_lw_led_addr;//=NULL;
 volatile unsigned long *h2p_lw_gpio_addr;//=NULL;
@@ -70,7 +70,7 @@ int TRAVEL_FLAG = 0;
 int ETSOP_FLAG = 0;
 
 
-uint8_t P=10;
+uint8_t P=40;
 uint8_t I=0;
 uint8_t D=0;
 float controllerGain = 0.01;
@@ -326,15 +326,14 @@ int main(int argc, char **argv)
 		switch_states[6] = (switches&1<<5)==0;
 		switch_states[7] = (switches&1<<4)==0;
 
+		//ADC read
+		*(h2p_lw_adc) = 0; //write starts adc read
+		adc_data = *(h2p_lw_adc); //read
+		current = (adc_data - current_offset) * 0.001;
+		avg_current = 0.1 * current + 0.9 * avg_current;
+
 		//Read encoder positions and add offset from file
 		for(j = 0; j<8; j++){
-			//ADC read
-			*(h2p_lw_adc) = 0; //write starts adc read
-			adc_data = *(h2p_lw_adc); //read
-			current = (adc_data - current_offset) * 0.001;
-			avg_current = 0.1 * current + 0.9 * avg_current;
-
-
 			int32_t output = alt_read_word(h2p_lw_quad_addr[j]);
 			internal_encoders[j] = output + position_offsets[j];
 
@@ -738,9 +737,9 @@ void zero_motors(char *write_buffer,int newsockfd){
 	}
 
 	//Need to pass write_buffer and newsockfd
-	done=1;
-	sprintf(write_buffer,"nn %d %d qq",done,rate);
-	n = write(newsockfd,write_buffer,256);
+	//done=1;
+	//sprintf(write_buffer,"nn %d %d qq",done,rate);
+	//n = write(newsockfd,write_buffer,256);
 	if (n < 0){
 		error("ERROR writing to socket");
 		//break;

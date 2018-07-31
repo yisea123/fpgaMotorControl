@@ -4,61 +4,15 @@ import time
 import socket
 import re
 import sys
-import getch
 import select
 import signal
 import numpy as np
 import matplotlib.pyplot as plt
 from copy import deepcopy
 
-#grab encoder counts and limit switch values
-
-def signal_handler(signal, frame):
-	data = ('b'+ 'stop' +'d')
-	CLIENT_SOCKET.send(data.encode())
-	CLIENT_SOCKET.shutdown(socket.SHUT_RDWR)
-	CLIENT_SOCKET.close()
-	print("\n\nCtrl z pressed, closing ports and exiting now\n")
-	sys.exit(0)
-
-class tcp_communication():
-	def __init__(self, ip, port):
-		self.ip = ip
-		self.port = port
-
-	def open_socket(self):
-		#Initialize socket
-		print("Opening socket at ip: {} using port: {}".format(self.ip, self.port))
-		CLIENT_SOCKET = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		CLIENT_SOCKET.connect((self.ip, self.port))
-		CLIENT_SOCKET.setblocking(1)
-		#CLIENT_SOCKET.settimeout(1) #if setblocking is 1, this is basically settimeout(None)
-
-		# #Run a single command to initalize communication
-		# self.command_motors(position)
-		# time.sleep(1)
-		return CLIENT_SOCKET
-
-	def setpriority(self, pid=None, priority=5):
-	    """ Set The Priority of a Windows Process.  Priority is a value between 0-5 where
-	        2 is normal priority.  Default sets the priority of the current
-	        python process but can take any valid process ID. """
-	        
-	    import win32api,win32process,win32con
-	    
-	    priorityclasses = [win32process.IDLE_PRIORITY_CLASS,
-	                       win32process.BELOW_NORMAL_PRIORITY_CLASS,
-	                       win32process.NORMAL_PRIORITY_CLASS,
-	                       win32process.ABOVE_NORMAL_PRIORITY_CLASS,
-	                       win32process.HIGH_PRIORITY_CLASS,
-	                       win32process.REALTIME_PRIORITY_CLASS]
-	    if pid == None:
-	        pid = win32api.GetCurrentProcessId()
-	    handle = win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS, True, pid)
-	    win32process.SetPriorityClass(handle, priorityclasses[priority])
 
 class motors():
-	def __init__(self, CLIENT_SOCKET, dt, step_size, degrees_count_motor, degrees_count_motor_joint, results_dir = None):
+	def __init__(self, CLIENT_SOCKET, dt, step_size, degrees_count_motor, degrees_count_motor_joint, PRINT_SENSORS, results_dir = None):
 
 		#Declaring class variables
 		self.dt = dt 													#time step
@@ -86,6 +40,7 @@ class motors():
 		self.joint_encoders_data = np.zeros(4)
 		self.limit_data = np.zeros(8)
 		self.client_socket = CLIENT_SOCKET
+		self.PRINT_SENSORS = PRINT_SENSORS
 
 	def command_motors(self, pos): #sends new positions to controller and updates local position with encoder reads
 		#self.motor_pos = pos
@@ -113,7 +68,7 @@ class motors():
 			self.motor_encoders_data = np.array(list(map(int, data[1:9])))
 			self.joint_encoders_data = np.array(list(map(int, data[17:21])))
 			self.limit_data = np.array(list(map(int, data[9:17])))
-			if PRINT_SENSORS:
+			if self.PRINT_SENSORS:
 				print('Read motor encoder positions {}'.format(self.motor_encoders_data))
 				print('Read joint encoder positions {}'.format(self.joint_encoders_data))
 				print('Read limit switch values {}'.format(self.limit_data))
@@ -376,209 +331,3 @@ class motors():
 				return self.step_size
 				break
 		return
-
-#**********************************************************************
-#**************					Begin Control		 	***************
-#**********************************************************************
-
-#Flags
-PRINT_SENSORS = 0						#Encoder positions
-PRINT_LOOP_SPECS = 1 					#Loop speeds, mean time and variance
-DISABLED = True							#Motor controller disabled on start
-IsWindows = os.name == 'nt' 			#os.name is name of os, ex: linux='posix', windows='nt', mac='mac'
-ManualControl = 1						#main loop control
-OPPOSITE_SINE = True
-
-#Constants and initializations
-socket_ip = '192.168.1.29'
-socket_port = 1115
-degrees_count_motor_joint = 0.00743		#joint degrees a count
-degrees_count_motor = 360/2000			#Motor encoder resolution
-degrees_count_joint = 360/1440			#Joint encoder resolution
-step_size = 100							#Number of encoder counts to step
-dt = 1/200
-start_time = time.time()
-counter = 0
-
-#Saving directory for profiling
-script_dir = os.getcwd()
-results_dir = os.path.join(script_dir, 'motor_data' + '/')
-if not os.path.isdir(results_dir):
-    os.mkdir(results_dir)
-print("Data stored to {}" .format(results_dir))
-
-#Signal handler
-signal.signal(signal.SIGTSTP, signal_handler)
-
-#Communication class
-tcp = tcp_communication(socket_ip, socket_port)
-CLIENT_SOCKET = tcp.open_socket()
-if IsWindows:
-	tcp.setpriority()
-
-#Motor class
-motors = motors(CLIENT_SOCKET, dt, step_size, degrees_count_motor, degrees_count_motor_joint, results_dir)
-motors.read_buff() 						#c side sends out initial stored encoder positions, grabs them
-time.sleep(1)
-motors.read_buff()
-print("initializing motors to {}".format(motors.motor_encoders_data))
-motors.motor_pos = motors.motor_encoders_data 	#initialize to stored encoder positions
-motors.command_motors(motors.motor_pos)			#echo read value, values arent used since c side is in err mode
-
-#tells which motors to control
-motor_numbers = motors.which_motors()
-
-
-while(ManualControl):
-
-	""" Blocking function, main call for functionality.
-		Returns either a array of positions or a string 
-		indicating what action was done """
-	command = motors.get_direction()
-
-	#Checks if command is an array of positions or string command
-	if isinstance(command, str):
-		#Does nothing to motors here -> control stuff is done in functions
-		if command == "z":
-			motors.motor_pos = np.zeros(8)
-			#Gives motors length 0
-			motor_numbers = ""
-			command = 0
-			continue
-
-		elif command == "sine":
-			motor_numbers = motors.motor_nums
-			command = 0
-
-		else:
-			motor_numbers = command
-			command = 0
-
-	#Updating position
-	if DISABLED == 0:
-		for i in range(len(motor_numbers)):
-	 		motors.motor_pos[int(motor_numbers[i])-1] = motors.motor_pos[int(motor_numbers[i])-1] + command
-
-	motors.command_motors(motors.motor_pos)
-	print("motors being used: {}".format(motor_numbers))
-	print("encoder positions sent: {}".format(motors.motor_pos))
-	print("current motor positions: {}\n".format(motors.motor_encoders_data))
-	time.sleep(motors.dt)
-
-#**********************************************************************
-#**************					End Control		 	    ***************
-#**********************************************************************
-
-#rightn now motor position is old and when i come back here it jumps backto the older one i need to keep track of the setpoint being used
-#motor_pos lags position by like 300 if updating by 100 -> 300 comapred to 0
-#something in command motors with the commented line
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'''
-
-#setpriority()
-x = np.ones(9).astype(int)
-x[1:] = x[1:] + 5
-command_motors(client_socket, x)
-time.sleep(2)
-
-j = 0
-encoder_position = 0
-error = 0
-P=300
-#P=0
-x_temp = np.ones(9)
-
-encoder_steps = np.arange(0,250)
-counter = 0
-start_time = time.time()
-
-degrees_per_count_motor = 0.00743
-degrees_per_count_joint = 360 / 1440
-
-while (1): #time.time()-start_time<25):
-
-	encoder_positions = str(client_socket.recv(256))
-	encoders = re.split('\s', encoder_positions)
-
-	if counter % 50 == 0:
-		#print("Encoder1: ", encoders[1],"Encoder2: ", encoders[2],"Encoder3: ", encoders[3],"Encoder4: ", encoders[4])
-		#print("Encoder Setpoint: ", encoder_position)
-		#print("Error: ", error)
-		#print("Temp: ",x_temp)
-		print("output error is {}, encoder joint is {}".format(error, float(encoders[1]) * degrees_per_count_joint))
-
-
-	tst = (time.time()-start_time)
-	encoder_position = (np.sin(tst*0.5)*40/degrees_per_count_motor)*1
-
-
-	error = encoder_position * degrees_per_count_motor - float(encoders[1]) * degrees_per_count_joint
-
-	x_temp[3] = (encoder_position + error*P).astype(int)
-	x_temp[4] = (-encoder_position - error*P).astype(int)
-	x_temp[1] = x_temp[3]
-	x_temp[2] = x_temp[4]
-
-	#x[1] = np.round(x[1] + error*P).astype(int)
-	#x[2] = np.round(x[2] - error*P).astype(int)
-
-	# x[1:5] = np.round(x[1:5] + error*P).astype(int)
-	# x[5:9] = np.round(x[5:9] - error*P).astype(int)
-
-	counter = counter + 1
-	command_motors(client_socket,x_temp)
-	time.sleep(dt)
-
-
-	#current_pos_1 = (np.sin((time.time()-start_time)*2)*1000)*(1)
-			
-	# for i in range(len(current_pos)):
-	# 	if i==0:
-	# 		current_pos[i] = 1;
-	# 	else:
-	# 		current_pos[i] = np.power(-1,(i+1))*current_pos_1
-	# command_motors(client_socket, current_pos)
-	# time.sleep(dt)
-	
-	#if np.abs(current_pos_1) < 5:
-	#	time.sleep(0)
-	
-	# if j%50 == 0:
-	# 	print('zeros: ' + str(current_pos))
-	# j = j+1
-	
-
-
-
-
-
-
-
-
-
-for i in range(len(current_pos)):
-	current_pos = np.zeros(9)
-	command_motors(client_socket, current_pos)
-'''
