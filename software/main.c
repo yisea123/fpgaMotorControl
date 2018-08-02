@@ -35,7 +35,7 @@
 #define HW_REGS_SPAN ( 0x04000000 )
 #define HW_REGS_MASK ( HW_REGS_SPAN - 1 )
 #define MAX_TRAVEL_RANGE 500000
-#define MAX_CURRENT 2 //1 amp
+#define MAX_CURRENT 4 //amps
 
 volatile unsigned long *h2p_lw_led_addr;//=NULL;
 volatile unsigned long *h2p_lw_gpio_addr;//=NULL;
@@ -246,7 +246,7 @@ int main(int argc, char **argv)
 	if (file){
 		fgets(str,100,file);
 		val = strtok(str, ",");
-		printf("Loaded setpoitns\n");
+		printf("Loaded setpoints\n");
 		for(i=0;i<8;i++){
 			position_setpoints[i] = atoi(val);
 			position_offsets[i] = atoi(val);
