@@ -97,16 +97,36 @@ motors.arm()
 time.sleep(1)
 
 #classify controller later?
+#set calibration phase?
+
+#Updates values in class to latest numbers
+track_data.parse_data(NatNet.joint_data, NatNet.frame) #updates the frame and data that is being used
+base_inv = track_data.bodies[0].homg_inv
+joint1 = track_data.bodies[1].homogenous_mat
+joint1_inv = track_data.bodies[1].homg_inv
+joint2 = track_data.bodies[2].homogenous_mat
+
+#Transformation matricies
+joint1_base, _, _, _ = track_data.homg_mat_mult(base_inv,joint1) #joint1 in base frame -> moves only in base Y axis
+joint2_joint1, _, _, _ = track_data.homg_mat_mult(joint1_inv,joint2) #joint2 in joint1 frame -> moves only in J1 Z axis
 
 #J1 motors are 4 and 5
-j1_setpoint = 5		#positive values move down, negative up
+j1_setpoint = np.array([0, -5, 0]) * np.pi/180	#positive values move down, negative up, degrees, is around y
+j1_setpoint = track_data.euler2homg_mat(j1_setpoint,'sxyz')	#euler to homgenous matrix
+_, _, joint1_setpoint_eul, _ = track_data.homg_mat_mult(joint1_base, j1_setpoint) #converts rotation in joint frame to rotation in base frame
+joint1_setpoint_eul = np.array(joint1_setpoint_eul) * 180 / np.pi #setpoint is outputted as euler
+
+#J2 motors are 2 and 7
+j2_setpoint = np.array([0, 0, -5]) * np.pi/180#positive values move , negative , is around z
+j2_setpoint = track_data.euler2homg_mat(j2_setpoint,'sxyz')
+_, _, joint2_setpoint_eul, _ = track_data.homg_mat_mult(joint2_joint1, j2_setpoint)
+joint2_setpoint_eul = np.array(joint2_setpoint_eul) * 180 / np.pi
+
 j1_error = 0
 j1_error_cum = 0
 j1_p_gain = 150
 j1_i_gain = 0.2
 
-#J2 motors are 2 and 7
-j2_setpoint = 20	#positive values move , negative 
 j2_error = 0
 j2_error_cum = 0
 j2_p_gain = 150
@@ -118,23 +138,6 @@ while True:
 	#if NatNet.frame > prev_frame:
 	track_data.parse_data(NatNet.joint_data, NatNet.frame) #updates the frame and data that is being used
 
-	#print("frame is: ", track_data.frame)
-	#print("joint data is:", track_data.joint_data)
-	#print("timestamps", track_data.timestamp)
-
-	# print(track_data.bodies[1].name)
-	# print(track_data.bodies[1].orientation)
-	# print(track_data.bodies[1].rotation_mat)
-	# print(track_data.bodies[1].euler)
-
-	# for i in range(len(track_data.joint_data[0])):
-	# 	print(track_data.bodies[i].name)
-	# 	print(track_data.bodies[i].id)
-	# 	print(track_data.bodies[i].position)
-	# 	print(track_data.bodies[i].orientation)
-	# 	print(track_data.bodies[i].rotation_mat)
-	# 	print(track_data.bodies[i].homogenous_mat)
-
 	base = track_data.bodies[0].homogenous_mat
 	base_inv = track_data.bodies[0].homg_inv
 	joint1 = track_data.bodies[1].homogenous_mat
@@ -142,42 +145,35 @@ while True:
 	joint2 = track_data.bodies[2].homogenous_mat
 	joint2_inv = track_data.bodies[2].homg_inv
 
-	joint1_base, j1b_pos, j1b_euler, j1b_quat = track_data.change2frame(base_inv,joint1) #joint1 in base frame -> moves only in base Y axis
-	joint2_joint1, j2j1_pos, j2j1_euler, j2j1_quat = track_data.change2frame(joint1_inv,joint2) #joint2 in joint1 frame -> moves only in J1 Z axis
+	joint1_base, j1b_pos, j1b_euler, j1b_quat = track_data.homg_mat_mult(base_inv,joint1) #joint1 in base frame -> moves only in base Y axis
+	joint2_joint1, j2j1_pos, j2j1_euler, j2j1_quat = track_data.homg_mat_mult(joint1_inv,joint2) #joint2 in joint1 frame -> moves only in J1 Z axis
 
 	j1b_deg = np.array(j1b_euler) * 180 / np.pi
-	j1_y_rot = j1b_deg[1]
-
 	j2j1_deg = np.array(j2j1_euler) * 180 / np.pi
-	j2_z_rot = j2j1_deg[2]
 
-	j1_error = j1_setpoint - j1_y_rot
+	j1_error = np.sum(joint1_setpoint_eul - j1b_deg)
 	j1_error_cum = j1_error_cum + j1_error
 
-	j2_error = j2_setpoint - j2_z_rot
+	j2_error = np.sum(joint2_setpoint_eul - j2j1_deg)
 	j2_error_cum = j2_error_cum + j2_error
 
 	motors.motor_pos[3] = int(start_pos[3] + (j1_error * j1_p_gain) + (j1_error_cum * j1_i_gain))
 	motors.motor_pos[4] = int(start_pos[4] - (j1_error * j1_p_gain) - (j1_error_cum * j1_i_gain))
 
 	motors.motor_pos[1] = int(start_pos[1] - (j2_error * j2_p_gain) - (j2_error_cum * j2_i_gain))
-	motors.motor_pos[6] = int(start_pos[6] + (j2_error * j2_p_gain) + (j2_error_cum * j2_i_gain))	
+	motors.motor_pos[6] = int(start_pos[6] + (j2_error * j2_p_gain) + (j2_error_cum * j2_i_gain))
 
-	motors.command_motors(motors.motor_pos)
+	#motors.command_motors(motors.motor_pos)
 
-	if counter % 50 == 0:
-		print("frame is: ", track_data.frame)
-		print("J1 Rotation {} Error term {} " .format(j1_y_rot,j1_error))
-		print("J2 Rotation {} Error term {}" .format(j2_z_rot, j2_error))
-		print("Command to motors sent: ", motors.motor_pos)
+	if counter % 10 == 0:
+		print("joint1 current pos euler", j1b_deg)
+		print("joint1 setpoint euler", joint1_setpoint_eul)
+		print("joint1 error:", j1_error)
+		print("joint2 current pos euler", j2j1_deg)
+		print("joint2 setpoint euler", joint2_setpoint_eul)
+		print("joint2 error:", j2_error)
 		print("\n")
 
-	# print("joint1 in base frame, (meters)", j1b_pos)
-	# j1b_deg = np.array(j1b_euler) * 180 / np.pi
-	# print("joint1 in base frame, (xyz, pitch, yaw roll degrees)", j1b_deg)
-	# print("joint2 in joint1 frame, (meters)", j2j1_pos)
-	# j2j1_deg = np.array(j2j1_euler) * 180 / np.pi
-	# print("joint2 in joint1 frame, (xyz, pitch, yaw roll degrees)", j2j1_deg)
 
 	counter = counter + 1
 	prev_frame = track_data.frame

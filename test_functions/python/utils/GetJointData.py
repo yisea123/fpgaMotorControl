@@ -16,12 +16,13 @@ class data():
 	#parse data updates all the class objets in bodies, all values are from camera to body reference frame
 	#----------------------
 	#IMPORTANT -> Natnet streams the orientation as a quaternion (qx, qy qz, qw), tf3d library expects (qw, qx, qy, qz)
-	#			  orientation order when converting to Euler is x (pitch), y (yaw), z (roll), right handed, using relative or local coordinate frame (Motive Software)
+	#			  orientation order when converting to Euler is x (pitch), y (yaw), z (roll), right handed, using relative or local coordinate frame (Motive Software uses local)
 	#----------------------
 	def parse_data(self,joint_data, frame):
 		self.joint_data = joint_data
 		self.frame = frame
 		self.timestamp = joint_data[1]
+		#Loops over the number of rigid bodies in the scene
 		for i in range(len(joint_data[0])):
 			self.bodies[joint_data[0][i][0]].position = joint_data[0][i][1]
 			self.bodies[joint_data[0][i][0]].orientation = np.array(joint_data[0][i][2])[[3,0,1,2]] #reorders oreintation to (qw, qx, qy, qz)
@@ -44,12 +45,17 @@ class data():
 		return hm_mat_inv
 
 	#transforms coordinate frame from hm_mat2 to hm_mat1 (inv matrix)
-	def change2frame(self, hm_mat1, hm_mat2):
+	def homg_mat_mult(self, hm_mat1, hm_mat2):
 		hm_mat = np.matmul(hm_mat1,hm_mat2)
 		hm_mat_position = hm_mat[0:3,3]
 		hm_mat_euler = tf3d.euler.mat2euler(hm_mat[0:3,0:3], 'sxyz') # x (pitch), y (yaw), z (roll), using static here different than relative as in the motive software
 		hm_mat_quat = tf3d.quaternions.mat2quat(hm_mat[0:3,0:3])
 		return hm_mat, hm_mat_position, hm_mat_euler, hm_mat_quat
+
+	def euler2homg_mat(self, euler_angles, axes):
+		rot_mat = tf3d.euler.euler2mat(euler_angles[0], euler_angles[1], euler_angles[2], axes)
+		homg_mat = np.vstack([np.hstack([rot_mat, np.zeros(3)[:,None]]),np.array([0,0,0,1])[None,:]])
+		return homg_mat
 
 
 	#look at https://github.com/NxRLab/ModernRobotics/blob/master/code/Python/modern_robotics.py

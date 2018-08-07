@@ -1,6 +1,7 @@
 #
 # Modified version of the NatNet 3.0 Python Client example from NatNetSDK
 #
+#https://github.com/paparazzi/paparazzi/blob/master/sw/ground_segment/python/natnet3.x/NatNetClient.py
 
 import socket
 import struct
