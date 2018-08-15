@@ -74,6 +74,7 @@ uint8_t P=40;
 uint8_t I=0;
 uint8_t D=0;
 float controllerGain = 0.01;
+float avg_current = 0;
 
 int portnumber_global;
 int socket_error = 0;
@@ -307,7 +308,7 @@ int main(int argc, char **argv)
 	double tracking_error[8];
 
 	int adc_data;
-	float current, avg_current = 0;
+	float current;
 
 	for(j = 0; j<8; j++){
 		tracking_error[j] = 0;
@@ -330,7 +331,9 @@ int main(int argc, char **argv)
 		*(h2p_lw_adc) = 0; //write starts adc read
 		adc_data = *(h2p_lw_adc); //read
 		current = (adc_data - current_offset) * 0.001;
+		current = current * (current > 0);
 		avg_current = 0.1 * current + 0.9 * avg_current;
+		//avg_current = avg_current * (avg_current > 0);
 
 		//Read encoder positions and add offset from file
 		for(j = 0; j<8; j++){
@@ -472,6 +475,7 @@ setup socket communication
     struct sockaddr_in serv_addr, cli_addr;
     int n, j, k;
     int state=1;
+    int avg_current_ma = 0;
 
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -513,16 +517,17 @@ setup socket communication
 	str=(char*)arg;
 
 	//initialize python side with position
-	sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d qq", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
+	sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d qq", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
 		internal_encoders[3], internal_encoders[4], internal_encoders[5], internal_encoders[6], internal_encoders[7], switch_states[0],\
 		switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7],\
-		arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4);
+		arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4, avg_current_ma);
 	n = write(newsockfd,write_buffer,256);
 
 	while(system_state == 1 && socket_error == 0 ){
 
 		nanosleep((const struct timespec[]){{0, 2500000L}}, NULL);
 
+		avg_current_ma = (int)(avg_current*1000);
 		/*--------------------------------
 		write switch, external encoder, internal encoder state to socket
 		--------------------------------*/
@@ -541,10 +546,10 @@ setup socket communication
 
 		}
 		else{
-	   		sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d qq", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
+	   		sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d qq", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
 	   			internal_encoders[3], internal_encoders[4], internal_encoders[5], internal_encoders[6], internal_encoders[7], switch_states[0],\
 	   			switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7],\
-	   			arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4);
+	   			arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4, avg_current_ma);
 	   	}
 
     	n = write(newsockfd,write_buffer,256);
@@ -578,10 +583,10 @@ setup socket communication
 			                (struct sockaddr *) &cli_addr, 
 			                &clilen);
 
-				sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d qq", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
+				sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d qq", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
 					internal_encoders[3], internal_encoders[4], internal_encoders[5], internal_encoders[6], internal_encoders[7], switch_states[0],\
 					switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7],\
-					arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4);
+					arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4, avg_current_ma);
 				n = write(newsockfd,write_buffer,256);
 
 			    CONNECTED = 1; //change CONNECTED to 1 if connection is made, 

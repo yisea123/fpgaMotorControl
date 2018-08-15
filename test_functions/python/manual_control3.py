@@ -84,6 +84,7 @@ class motors():
 
 		self.motor_encoders_data = np.zeros(8)
 		self.joint_encoders_data = np.zeros(4)
+		self.motor4_current = 0
 		self.limit_data = np.zeros(8)
 		self.client_socket = CLIENT_SOCKET
 
@@ -112,6 +113,8 @@ class motors():
 		else:
 			self.motor_encoders_data = np.array(list(map(int, data[1:9])))
 			self.joint_encoders_data = np.array(list(map(int, data[17:21])))
+			#print(data)
+			self.motor4_current = int(data[21])
 			self.limit_data = np.array(list(map(int, data[9:17])))
 			if PRINT_SENSORS:
 				print('Read motor encoder positions {}'.format(self.motor_encoders_data))
@@ -390,7 +393,7 @@ ManualControl = 1						#main loop control
 OPPOSITE_SINE = True
 
 #Constants and initializations
-socket_ip = '192.168.1.29'
+socket_ip = '192.168.1.34'
 socket_port = 1115
 degrees_count_motor_joint = 0.00743		#joint degrees a count
 degrees_count_motor = 360/2000			#Motor encoder resolution
@@ -463,6 +466,7 @@ while(ManualControl):
 	print("motors being used: {}".format(motor_numbers))
 	print("encoder positions sent: {}".format(motors.motor_pos))
 	print("current motor positions: {}\n".format(motors.motor_encoders_data))
+	print("motor 4 current: {}".format(motors.motor4_current))
 	time.sleep(motors.dt)
 
 #**********************************************************************
