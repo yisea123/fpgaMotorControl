@@ -49,7 +49,7 @@ counter = 0
 server_ip = "192.168.1.4"
 multicastAddress = "239.255.42.99"
 print_trak_data = False
-joint_names = ['base', 'joint1', 'joint2']
+joint_names = ['base', 'j2', 'j3', 'j4']
 ids = [0,1,2]
 
 

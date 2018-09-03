@@ -35,7 +35,7 @@
 #define HW_REGS_SPAN ( 0x04000000 )
 #define HW_REGS_MASK ( HW_REGS_SPAN - 1 )
 #define MAX_TRAVEL_RANGE 500000
-#define MAX_CURRENT 4 //amps
+#define MAX_CURRENT 1.25 //amps
 
 volatile unsigned long *h2p_lw_led_addr;//=NULL;
 volatile unsigned long *h2p_lw_gpio_addr;//=NULL;
@@ -70,7 +70,7 @@ int TRAVEL_FLAG = 0;
 int ETSOP_FLAG = 0;
 
 
-uint8_t P=40;
+uint8_t P=5;
 uint8_t I=0;
 uint8_t D=0;
 float controllerGain = 0.01;

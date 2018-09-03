@@ -66,8 +66,8 @@ class motors():
 		self.step_size = step_size										#number of encoder counts to step by
 		self.degrees_count_motor = degrees_count_motor 					#degrees of motor shaft rotation per encoder count
 		self.degrees_count_motor_joint = degrees_count_motor_joint		#degrees or joint roation per encoder count
-		self.sine_speed = 0.05											#frequency Hz
-		self.sine_travel = 0.4
+		self.sine_speed = 0.2											#frequency Hz
+		self.sine_travel = 0.05
 		self.motor_revolutions = 1.0									#number of rotations to make in profile, remember it'll be +- full rotations since sine
 		self.motor_nums = "12345678" 									#which motor to control on the bank, number corresponds to which motor 1-8
 		self.results_dir = results_dir									#Directory to where motor data is stored
@@ -191,7 +191,7 @@ class motors():
 				time_diff.append(dt)
 				st = ct
 				#16 since 16 threads per inch
-				current_pos_1 = (np.sin((current_time-start_time)*2*np.pi*self.sine_speed)/self.degrees_count_motor_joint*360/16*self.sine_travel)
+				current_pos_1 = (np.sin((current_time-start_time)*2*np.pi*self.sine_speed)/self.degrees_count_motor_joint*360*self.sine_travel)
 
 				for i in range(len(commanded)):
 					if OPPOSITE_SINE and i < 4:
@@ -393,9 +393,9 @@ ManualControl = 1						#main loop control
 OPPOSITE_SINE = True
 
 #Constants and initializations
-socket_ip = '192.168.1.34'
+socket_ip = '192.168.1.39'
 socket_port = 1115
-degrees_count_motor_joint = 0.00743		#joint degrees a count
+degrees_count_motor_joint = 0.00109/2#0.00743		#joint degrees a count
 degrees_count_motor = 360/2000			#Motor encoder resolution
 degrees_count_joint = 360/1440			#Joint encoder resolution
 step_size = 100							#Number of encoder counts to step
