@@ -394,7 +394,7 @@ OPPOSITE_SINE = True
 
 #Constants and initializations
 socket_ip = '192.168.1.39'
-socket_port = 1115
+socket_port = 1117
 degrees_count_motor_joint = 0.00109/2#0.00743		#joint degrees a count
 degrees_count_motor = 360/2000			#Motor encoder resolution
 degrees_count_joint = 360/1440			#Joint encoder resolution
