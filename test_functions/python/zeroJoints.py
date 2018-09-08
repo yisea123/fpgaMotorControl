@@ -13,7 +13,7 @@ from copy import deepcopy
 from utils.motor_class import motors
 from utils.tcp_class import tcp_communication
 
-joint_motor_indexes = np.array([4,1,6,5])
+joint_motor_indexes = np.array([0,1,2,3])
 motor_command = np.zeros(8)
 encoder_counts = 1440
 gear_ratio = 470
@@ -33,7 +33,7 @@ OPPOSITE_SINE = True
 
 #Constants and initializations for tcp and motor class
 socket_ip = '192.168.1.39'
-socket_port = 1121
+socket_port = 1122
 dt = 0.01 #100 hz
 start_time = time.time()
 counter = 0
@@ -78,8 +78,8 @@ server_ip = "192.168.1.27"
 multicastAddress = "239.255.42.99"
 print_trak_data = False
 
-joint_names = ['base', 'j2', 'j3', 'j4']
-ids = [0, 1, 2, 3]
+joint_names = ['base', 'j2', 'j3', 'j4', 'target']
+ids = [0, 1, 2, 3, 4]
 
 #Tracking class
 print("Starting streaming client now...")

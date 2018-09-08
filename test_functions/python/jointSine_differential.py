@@ -23,7 +23,7 @@ OPPOSITE_SINE = True
 
 #Constants and initializations for tcp and motor class
 socket_ip = '192.168.1.39'
-socket_port = 1112
+socket_port = 1122
 dt = 0.01 #100 hz
 start_time = time.time()
 counter = 0

@@ -15,7 +15,7 @@ from copy import deepcopy
 from utils.motor_class import motors
 from utils.tcp_class import tcp_communication
 
-joint_motor_indexes = np.array([4,1,6,5])
+joint_motor_indexes = np.array([0,1,2,3])
 motor_command = np.zeros(8)
 encoder_counts = 1440
 gear_ratio = 470

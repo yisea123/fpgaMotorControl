@@ -39,8 +39,8 @@ track_data.parse_data(NatNet.joint_data, NatNet.frame) #updates the frame and da
 old_frame = track_data.frame
 
 #debug values
-print_cartesian = True
-save_data = True
+print_cartesian = False
+save_data = False
 
 
 while 1:
