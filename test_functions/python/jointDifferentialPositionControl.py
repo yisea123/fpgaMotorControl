@@ -80,8 +80,8 @@ server_ip = "192.168.1.27"
 multicastAddress = "239.255.42.99"
 print_trak_data = False
 
-joint_names = ['base', 'j2', 'j3', 'j4']
-ids = [0, 1, 2, 3]
+joint_names = ['base', 'j2', 'j3', 'j4', 'target']
+ids = [0, 1, 2, 3, 4]
 
 #Tracking class
 print("Starting streaming client now...")
@@ -92,7 +92,7 @@ streamingClient.rigidBodyListListener = NatNet.receiveRigidBodyFrameList
 prev_frame = 0
 time.sleep(0.5)
 streamingClient.run()
-time.sleep(0.5)
+time.sleep(3)
 track_data = data(joint_names,ids)
 track_data.parse_data(NatNet.joint_data, NatNet.frame) #updates the frame and data that is being used
 #debug values
@@ -111,7 +111,7 @@ motor_command = deepcopy(zero_position)
 #---------------------------------------#---------------------------------------
 j1_angle, j2_angle, j3_angle, j4_pos, joint4_base, j4b_pos, j4b_euler = getOptitrackPose(track_data, NatNet)
 
-while np.abs(j1_angle) > 1 or np.abs(j2_angle) > 1 or np.abs(j3_angle) > 1 or np.abs(j4_pos - 65) > 1:
+while np.abs(j1_angle) > 1 or np.abs(j2_angle) > 1 or np.abs(j3_angle) > 1 or np.abs(j4_pos - 75) > 1:
 
 
 	j1_angle, j2_angle, j3_angle, j4_pos, joint4_base, j4b_pos, j4b_euler = getOptitrackPose(track_data, NatNet)
@@ -124,8 +124,8 @@ while np.abs(j1_angle) > 1 or np.abs(j2_angle) > 1 or np.abs(j3_angle) > 1 or np
 		motor_command[joint_motor_indexes[1]] += j2_angle * counts_per_degree * k
 	elif np.abs(j3_angle) > 1:
 		motor_command[joint_motor_indexes[2]] += j3_angle * counts_per_degree * k
-	elif np.abs(j4_pos - 65) > 1:
-		motor_command[joint_motor_indexes[3]] += -1* (j4_pos-65) * counts_per_degree * kl
+	elif np.abs(j4_pos - 75) > 1:
+		motor_command[joint_motor_indexes[3]] += -1* (j4_pos-75) * counts_per_degree * kl
 	error_cum = np.abs(j1_angle) + np.abs(j2_angle) + np.abs(j3_angle)
 
 	print("Current joint positions: \n j1: {}\n j2: {}\n j3: {}\n j4: {}\n".format(j1_angle, j2_angle, j3_angle, j4_pos))
@@ -177,10 +177,13 @@ for i in range(int(10/dt)):
 
 	value = np.sin(current_time*(2*np.pi) / 8) * (2*np.pi) / 16# * counts_per_revolution / 10
 	armTheta = np.zeros((4,1))
-	armTheta[0] = value
-	armTheta[1] = 0
-	armTheta[2] = 0
-	armTheta[3] = 0
+
+	#value = np.pi/8
+
+	armTheta[0] = np.pi/8
+	armTheta[1] = np.pi/8
+	armTheta[2] = np.pi/8
+	armTheta[3] = np.pi/8
 
 	j1_angle, j2_angle, j3_angle, j4_pos, joint4_base, j4b_pos, j4b_euler = getOptitrackPose(track_data, NatNet)
 

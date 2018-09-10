@@ -102,7 +102,7 @@ motors.arm()
 time.sleep(2)
 error_cum = 100 #initialize break error to a large value
 
-while error_cum > 5:
+while error_cum > 2:
 
 
 	#---------------------------------------#---------------------------------------
@@ -152,11 +152,11 @@ while error_cum > 5:
 	#joint 4 optitrack + == motor +
 
 	k = 0.025
-	if np.abs(j1_angle) > 1:
+	if np.abs(j1_angle) > 0.7:
 		motor_command[joint_motor_indexes[0]] += -1* j1_angle * counts_per_degree * k
-	elif np.abs(j2_angle) > 1:
+	elif np.abs(j2_angle) > 0.5:
 		motor_command[joint_motor_indexes[1]] += j2_angle * counts_per_degree * k
-	elif np.abs(j3_angle) > 1:
+	elif np.abs(j3_angle) > 0.5:
 		motor_command[joint_motor_indexes[2]] += j3_angle * counts_per_degree * k
 
 	error_cum = np.abs(j1_angle) + np.abs(j2_angle) + np.abs(j3_angle)
