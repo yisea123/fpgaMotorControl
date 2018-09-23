@@ -116,7 +116,7 @@ void my_handler(int s){
 
 		printf("Caught signal %d\n",s);
 		printf("Storing motor encoder positions to encoder_values.txt\n");
-		fprintf(file, "%d,%d,%d,%d,%d,%d,%d,%d", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
+		//fprintf(file, "%d,%d,%d,%d,%d,%d,%d,%d", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
 			internal_encoders[3], internal_encoders[4], internal_encoders[5], internal_encoders[6], internal_encoders[7]);
 
 		/*--------------------------------
@@ -133,7 +133,7 @@ void my_handler(int s){
 		    close(sockfd);
 		}
 
-		fclose(file);
+		//fclose(file);
         exit_flag = 1; 
 }
 
@@ -243,6 +243,7 @@ int main(int argc, char **argv)
 	char str[100];
 	char *val;
 
+	/*
 	file = fopen("encoder_values.txt", "r+");
 	if (file){
 		fgets(str,100,file);
@@ -264,6 +265,12 @@ int main(int argc, char **argv)
 		}
 		file = fopen("encoder_values.txt", "w+");
 	}
+	*/
+
+	for(i=0;i<8;i++){
+			position_setpoints[i] = 0;
+			position_offsets[i] = 0;
+		}
 	/*--------------------------------
 	initial pwm and pid values -> check how pid values are set
 	--------------------------------*/
