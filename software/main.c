@@ -115,7 +115,7 @@ void my_handler(int s){
 		bzero(write_buffer,256);
 
 		printf("Caught signal %d\n",s);
-		printf("Storing motor encoder positions to encoder_values.txt\n");
+		//printf("Storing motor encoder positions to encoder_values.txt\n");
 		//fprintf(file, "%d,%d,%d,%d,%d,%d,%d,%d", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
 			internal_encoders[3], internal_encoders[4], internal_encoders[5], internal_encoders[6], internal_encoders[7]);
 

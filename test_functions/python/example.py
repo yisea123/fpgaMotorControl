@@ -69,6 +69,7 @@ while 1:
 	joint4_inv = track_data.bodies[3].homg_inv
 	target = track_data.bodies[4].homogenous_mat
 
+	#Meters, and radians?!
 	joint2_base, j2b_pos, j2b_euler, _ = track_data.homg_mat_mult(base_inv,joint2) #joint2 in base frame -> moves only in base Y+X axis
 	joint3_joint2, j3j2_pos, j3j2_euler, _ = track_data.homg_mat_mult(joint2_inv,joint3)
 	joint4_joint3, j4j3_pos, j4j3_euler, _ = track_data.homg_mat_mult(joint3_inv,joint4)
