@@ -3,23 +3,24 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <time.h>
-#include <sys/mman.h>
-#include "hwlib.h"
-#include "soc_cv_av/socal/socal.h"
-#include "soc_cv_av/socal/hps.h"
-#include "soc_cv_av/socal/alt_gpio.h"
-#include "hps_0.h"
-#include "led.h"
-#include <stdbool.h>
-#include <math.h>
-#include <sys/timeb.h>  /* ftime, timeb (for timestamp in millisecond) */
-#include <sys/time.h>   /* gettimeofday, timeval (for timestamp in microsecond) */
 #include <pthread.h>
 #include <string.h>
+#include <stdbool.h>
+#include <math.h>
+#include <signal.h>
+#include <sys/timeb.h>  /* ftime, timeb (for timestamp in millisecond) */
+#include <sys/time.h>   /* gettimeofday, timeval (for timestamp in microsecond) */
 #include <sys/types.h> 
 #include <sys/socket.h>
+#include <sys/mman.h>
 #include <netinet/in.h>
-#include <signal.h>
+
+#include "main.h"
+
+// #include "soc_cv_av/socal/socal.h"
+// #include "soc_cv_av/socal/hps.h"
+// #include "soc_cv_av/socal/alt_gpio.h"
+
 
 #define SAMPLE_RATE 1000
 #define SYNC_TOLERANCE 10
@@ -54,7 +55,6 @@ int E_STATE = 0;
 int ERR_RESET = 1;
 int CONNECTED = 0;  //global flag to indicate if a connection has been made
 int32_t beat = 0;
-int32_t position_offsets[8];
 uint8_t switch_states[8];
 int32_t internal_encoders[8];
 int32_t arm_encoders1=0,arm_encoders2=0,arm_encoders3=0,arm_encoders4=0;
@@ -127,7 +127,6 @@ void my_handler(int s){
 		    close(sockfd);
 		}
 
-		//fclose(file);
         exit_flag = 1; 
 }
 
@@ -232,44 +231,15 @@ int main(int argc, char **argv)
 	pthread_create(&pth,NULL,threadFunc,NULL);
 
 	/*--------------------------------
-	setup file to store setpoint on shutdown and load on boot
+	initial setpoints to zero
 	--------------------------------*/
-	char str[100];
-	char *val;
-
-	/*
-	file = fopen("encoder_values.txt", "r+");
-	if (file){
-		fgets(str,100,file);
-		val = strtok(str, ",");
-		printf("Loaded setpoints\n");
-		for(i=0;i<8;i++){
-			position_setpoints[i] = atoi(val);
-			position_offsets[i] = atoi(val);
-			val = strtok(NULL, ",");
-			printf("setpoints %d\n", position_setpoints[i]);
-		}
-		fclose(file);
-		file = fopen("encoder_values.txt", "w+");
-	}
-	else {
-		for(i=0;i<8;i++){
-			position_setpoints[i] = 0;
-			position_offsets[i] = 0;
-		}
-		file = fopen("encoder_values.txt", "w+");
-	}
-	*/
-
 	for(i=0;i<8;i++){
 			position_setpoints[i] = 0;
-			position_offsets[i] = 0;
 		}
-	/*--------------------------------
-	initial pwm and pid values -> check how pid values are set
-	--------------------------------*/
 
+	/*--------------------------------
 	//set PWM values to zero
+	--------------------------------*/
 	for(j=0;j<8;j++){
 		alt_write_word(h2p_lw_pwm_values_addr[j], 0);
 	}
@@ -336,10 +306,10 @@ int main(int argc, char **argv)
 		avg_current = 0.1 * current + 0.9 * avg_current;
 		//avg_current = avg_current * (avg_current > 0);
 
-		//Read encoder positions and add offset from file
+		//Read encoder positions
 		for(j = 0; j<8; j++){
 			int32_t output = alt_read_word(h2p_lw_quad_addr[j]);
-			internal_encoders[j] = output + position_offsets[j];
+			internal_encoders[j] = output;
 
 			if(j==7 && output > max_val)
 				max_val = output;
@@ -785,7 +755,6 @@ int calc_current_offset(volatile unsigned long *h2p_lw_adc){
 	while(counter > 0){
 		*(h2p_lw_adc) = 0; //write starts adc read
 		adc_sum = *(h2p_lw_adc) + adc_sum; //read
-		// printf("Counter: %d\n", counter);
 		counter = counter - 1;
 		usleep(10000);
 	}
