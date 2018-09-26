@@ -33,19 +33,19 @@
 #define MAX_TRAVEL_RANGE 500000
 #define MAX_CURRENT 1.25 //amps
 
-volatile unsigned long *h2p_lw_led_addr;//=NULL;
-volatile unsigned long *h2p_lw_gpio_addr;//=NULL;
-volatile unsigned long *h2p_lw_heartbeat_addr;//=NULL;
-volatile unsigned long *h2p_lw_pid_values_addr;//=NULL;
-volatile unsigned long *h2p_lw_quad_reset_addr;//=NULL;
-volatile unsigned long *h2p_lw_limit_switch_addr;//=NULL;
-volatile unsigned long *h2p_lw_pid_e_stop;
-volatile unsigned long *h2p_lw_quad_addr[8];//=NULL;
-volatile unsigned long *h2p_lw_quad_addr_external[4];//=NULL
-volatile unsigned long *h2p_lw_pid_input_addr[8];//=NULL;
-volatile unsigned long *h2p_lw_pid_output_addr[8];//=NULL;
-volatile unsigned long *h2p_lw_pwm_values_addr[8];//=NULL;
-volatile unsigned long *h2p_lw_adc;
+// volatile unsigned long *h2p_lw_led_addr;//=NULL;
+// volatile unsigned long *h2p_lw_gpio_addr;//=NULL;
+// volatile unsigned long *h2p_lw_heartbeat_addr;//=NULL;
+// volatile unsigned long *h2p_lw_pid_values_addr;//=NULL;
+// volatile unsigned long *h2p_lw_quad_reset_addr;//=NULL;
+// volatile unsigned long *h2p_lw_limit_switch_addr;//=NULL;
+// volatile unsigned long *h2p_lw_pid_e_stop;
+// volatile unsigned long *h2p_lw_quad_addr[8];//=NULL;
+// volatile unsigned long *h2p_lw_quad_addr_external[4];//=NULL
+// volatile unsigned long *h2p_lw_pid_input_addr[8];//=NULL;
+// volatile unsigned long *h2p_lw_pid_output_addr[8];//=NULL;
+// volatile unsigned long *h2p_lw_pwm_values_addr[8];//=NULL;
+//volatile unsigned long *h2p_lw_adc;
 
 volatile int32_t position_setpoints[8];
 
@@ -78,7 +78,7 @@ int sockfd, newsockfd; //global socket value such that it can be called in signa
 uint32_t createMask(uint32_t startBit, int num_bits);
 uint32_t createNativeInt(uint32_t input, int size);
 uint64_t GetTimeStamp();
-int calc_current_offset(volatile unsigned long *h2p_lw_adc);
+//int calc_current_offset(volatile unsigned long *h2p_lw_adc);
 void *threadFunc(void *arg);
 void *heartbeat_func(void *arg);
 void error(const char *msg);
@@ -747,18 +747,18 @@ uint64_t GetTimeStamp() {
     return tv.tv_sec*(uint64_t)1000000+tv.tv_usec;
 }
 
-int calc_current_offset(volatile unsigned long *h2p_lw_adc){
-	int counter = 300, offset;
-	double adc_sum = 0;
+// int calc_current_offset(volatile unsigned long *h2p_lw_adc){
+// 	int counter = 300, offset;
+// 	double adc_sum = 0;
 
-	//sample at 100hz for 3 seconds
-	while(counter > 0){
-		*(h2p_lw_adc) = 0; //write starts adc read
-		adc_sum = *(h2p_lw_adc) + adc_sum; //read
-		counter = counter - 1;
-		usleep(10000);
-	}
+// 	//sample at 100hz for 3 seconds
+// 	while(counter > 0){
+// 		*(h2p_lw_adc) = 0; //write starts adc read
+// 		adc_sum = *(h2p_lw_adc) + adc_sum; //read
+// 		counter = counter - 1;
+// 		usleep(10000);
+// 	}
 	
-	offset = (int)(adc_sum/400);
-	return offset;
-}
+// 	offset = (int)(adc_sum/400);
+// 	return offset;
+// }
