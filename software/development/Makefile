@@ -12,7 +12,7 @@ LDFLAGS = -g -Wall -pthread
 VPATH = functions fpga_headers
 HEADERS = main.h hps_0.h
 OBJ_DIR = objs
-_OBJS = main.o current_offset.o
+_OBJS = main.o current_offset.o thread_funcs.o
 OBJS = $(patsubst %,$(OBJ_DIR)/%,$(_OBJS))
 
 LIBS = -lm
