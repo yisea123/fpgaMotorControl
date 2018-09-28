@@ -3,13 +3,10 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <time.h>
-#include <pthread.h>
 #include <string.h>
 #include <stdbool.h>
 #include <math.h>
 #include <signal.h>
-#include <sys/timeb.h>  /* ftime, timeb (for timestamp in millisecond) */
-#include <sys/time.h>   /* gettimeofday, timeval (for timestamp in microsecond) */
 #include <sys/types.h> 
 #include <sys/socket.h>
 #include <sys/mman.h>
@@ -37,37 +34,6 @@ uint8_t D=0;
 float controllerGain = 0.01;
 float avg_current = 0;
 
-uint32_t createMask(uint32_t startBit, int num_bits);
-uint32_t createNativeInt(uint32_t input, int size);
-uint64_t GetTimeStamp();
-
-void zero_motor_axis(void);
-void zero_motors(char *write_buffer,int newsockfd);
-
-void my_handler(int s){
-		int n;
-		char write_buffer[256];
-		bzero(write_buffer,256);
-
-		printf("Caught signal %d\n",s);
-
-		/*--------------------------------
-		write back to python to kill sockets
-		--------------------------------*/
-		if(CONNECTED==1){
-			printf("Writing back to python side, closing sockets\n");
-	   		sprintf(write_buffer,"* closeports *");
-	    	n = write(newsockfd,write_buffer,256);
-	    	// if (n < 0){
-	    	// 	error("ERROR writing to socket upon closing ports, port");
-	    	// }
-		    close(newsockfd);
-		    close(sockfd);
-		}
-
-        exit_flag = 1; 
-}
-
 int main(int argc, char **argv)
 {
 	/*------------------------------------------
@@ -78,7 +44,7 @@ int main(int argc, char **argv)
         exit(1);
     }	
    	portnumber_global = atoi(argv[1]);
-	pthread_t pth, pth_heartbeat;	// this is our thread identifier
+	//pthread_t pth, pth_heartbeat;	// this is our thread identifier
 
 	/*--------------------------------
 	ctrl-c catcher
@@ -360,134 +326,16 @@ int main(int argc, char **argv)
 		close( fd );
 		return( 1 );
 	}
-	printf("\n\n Exiting safely \n\n");
+
+	pthread_cancel(pth);
+	printf("Exited thread loop\n");
+	pthread_join(pth, NULL);
+    pthread_join(pth_heartbeat, NULL);
+
+	printf("\nExiting safely\n\n");
+	printf("\nmore");
+	sleep(5);
 	close( fd );
 	return 0;
 }
 
-
-
-
-void zero_motor_axis(void){
-	int j, dir_bitmask, positive_pid_output=1;
-	for(j = 0; j<8; j++){
-		if(j < 4 ){
-			alt_write_word(h2p_lw_pwm_values_addr[j], (25));
-			
-			dir_bitmask = alt_read_word(h2p_lw_gpio_addr);
-			if(positive_pid_output)
-				dir_bitmask |= (1<<(j+4));
-			else
-				dir_bitmask &= ~(1<<(j+4));
-			//dir_bitmask = dir_bitmask
-			//alt_write_word(h2p_lw_gpio_addr, (positive_pid_output * (0b00010000<<j)));
-			//alt_write_word(h2p_lw_gpio_addr, (positive_pid_output * (1<<(j+4))));
-			alt_write_word(h2p_lw_gpio_addr, dir_bitmask);
-		}
-		else{
-			if (j < 8){
-
-			alt_write_word(h2p_lw_pwm_values_addr[j], (25));
-			dir_bitmask = alt_read_word(h2p_lw_gpio_addr);
-			if(positive_pid_output == 0)
-				dir_bitmask |= (1<<(j-4));
-			else
-				dir_bitmask &= ~(1<<(j-4));
-			alt_write_word(h2p_lw_gpio_addr, dir_bitmask);
-			}
-		}
-	}
-}
-
-void zero_motors(char *write_buffer,int newsockfd){
-	int i, k, j, n;
-	int rate=0, direction=1,switch_count=0, done=0;
-	int zero_rates[6]={5,5,5,1,1,1};
-
-	while(rate<5){
-		//Moves out until all switches read 1
-		while(direction==1){
-			switch_count = 0;
-			for(k=0; k<8; k++){
-				switch_count = switch_count + switch_states[k];
-				position_setpoints[k] = position_setpoints[k] + (!switch_states[k])*zero_rates[rate];
-			}
-			if(switch_count==8){ //if true all switches read 1
-				direction = 0;
-				rate=rate+1;
-			}
-			/*--------------------------------
-			write switch state to socket
-			--------------------------------*/
-			/*
-			sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d qq", switch_states[0], switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7]);
-			//n = write(newsockfd,write_buffer,256);
-			if (n < 0){
-				error("ERROR writing to socket");
-				break;
-			}
-			*/
-			usleep(10000);
-		}
-
-		//Moves in until all switches read 0
-		while(direction==0){
-			switch_count = 0;
-			for(k=0; k<8; k++){
-				switch_count = switch_count + switch_states[k];
-				position_setpoints[k] = position_setpoints[k] - switch_states[k]*zero_rates[rate];
-			}
-			if(!switch_count){ //want switch count to be 0, at this point all switches are 0
-				rate=rate+1;
-				direction = 1;
-			}
-			/*--------------------------------
-			write switch state to socket
-			--------------------------------*/
-			/*
-			sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d qq", switch_states[0], switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7]);
-			//n = write(newsockfd,write_buffer,256);
-			if (n < 0){
-				error("ERROR writing to socket");
-				break;
-			}
-			*/
-			usleep(10000);
-		}
-		printf("Zeroing here**********************************");
-	}
-
-	//Need to pass write_buffer and newsockfd
-	//done=1;
-	//sprintf(write_buffer,"nn %d %d qq",done,rate);
-	//n = write(newsockfd,write_buffer,256);
-	if (n < 0){
-		error("ERROR writing to socket");
-		//break;
-	}
-}
-
-uint32_t createMask(uint32_t startBit, int num_bits)
-{
-   uint32_t  mask;
-	mask = ((1 << num_bits) - 1) << startBit;
-   return mask;
-}
-
-uint32_t createNativeInt(uint32_t input, int size)
-{
-	int32_t nativeInt;
-	const int negative = ((input & (1 << (size - 1))) != 0);
-	if (negative)
-		  nativeInt = input | ~((1 << size) - 1);
-	else 
-		  nativeInt = input;	
-	return nativeInt;
-}
-
-
-uint64_t GetTimeStamp() {
-    struct timeval tv;
-    gettimeofday(&tv,NULL);
-    return tv.tv_sec*(uint64_t)1000000+tv.tv_usec;
-}

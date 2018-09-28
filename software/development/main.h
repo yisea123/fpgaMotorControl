@@ -6,6 +6,7 @@
 #include "fpga_headers/socal.h"
 #include "fpga_headers/hps.h"
 #include "fpga_headers/alt_gpio.h"
+#include <pthread.h>
 
 //MACROS
 #define SAMPLE_RATE 1000
@@ -59,6 +60,8 @@ uint8_t D;
 float controllerGain;
 float avg_current;
 
+pthread_t pth, pth_heartbeat;	// this is our thread identifier
+
 //Struct -> not used?
 struct axis_motor{
 		double accGoal;
@@ -80,5 +83,18 @@ void *heartbeat_func(void *arg);
 
 void *threadFunc(void *arg);
 
+void zero_motors(char *write_buffer,int newsockfd);
+
 void error(const char *msg);
+
+void my_handler(int s);
+
+void mask_sig(void);
+
+uint32_t createMask(uint32_t startBit, int num_bits);
+
+uint32_t createNativeInt(uint32_t input, int size);
+
+uint64_t GetTimeStamp();
+
 #endif
