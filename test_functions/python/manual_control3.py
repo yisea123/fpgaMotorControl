@@ -393,7 +393,7 @@ ManualControl = 1						#main loop control
 OPPOSITE_SINE = True
 
 #Constants and initializations
-socket_ip = '192.168.1.39'
+socket_ip = '192.168.1.11'
 socket_port = 1122
 degrees_count_motor_joint = 0.00109/2#0.00743		#joint degrees a count
 degrees_count_motor = 360/2000			#Motor encoder resolution

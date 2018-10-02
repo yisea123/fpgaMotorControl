@@ -11,11 +11,12 @@
 #include "../main.h"
 
 //block signal from thread functions such that the main loop catches it
+//currently blocking sigquit
 void mask_sig(void) {
 	sigset_t mask;
 	sigemptyset(&mask);
 	sigaddset(&mask, SIGINT);
-	pthread_sigmask(SIGINT, &mask, NULL);
+	pthread_sigmask(SIG_BLOCK, &mask, NULL);
 }
 
 //Heartbeat Function Thread
@@ -34,7 +35,7 @@ void *heartbeat_func(void *arg){
 		usleep(0.1*10000);//1.1 seconds
 	}
 
-	printf("exiting heartbeat\n");
+	printf("Exiting heartbeat thread\n");
 	pthread_exit(NULL);
 
 }

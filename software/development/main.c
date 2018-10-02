@@ -39,6 +39,7 @@ int main(int argc, char **argv)
 	/*------------------------------------------
 	Generic setup below for port communication
 	-----------------------------------------*/
+
     if (argc < 2) {
         fprintf(stderr,"ERROR, no port provided\n");
         exit(1);
@@ -327,14 +328,13 @@ int main(int argc, char **argv)
 		return( 1 );
 	}
 
+	//Cleanup
 	pthread_cancel(pth);
-	printf("Exited thread loop\n");
+	printf("Exiting tcp thread\n");
 	pthread_join(pth, NULL);
     pthread_join(pth_heartbeat, NULL);
-
-	printf("\nExiting safely\n\n");
-	printf("\nmore");
-	sleep(5);
+	printf("\nExiting safely\n");
+	sleep(1);
 	close( fd );
 	return 0;
 }
