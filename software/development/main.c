@@ -28,7 +28,7 @@ int CURRENT_FLAG = 0;
 int TRAVEL_FLAG = 0;
 int ETSOP_FLAG = 0;
 
-uint8_t P=5;
+uint8_t P=30;
 uint8_t I=0;
 uint8_t D=0;
 float controllerGain = 0.01;

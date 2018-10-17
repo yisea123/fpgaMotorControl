@@ -66,8 +66,8 @@ class motors():
 		self.step_size = step_size										#number of encoder counts to step by
 		self.degrees_count_motor = degrees_count_motor 					#degrees of motor shaft rotation per encoder count
 		self.degrees_count_motor_joint = degrees_count_motor_joint		#degrees or joint roation per encoder count
-		self.sine_speed = 0.2											#frequency Hz
-		self.sine_travel = 0.05
+		self.sine_speed = 1.5											#frequency Hz, 1/5 = 1/5th period a second
+		self.sine_travel = 0.15											#number of revolutions
 		self.motor_revolutions = 1.0									#number of rotations to make in profile, remember it'll be +- full rotations since sine
 		self.motor_nums = "12345678" 									#which motor to control on the bank, number corresponds to which motor 1-8
 		self.results_dir = results_dir									#Directory to where motor data is stored
@@ -191,7 +191,8 @@ class motors():
 				time_diff.append(dt)
 				st = ct
 				#16 since 16 threads per inch
-				current_pos_1 = (np.sin((current_time-start_time)*2*np.pi*self.sine_speed)/self.degrees_count_motor_joint*360*self.sine_travel)
+				#current_pos_1 = (np.sin((current_time-start_time)*2*np.pi*self.sine_speed)/self.degrees_count_motor*self.sine_travel)
+				current_pos_1 = (np.sin((current_time-start_time)*2*np.pi*self.sine_speed)/self.degrees_count_motor*360*13*self.sine_travel) #13 is for the reduction
 
 				for i in range(len(commanded)):
 					if OPPOSITE_SINE and i < 4:
