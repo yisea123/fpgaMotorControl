@@ -101,10 +101,10 @@ setup socket communication
 	str=(char*)arg;
 
 	//initialize python side with position
-	sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d qq", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
+	sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %f qq", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
 		internal_encoders[3], internal_encoders[4], internal_encoders[5], internal_encoders[6], internal_encoders[7], switch_states[0],\
 		switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7],\
-		arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4, avg_current_ma);
+		arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4, avg_current);
 	n = write(newsockfd,write_buffer,256);
 
 	while(system_state == 1 && socket_error == 0){
@@ -130,10 +130,10 @@ setup socket communication
 
 		}
 		else{
-	   		sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d qq", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
+	   		sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %f qq", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
 	   			internal_encoders[3], internal_encoders[4], internal_encoders[5], internal_encoders[6], internal_encoders[7], switch_states[0],\
 	   			switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7],\
-	   			arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4, avg_current_ma);
+	   			arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4, avg_current);
 	   	}
 
     	n = write(newsockfd,write_buffer,256);
@@ -167,10 +167,10 @@ setup socket communication
 			                (struct sockaddr *) &cli_addr, 
 			                &clilen);
 
-				sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d qq", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
+				sprintf(write_buffer,"nn %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %f qq", internal_encoders[0], internal_encoders[1], internal_encoders[2],\
 					internal_encoders[3], internal_encoders[4], internal_encoders[5], internal_encoders[6], internal_encoders[7], switch_states[0],\
 					switch_states[1], switch_states[2], switch_states[3], switch_states[4], switch_states[5], switch_states[6], switch_states[7],\
-					arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4, avg_current_ma);
+					arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4, avg_current);
 				n = write(newsockfd,write_buffer,256);
 
 			    CONNECTED = 1; //change CONNECTED to 1 if connection is made, 

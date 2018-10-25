@@ -15,7 +15,7 @@ int calc_current_offset(volatile unsigned long *h2p_lw_adc){
 		usleep(10000);
 	}
 	
-	offset = (int)(adc_sum/400);
+	offset = (int)(adc_sum/300);
 	return offset;
 }
 

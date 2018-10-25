@@ -198,15 +198,17 @@ int main(int argc, char **argv)
 		switch_states[1] = (switches&1<<3)==0;
 		switch_states[2] = (switches&1<<2)==0;
 		switch_states[3] = (switches&1<<1)==0;
-		switch_states[4] = (switches&1<<7)==0;
-		switch_states[5] = (switches&1<<6)==0;
+		switch_states[4] = (switches&1<<7)>0;
+		//switch_states[4] = (switches&1<<7)==0;
+		switch_states[5] = (switches&1<<6)>0;
+		//switch_states[5] = (switches&1<<6)==0;
 		switch_states[6] = (switches&1<<5)==0;
 		switch_states[7] = (switches&1<<4)==0;
 
 		//ADC read
 		*(h2p_lw_adc) = 0; //write starts adc read
 		adc_data = *(h2p_lw_adc); //read
-		current = (adc_data - current_offset) * 0.001;
+		current = (adc_data - current_offset)* 0.001;
 		current = current * (current > 0);
 		avg_current = 0.1 * current + 0.9 * avg_current;
 		//avg_current = avg_current * (avg_current > 0);
@@ -234,7 +236,7 @@ int main(int argc, char **argv)
 			e_stop = alt_read_word(h2p_lw_pid_e_stop);
 			//printf("e_stop value %d", e_stop);
 			//E stop state checking
-			if (abs(internal_encoders[j]) > MAX_TRAVEL_RANGE || abs(position_setpoints[j]) > MAX_TRAVEL_RANGE || ERR_RESET || e_stop || avg_current > MAX_CURRENT){
+			if (((abs(internal_encoders[j]) > MAX_TRAVEL_RANGE) && 0) || abs(position_setpoints[j]) > MAX_TRAVEL_RANGE || ERR_RESET || e_stop || avg_current > MAX_CURRENT){
 				E_STATE = 1;
 				ERR_RESET = 1;
 				//printf("e_stop value: %d\n", e_stop);
@@ -310,7 +312,7 @@ int main(int argc, char **argv)
 					printf("Motor encoder counts: %d,%d,%d,%d,%d,%d,%d,%d\n", internal_encoders[0], internal_encoders[1], internal_encoders[2], internal_encoders[3], internal_encoders[4], internal_encoders[5], internal_encoders[6], internal_encoders[7]);
 					
 					// printf("External encoder counts: %d, %d, %d, %d\n", arm_encoders1, arm_encoders2, arm_encoders3, arm_encoders4);
-					// printf("%d,%d,%d,%d,%d,%d,%d,%d\n", switch_states[0],switch_states[1],switch_states[2],switch_states[3],switch_states[4],switch_states[5],switch_states[6],switch_states[7]);
+					printf("%d,%d,%d,%d,%d,%d,%d,%d\n", switch_states[0],switch_states[1],switch_states[2],switch_states[3],switch_states[4],switch_states[5],switch_states[6],switch_states[7]);
 					// printf("%d,%d,%d,%d,%d,%d,%d,%d\n", position_setpoints[0],position_setpoints[1],position_setpoints[2],position_setpoints[3],position_setpoints[4],position_setpoints[5],position_setpoints[6],position_setpoints[7]);
 
 					printf("\n\n");

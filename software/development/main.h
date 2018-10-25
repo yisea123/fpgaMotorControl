@@ -17,7 +17,7 @@
 #define HW_REGS_BASE ( ALT_STM_OFST )
 #define HW_REGS_SPAN ( 0x04000000 )
 #define HW_REGS_MASK ( HW_REGS_SPAN - 1 )
-#define MAX_TRAVEL_RANGE 500000
+#define MAX_TRAVEL_RANGE 10000000
 #define MAX_CURRENT 1.25 //amps
 
 //Globals
