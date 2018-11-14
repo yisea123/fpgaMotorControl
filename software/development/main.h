@@ -18,7 +18,7 @@
 #define HW_REGS_SPAN ( 0x04000000 )
 #define HW_REGS_MASK ( HW_REGS_SPAN - 1 )
 #define MAX_TRAVEL_RANGE 10000000
-#define MAX_CURRENT 1.25 //amps
+#define MAX_CURRENT 2.5 //amps
 
 //Globals
 volatile unsigned long *h2p_lw_led_addr;

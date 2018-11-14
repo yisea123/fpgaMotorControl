@@ -28,10 +28,11 @@ int CURRENT_FLAG = 0;
 int TRAVEL_FLAG = 0;
 int ETSOP_FLAG = 0;
 
-uint8_t P=30;
+uint8_t P=150;
+uint8_t P2=150;
 uint8_t I=0;
 uint8_t D=0;
-float controllerGain = 0.01;
+float controllerGain = 0.001;
 float avg_current = 0;
 
 int main(int argc, char **argv)
@@ -156,10 +157,11 @@ int main(int argc, char **argv)
 	PID_values = PID_values | ((P+2*D) << 8);
 	//PID_values = PID_values | (10 << 8);
 	PID_values = PID_values | (D << 16);
+	PID_values = PID_values | ((P2+I+D) << 24);
 	alt_write_word(h2p_lw_pid_values_addr, PID_values);
 	uint32_t pid_values_read = *(uint32_t*)h2p_lw_pid_values_addr;
-	printf("\nSent: P: %d, I: %d, D: %d\n", P, I, D);
-	printf("Received: P: %d, I: %d, D: %d\n\n", (uint8_t)(pid_values_read & (0x000000FF)), (uint8_t)((pid_values_read & (0x0000FF00))>>8), (uint8_t)((pid_values_read & (0x00FF0000))>>16));
+	printf("\nSent: P: %d, I: %d, D: %d, P2: %d\n", P, I, D, P2);
+	printf("Received: P: %d, I: %d, D: %d, P2: %d\n\n", (uint8_t)(pid_values_read & (0x000000FF)), (uint8_t)((pid_values_read & (0x0000FF00))>>8), (uint8_t)((pid_values_read & (0x00FF0000))>>16)), (uint8_t)((pid_values_read & (0xFF000000))>>24);
 	
 
 	/*--------------------------------
@@ -210,7 +212,7 @@ int main(int argc, char **argv)
 		adc_data = *(h2p_lw_adc); //read
 		current = (adc_data - current_offset)* 0.001;
 		current = current * (current > 0);
-		avg_current = 0.1 * current + 0.9 * avg_current;
+		avg_current = 0.3 * current + 0.7 * avg_current;
 		//avg_current = avg_current * (avg_current > 0);
 
 		//Read encoder positions
@@ -236,7 +238,7 @@ int main(int argc, char **argv)
 			e_stop = alt_read_word(h2p_lw_pid_e_stop);
 			//printf("e_stop value %d", e_stop);
 			//E stop state checking
-			if (((abs(internal_encoders[j]) > MAX_TRAVEL_RANGE) && 0) || abs(position_setpoints[j]) > MAX_TRAVEL_RANGE || ERR_RESET || e_stop || avg_current > MAX_CURRENT){
+			if (abs(internal_encoders[j]) > MAX_TRAVEL_RANGE || abs(position_setpoints[j]) > MAX_TRAVEL_RANGE || ERR_RESET || e_stop || avg_current > MAX_CURRENT){
 				E_STATE = 1;
 				ERR_RESET = 1;
 				//printf("e_stop value: %d\n", e_stop);
